@@ -1,0 +1,19 @@
+[package]
+name = "opendaq"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77"
+authors = ["Miha Krajnc"]
+description = "Safe Rust bindings for openDAQ, the open-source data acquisition SDK"
+license = "MIT"
+repository = "https://github.com/mihoci10/opendaq-rs"
+documentation = "https://docs.rs/opendaq"
+keywords = ["opendaq", "daq", "data-acquisition", "measurement", "bindings"]
+categories = ["api-bindings", "science", "hardware-support"]
+readme = "README.md"
+exclude = ["tools/", ".github/", "Makefile", "bin/", "tmp/", "dist/"]
+
+[dependencies]
+libloading = "0.8"
+sha2 = "0.10"
+thiserror = "2"
