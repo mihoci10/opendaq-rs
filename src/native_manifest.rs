@@ -7,9 +7,9 @@
 
 #![allow(dead_code)] // the repo/ref/sha constants document the pinned build
 
-pub const TAG: &str = "binaries-20260703-869cb62";
+pub const TAG: &str = "binaries-20260709-869cb62";
 pub const BASE_URL: &str =
-    "https://github.com/adolenc/cl-opendaq/releases/download/binaries-20260703-869cb62/";
+    "https://github.com/mihoci10/opendaq-rs/releases/download/binaries-20260709-869cb62/";
 pub const OPENDAQ_REPO: &str = "https://github.com/adolenc/openDAQ.git";
 pub const OPENDAQ_REF: &str = "c-bindings-docstrings";
 pub const OPENDAQ_SHA: &str = "869cb62b1e0bb18aa61e8dad3d4812bcce76be36";
@@ -19,16 +19,16 @@ pub const ARCHIVES: &[(&str, &str, &str)] = &[
     (
         "linux-x64",
         "opendaq-bin-linux-x64.tar.gz",
-        "6c0479da9883a4123809763ac611ae4b4467dcfa2daeda0a952d142fedc5d75a",
+        "466a55d6a9617212c264e712526e68530ebfc0d01adad6f0140eac6684e2b5a8",
     ),
     (
         "darwin-arm64",
         "opendaq-bin-darwin-arm64.tar.gz",
-        "a366d341aa9567ba57329b64698ee3ce07d11bdab620e75fd1c4a902f12104ae",
+        "3d70a422d884c488e5ec7cb5bd39624109caa8521e1e749cca0ce530af251cf5",
     ),
     (
         "windows-x64",
         "opendaq-bin-windows-x64.tar.gz",
-        "9f91418c6b99613c5d0af42615d2c4c8491b0966c8c5a5e96963a4617a2f2b71",
+        "9763c088274891222f16914417ccec1a390097b2cef3d1269362cc0d335a502f",
     ),
 ];
