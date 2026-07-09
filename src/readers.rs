@@ -278,6 +278,28 @@ macro_rules! reader_common_methods {
         pub fn domain_read_type(&self) -> SampleType {
             D::SAMPLE_TYPE
         }
+
+        /// Register a procedure openDAQ invokes -- from its own scheduler
+        /// thread -- whenever new samples become available, so acquisition can
+        /// be driven by notifications instead of a polling loop.  openDAQ
+        /// retains its own reference to `callback`, so it keeps firing even
+        /// after the passed handle is dropped; call again to replace it.
+        ///
+        /// Because the callback runs on an openDAQ thread, a closure-backed
+        /// [`crate::Procedure`] handed here must be `Send + Sync` and share
+        /// any state it touches accordingly (see the `stateful_callback`
+        /// example).
+        pub fn set_on_data_available(&self, callback: &crate::Procedure) -> Result<()> {
+            check(
+                unsafe {
+                    (sys::api().daqReader_setOnDataAvailable)(
+                        self.inner.as_ptr() as *mut _,
+                        callback.as_raw() as *mut _,
+                    )
+                },
+                "daqReader_setOnDataAvailable",
+            )
+        }
     };
 }
 

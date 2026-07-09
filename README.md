@@ -43,7 +43,7 @@ If something fails, run a healthcheck to verify that the crate can find and load
 opendaq::healthcheck();
 ```
 
-See the [`examples/`](./examples/) folder for the most common use cases: stream/tail/block/multi readers, building signals and sending packets by hand, property batching, events, function properties, search filters, device locking, and log-file download.
+See the [`examples/`](./examples/) folder for the most common use cases: stream/tail/block/multi readers, building signals and sending packets by hand, property batching, events, function properties, search filters, device locking, log-file download, and stateful callbacks driven by data-ready notifications.
 
 ### Native binaries
 
