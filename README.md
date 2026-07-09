@@ -1,5 +1,9 @@
 # openDAQ Rust bindings
 
+[![Crates.io](https://img.shields.io/crates/v/opendaq.svg)](https://crates.io/crates/opendaq)
+[![Documentation](https://docs.rs/opendaq/badge.svg)](https://docs.rs/opendaq)
+[![License](https://img.shields.io/crates/l/opendaq.svg)](https://github.com/mihoci10/opendaq-rs/blob/main/LICENSE)
+
 Safe Rust bindings for interacting with [openDAQ](https://opendaq.com/) devices. Prebuilt native binaries for x64 Linux, x64 Windows, and ARM macOS are downloaded automatically on first use (only for your platform, ~15 MB), so the crate builds and runs without an openDAQ SDK, headers, or C toolchain.
 
 ## Quickstart
@@ -74,7 +78,7 @@ Every openDAQ object is a reference-counted interface. Wrappers release their re
 
 ### Boxing / unboxing
 
-The high-level API insulates you from openDAQ's C types. Generic arguments accept plain Rust values (boxing, on input, via `impl Into<Value>`) and generic results come back as [`Value`] (unboxing, on output); the two directions are inverses:
+The high-level API insulates you from openDAQ's C types. Generic arguments accept plain Rust values (boxing, on input, via `impl Into<Value>`) and generic results come back as `Value` (unboxing, on output); the two directions are inverses:
 
 | Rust value | openDAQ core type |
 |------------|-------------------|
@@ -92,7 +96,7 @@ Typed signatures don't need `Value` at all: strings cross as `&str`/`String`, ty
 
 ### Readers
 
-Readers are generic over the sample types they decode into: `StreamReader<V = f64, D = i64>` reads values as `V` and domain stamps as `D`, so `read` returns typed data with no buffers in sight. `read` returns [`Samples<V>`], which carries the per-sample width alongside the flat values: for scalar signals it behaves like a `Vec`, while dimensioned signals (e.g. FFT spectra) expose one row per sample via `.rows()`. `TailReader`, `BlockReader`, and `MultiReader` follow the same pattern.
+Readers are generic over the sample types they decode into: `StreamReader<V = f64, D = i64>` reads values as `V` and domain stamps as `D`, so `read` returns typed data with no buffers in sight. `read` returns `Samples<V>`, which carries the per-sample width alongside the flat values: for scalar signals it behaves like a `Vec`, while dimensioned signals (e.g. FFT spectra) expose one row per sample via `.rows()`. `TailReader`, `BlockReader`, and `MultiReader` follow the same pattern.
 
 When a signal's descriptor changes to a sample type the reader cannot convert, the reader is invalidated: `read` fails with an error whose `is_reader_invalidated()` is true, and reading is resumed by building a `from_existing` reader with matching read types.
 
