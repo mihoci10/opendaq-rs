@@ -1,5 +1,5 @@
-//! Port of cl-opendaq/t/high-level/coreobjects.lisp, one `#[test]` per Lisp
-//! test.
+//! Port of the reference openDAQ bindings' high-level `coreobjects` test
+//! suite, one `#[test]` per source test.
 //!
 //! Pure coreobjects tests: no `opendaq::Instance` is created, so no
 //! `common::instance_lock()` is needed.

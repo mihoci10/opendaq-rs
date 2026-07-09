@@ -1,4 +1,4 @@
-# Development workflow for the openDAQ Rust bindings, mirroring cl-opendaq.
+# Development workflow for the openDAQ Rust bindings.
 #
 # `make bindings` clones the pinned openDAQ source, builds the native
 # libraries (requires CMake + a C++ toolchain), copies them into

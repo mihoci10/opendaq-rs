@@ -12,9 +12,8 @@ Emits:
                            struct per interface, Deref-chained to its parent,
                            with Result-returning methods for every C function.
 
-The parsing itself is delegated to parse_bindings.py (shared verbatim with the
-cl-opendaq bindings); this file only decides how the parsed model maps onto
-Rust.  Functions whose signatures the mechanical mapping cannot model (raw
+The parsing itself is delegated to parse_bindings.py; this file only decides
+how the parsed model maps onto Rust.  Functions whose signatures the mechanical mapping cannot model (raw
 void* sample buffers, in-out parameters, C callback parameters) are skipped
 here and covered by hand-written wrappers in the crate (see the SKIP report
 printed at the end).
@@ -164,7 +163,7 @@ IN_OUT_FUNCTIONS = {
 
 # Constructor-proxy names (Type::name) for factory functions whose C name does
 # not embed the type they build, so the mechanical suffix derivation fails or
-# yields something misleading (mirrors PROXY_NAME_OVERRIDES in cl-opendaq).
+# yields something misleading.
 CONSTRUCTOR_NAME_OVERRIDES = {
     "daqComponentTypeBuilder_createDeviceTypeBuilder": "device",
     "daqComponentTypeBuilder_createFunctionBlockTypeBuilder": "function_block",
@@ -990,7 +989,7 @@ class Out:
 # ---------------------------------------------------------------------------
 
 def is_out_param(model: Model, function: dict, arg: dict) -> bool:
-    """Mirror of the cl-opendaq parameter-mode classification: a non-pointer is
+    """The parameter-mode classification: a non-pointer is
     an input; a single pointer to an interface, callback, or daqBaseObject is
     the object itself passed in; void* is a raw pass-through buffer; anything
     else written through a pointer is an out-slot."""

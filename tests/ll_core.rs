@@ -1,5 +1,5 @@
-//! Port of cl-opendaq's low-level suites against the raw FFI layer
-//! (`opendaq::sys`): t/low-level/{coretypes,coreobjects,errors}.lisp.
+//! Port of the reference openDAQ bindings' low-level suites against the raw
+//! FFI layer (`opendaq::sys`): coretypes, coreobjects, errors.
 //!
 //! Not an exhaustive 1:1 port; each mechanism the Lisp files cover is
 //! exercised at least once through the `Api` function-pointer table.

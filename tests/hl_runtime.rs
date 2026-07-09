@@ -1,5 +1,5 @@
-//! Ports of the cl-opendaq high-level FiveAM runtime suites:
-//! `t/high-level/{opendaq,context,logger,device,component,server,signal,streaming}.lisp`.
+//! Ports of the reference openDAQ bindings' high-level runtime test suites:
+//! opendaq, context, logger, device, component, server, signal, streaming.
 //!
 //! One `#[test]` per Lisp test, named after the Lisp test with the
 //! `high-level-` prefix replaced by the source file name.

@@ -1,5 +1,5 @@
-//! Port of cl-opendaq's t/high-level/smoke.lisp: broad smoke coverage of the
-//! generated wrappers and simulator access.
+//! Port of the reference openDAQ bindings' high-level smoke suite: broad
+//! smoke coverage of the generated wrappers and simulator access.
 //!
 //! Deviations from the Lisp suite:
 //! - Element-type assertions (double-float vectors, signed-byte 64 domains)

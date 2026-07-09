@@ -3,8 +3,7 @@ name: Build native binaries
 # Builds the openDAQ native libraries (core + flat C bindings + reference
 # modules) for every supported platform, publishes them as release assets,
 # regenerates the Rust bindings from the same source, and commits the updated
-# pin in src/native_manifest.rs.  Adapted from cl-opendaq's workflow of the
-# same name.
+# pin in src/native_manifest.rs.
 
 'on':
   workflow_dispatch:
@@ -55,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Resolve openDAQ repo and ref
         id: resolve-ref
@@ -120,14 +119,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
-
-      - name: Set up Ninja
-        if: matrix.cmake_generator == 'Ninja'
-        uses: seanmiddleditch/gha-setup-ninja@v6
 
       - name: Clone openDAQ
         shell: bash
@@ -149,7 +144,9 @@ jobs:
       - name: Install macOS dependencies
         if: runner.os == 'macOS'
         shell: bash
-        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install mono ninja
+        # HOMEBREW_NO_REQUIRE_TAP_TRUST silences the warning about the runner's
+        # pre-installed aws/tap, which we don't use (we install core formulae).
+        run: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_REQUIRE_TAP_TRUST=1 brew install mono ninja
 
       - name: Configure build
         shell: bash
@@ -230,7 +227,7 @@ jobs:
           find "$generated_dir" -type f | sort
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: opendaq-native-${{ matrix.runtime_triple }}
           path: ${{ steps.stage.outputs.artifact-root }}
@@ -245,12 +242,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.ref_name }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: opendaq-native-*
           merge-multiple: true

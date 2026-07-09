@@ -14,7 +14,7 @@
 //! descriptor the *reader* is currently decoding, which can lag the signal's
 //! (the reader drains a packet queue), so stream readers keep `skip_events`
 //! off by default and track the width from their own descriptor-changed
-//! events, mirroring the cl-opendaq bindings.
+//! events.
 
 use std::ffi::c_void;
 use std::marker::PhantomData;

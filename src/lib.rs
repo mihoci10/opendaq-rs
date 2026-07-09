@@ -97,7 +97,7 @@ pub fn native_library_directory() -> std::result::Result<PathBuf, LoadError> {
 }
 
 /// Print a diagnostic report about where the native libraries were searched
-/// for and whether they load, mirroring `cl-opendaq`'s `(daq:healthcheck)`.
+/// for and whether they load.
 pub fn healthcheck() {
     println!("openDAQ healthcheck");
     println!("  platform: {:?}", loader::platform_directory_name());
