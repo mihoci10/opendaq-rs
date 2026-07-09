@@ -1,17 +1,11 @@
-//! Port of the reference openDAQ bindings' high-level smoke suite: broad
-//! smoke coverage of the generated wrappers and simulator access.
+//! High-level smoke coverage of the generated wrappers and simulator access.
 //!
-//! Deviations from the Lisp suite:
-//! - Element-type assertions (double-float vectors, signed-byte 64 domains)
-//!   are compile-time facts here: the readers are statically typed as
-//!   `StreamReader<f64, i64>` etc., so those `is` forms have no runtime port.
-//! - `high-level-callable-argument-boxing` drives `%box-callable-argument`,
-//!   an internal of the Lisp bindings; the equivalent Rust mechanism
-//!   (boxing `Value` dicts/lists across a callable boundary) is exercised
-//!   instead.
-//! - The complex-float64 packet round-trip of `high-level-data-packet-write`
-//!   is omitted: the Rust `Sample` trait covers scalar numeric types only,
-//!   so complex packets have no typed accessor to write through.
+//! A couple of notes:
+//! - Element-type checks (f64 value vectors, i64 domains) are compile-time
+//!   facts here, since the readers are statically typed (`StreamReader<f64,
+//!   i64>` etc.).
+//! - Complex-float64 packet round-trips are not covered: the `Sample` trait
+//!   is scalar-numeric only, so complex packets have no typed accessor.
 
 mod common;
 
@@ -410,8 +404,8 @@ fn high_level_data_packet_write() -> opendaq::Result<()> {
         "set_data should round-trip float samples"
     );
 
-    // Int32 round-trip.  (The Lisp test also coerces reals with rounding;
-    // Rust's typed API takes i32 directly, so there is nothing to round.)
+    // Int32 round-trip.  (The typed API takes i32 directly, so there is
+    // nothing to coerce.)
     let packet = make_packet(SampleType::Int32, 3)?;
     packet.set_data(&[1i32, 3, -3])?;
     assert_eq!(
@@ -559,12 +553,10 @@ fn high_level_callable_properties() -> opendaq::Result<()> {
          got {number_of_channels:?}"
     );
 
-    // PROC property with no arguments: dispatched for its side effect.
-    // Unlike the Lisp bindings -- whose closure wrapper checks arity against
-    // the property's CallableInfo before dispatching -- the Rust bindings
-    // pass arguments straight through, so surplus-argument handling is the
-    // callee's business.  The declared arity stays checkable via the
-    // property metadata, which is what the Lisp wrapper consulted.
+    // PROC property with no arguments: dispatched for its side effect.  The
+    // bindings pass arguments straight through, so surplus-argument handling
+    // is the callee's business; the declared arity stays checkable via the
+    // property metadata.
     let reset = channel
         .property_value("ResetCounter")?
         .into_object()?
@@ -593,9 +585,8 @@ fn high_level_callable_properties() -> opendaq::Result<()> {
 
 #[test]
 fn high_level_callable_argument_boxing() -> opendaq::Result<()> {
-    // The Lisp test drives %box-callable-argument, an internal of the Lisp
-    // bindings.  The Rust bindings box arguments through `Value`, so exercise
-    // that mechanism end-to-end across an openDAQ callable boundary instead.
+    // Arguments are boxed through `Value`; exercise that end-to-end across an
+    // openDAQ callable boundary.
     let echo = FunctionObject::from_fn(|args| Ok(args.first().cloned().unwrap_or(Value::Null)))?;
 
     // DICT argument: a Rust HashMap boxes into a daq dict and round-trips.
@@ -653,9 +644,8 @@ fn high_level_callable_argument_boxing() -> opendaq::Result<()> {
 
 #[test]
 fn high_level_autoload_healthcheck() {
-    // The Lisp test inspects (daq:healthcheck)'s plist; the Rust equivalents
-    // are init() succeeding (status :loaded, no autoload error) and the
-    // resolved native directory existing.
+    // The autoload health check: init() succeeding and the resolved native
+    // directory existing.
     opendaq::init().expect("the native library should load");
     let directory = opendaq::native_library_directory()
         .expect("the native library directory should be resolved");

@@ -1,5 +1,5 @@
-//! Port of the reference openDAQ bindings' high-level `coreobjects` test
-//! suite, one `#[test]` per source test.
+//! High-level tests for core objects: properties, property objects and
+//! builders, coercers/validators, permissions, users, and eval values.
 //!
 //! Pure coreobjects tests: no `opendaq::Instance` is created, so no
 //! `common::instance_lock()` is needed.
@@ -51,7 +51,7 @@ fn high_level_coreobjects_argument_and_callable_info() -> opendaq::Result<()> {
 }
 
 #[test]
-fn high_level_coreobjects_function_property_from_lisp_function() -> opendaq::Result<()> {
+fn high_level_coreobjects_function_property_from_closure() -> opendaq::Result<()> {
     // End to end: a FUNC property whose value is a closure-backed Function
     // reads back as a callable wrapper, and a call round-trips
     // Rust -> openDAQ -> Rust (args boxed by the caller, decoded by the
@@ -113,7 +113,6 @@ fn high_level_coreobjects_authentication_provider() -> opendaq::Result<()> {
         "test_user",
         "users should expose their username"
     );
-    // The Lisp test only asserts the groups come back as a native list;
     // openDAQ adds the implicit "everyone" group alongside "guest".
     assert!(
         user_groups.iter().any(|g| g == "guest"),
@@ -358,11 +357,10 @@ fn high_level_coreobjects_property_value_event_args() -> opendaq::Result<()> {
 
 #[test]
 fn high_level_coreobjects_unified_optional_generic() -> opendaq::Result<()> {
-    // The Lisp test exercises a single PROPERTY generic spanning a zero-arg
-    // specializer (property-value-event-args) and an extra-arg specializer
-    // (property-object).  In Rust these are two distinct inherent methods, so
-    // only the two correct arities are portable; the two Lisp misuse errors
-    // (extra argument / omitted argument) are compile-time-impossible here.
+    // `property` is exposed as two distinct inherent methods -- a zero-arg
+    // form on property-value-event-args and an extra-arg form on
+    // property-object -- so calling either with the wrong arity is a compile
+    // error, not a runtime one.
     let property = Property::int("test_property", 10, true)?;
     let property_object = PropertyObject::new()?;
     let event_args =
@@ -481,8 +479,8 @@ fn high_level_coreobjects_end_update_event() -> opendaq::Result<()> {
     event.subscribe({
         let update_ended = update_ended.clone();
         move |_sender, args| {
-            // Mirror the Lisp callback: read the updated-properties list off
-            // the typed event args before flagging completion.
+            // Read the updated-properties list off the typed event args
+            // before flagging completion.
             let args = args
                 .expect("event args")
                 .cast::<EndUpdateEventArgs>()

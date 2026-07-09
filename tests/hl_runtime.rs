@@ -1,15 +1,11 @@
-//! Ports of the reference openDAQ bindings' high-level runtime test suites:
-//! opendaq, context, logger, device, component, server, signal, streaming.
-//!
-//! One `#[test]` per Lisp test, named after the Lisp test with the
-//! `high-level-` prefix replaced by the source file name.
+//! High-level runtime tests: instance/API basics, context, logger, device,
+//! component, server, signal, and streaming.
 
 mod common;
 
 use opendaq::{sys, Interface, Value};
 
-/// The Lisp tests construct a context with a nil scheduler, module manager,
-/// and authentication provider.
+/// A context with no scheduler, module manager, or authentication provider.
 fn make_context() -> opendaq::Context {
     let sink = opendaq::LoggerSink::std_err().expect("std_err sink");
     let logger = opendaq::Logger::new(vec![sink], opendaq::LogLevel::Debug).expect("logger");
@@ -26,13 +22,12 @@ fn make_context() -> opendaq::Context {
     .expect("context")
 }
 
-/// A root component (nil parent, nil class name in the Lisp test).
+/// A root component (no parent, no class name).
 fn make_root_component(context: &opendaq::Context, local_id: &str) -> opendaq::Component {
     opendaq::Component::new(context, None, local_id, None).expect("component")
 }
 
-/// The int64 "vals" descriptor with a volts unit that the signal.lisp tests
-/// build repeatedly.
+/// An int64 "vals" descriptor with a volts unit, reused by several tests.
 fn make_int64_descriptor() -> opendaq::DataDescriptor {
     let unit_builder = opendaq::UnitBuilder::new().expect("unit builder");
     unit_builder.set_id(-1).expect("set_id");
@@ -56,11 +51,10 @@ fn make_int64_descriptor() -> opendaq::DataDescriptor {
 }
 
 // ---------------------------------------------------------------------------
-// opendaq.lisp (instance / API basics)
+// Instance / API basics
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-opendaq-config-provider.  The `typep` assertion is
-// subsumed by the static return type.
+// The runtime type check is subsumed by the static return type.
 #[test]
 fn opendaq_config_provider() {
     let provider = opendaq::ConfigProvider::env().expect("env config provider");
@@ -70,7 +64,6 @@ fn opendaq_config_provider() {
     );
 }
 
-// Lisp: high-level-opendaq-instance-builder.
 #[test]
 fn opendaq_instance_builder() {
     let _guard = common::instance_lock();
@@ -102,7 +95,6 @@ fn opendaq_instance_builder() {
     );
 }
 
-// Lisp: high-level-opendaq-instance-make-instance.
 #[test]
 fn opendaq_instance_make_instance() {
     let _guard = common::instance_lock();
@@ -118,11 +110,11 @@ fn opendaq_instance_make_instance() {
 }
 
 // ---------------------------------------------------------------------------
-// context.lisp
+// Context
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-context-construction.  The Lisp `hash-table-p` assertions
-// map to the `HashMap` return types of options()/discovery_servers().
+// options()/discovery_servers() return HashMaps, so the empty dicts
+// round-trip as empty maps.
 #[test]
 fn context_construction() {
     let context = make_context();
@@ -147,10 +139,9 @@ fn context_construction() {
 }
 
 // ---------------------------------------------------------------------------
-// logger.lisp
+// Logger
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-logger-construction.
 #[test]
 fn logger_construction() {
     let sink = opendaq::LoggerSink::std_out().expect("std_out sink");
@@ -167,10 +158,9 @@ fn logger_construction() {
 }
 
 // ---------------------------------------------------------------------------
-// device.lisp
+// Device
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-address-info-builder.
 #[test]
 fn device_address_info_builder() {
     let builder = opendaq::AddressInfoBuilder::new().expect("address info builder");
@@ -204,8 +194,7 @@ fn device_address_info_builder() {
     );
 }
 
-// Lisp: high-level-device-info.  The Lisp `stringp` connection-string check
-// maps to the call succeeding with a `String` return.
+// The connection-string check is the call succeeding with a String return.
 #[test]
 fn device_info() {
     let _guard = common::instance_lock();
@@ -225,17 +214,15 @@ fn device_info() {
 }
 
 // ---------------------------------------------------------------------------
-// component.lisp
+// Component
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-component-hierarchy.  component-type -> component_kind(),
-// daq:typep -> is_a::<T>().
+// Exercises component_kind() and is_a::<T>() on a small parent/child tree.
 #[test]
 fn component_hierarchy() {
     let context = make_context();
     let parent = make_root_component(&context, "parent");
-    // The Lisp passes a nil class name; Component::new takes a non-optional
-    // &str, where "" behaves as "no class".
+    // A child with no class name.
     let child =
         opendaq::Component::new(&context, Some(&parent), "child", None).expect("child component");
 
@@ -265,11 +252,10 @@ fn component_hierarchy() {
 }
 
 // ---------------------------------------------------------------------------
-// server.lisp
+// Server
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-server-type.  The `typep` assertion is subsumed by the
-// static return type.
+// The runtime type check is subsumed by the static return type.
 #[test]
 fn server_type() {
     let default_config = opendaq::PropertyObject::new().expect("property object");
@@ -287,13 +273,12 @@ fn server_type() {
 }
 
 // ---------------------------------------------------------------------------
-// signal.lisp
+// Signal
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-allocator.  The Rust bindings expose no safe
-// Allocator::allocate/free (only the malloc-allocator factory), so the
-// allocate/free round-trip goes through `opendaq::sys` -- just as the Lisp
-// test pokes a raw cffi pointer slot.
+// The bindings expose no safe Allocator::allocate/free (only the malloc-
+// allocator factory), so the allocate/free round-trip goes through
+// `opendaq::sys`.
 #[test]
 fn signal_allocator() {
     let allocator = opendaq::Allocator::malloc().expect("malloc allocator");
@@ -318,7 +303,6 @@ fn signal_allocator() {
     assert_eq!(code, sys::OPENDAQ_SUCCESS, "daqAllocator_free failed");
 }
 
-// Lisp: high-level-data-descriptor.
 #[test]
 fn signal_data_descriptor() {
     let descriptor = make_int64_descriptor();
@@ -340,7 +324,7 @@ fn signal_data_descriptor() {
     );
 }
 
-// Lisp: high-level-input-port-config (nil parent, gap checking disabled).
+// A root input port (no parent) with gap checking disabled.
 #[test]
 fn signal_input_port_config() {
     let context = make_context();
@@ -355,7 +339,6 @@ fn signal_input_port_config() {
     );
 }
 
-// Lisp: high-level-scaling.
 #[test]
 fn signal_scaling() {
     let parameters = Value::Dict(vec![
@@ -408,9 +391,6 @@ fn signal_scaling() {
     );
 }
 
-// Lisp: high-level-signal-config.  The Lisp passes a nil class name;
-// `SignalConfig::with_descriptor` takes a non-optional `&str`, where ""
-// behaves as "no class".
 #[test]
 fn signal_config() {
     let context = make_context();
@@ -425,11 +405,10 @@ fn signal_config() {
 }
 
 // ---------------------------------------------------------------------------
-// streaming.lisp
+// Streaming
 // ---------------------------------------------------------------------------
 
-// Lisp: high-level-streaming-type.  The `typep` assertion is subsumed by the
-// static return type.
+// The runtime type check is subsumed by the static return type.
 #[test]
 fn streaming_type() {
     let default_config = opendaq::PropertyObject::new().expect("property object");
@@ -450,7 +429,6 @@ fn streaming_type() {
     );
 }
 
-// Lisp: high-level-subscription-event-args.
 #[test]
 fn streaming_subscription_event_args() {
     let subscription_event_args = opendaq::SubscriptionEventArgs::new(

@@ -1,15 +1,10 @@
-//! Port of the reference openDAQ bindings' low-level suites against the raw
-//! FFI layer (`opendaq::sys`): coretypes, coreobjects, errors.
+//! Low-level coverage of the raw FFI layer (`opendaq::sys`): coretypes,
+//! coreobjects, and errors.  Each mechanism is exercised at least once through
+//! the `Api` function-pointer table; it is not exhaustive.
 //!
-//! Not an exhaustive 1:1 port; each mechanism the Lisp files cover is
-//! exercised at least once through the `Api` function-pointer table.
-//! Omissions:
-//! - Ownable / PropertyObjectProtected coverage: pending in the Lisp suites
-//!   too (blocked there on borrowInterface generation), so there is nothing
-//!   to mirror.
-//! - `opendaq-error-report-includes-code-name-and-message` builds the Lisp
-//!   condition by hand; `opendaq::Error` is only constructed by the bindings,
-//!   so the port triggers a real failure and checks the same report contents.
+//! `opendaq::Error` is only ever constructed by the bindings, so the
+//! error-reporting test triggers a real failure and checks its report contents
+//! rather than building an error by hand.
 
 mod common;
 
@@ -199,7 +194,7 @@ fn make_property_object() -> Obj {
 }
 
 // ---------------------------------------------------------------------------
-// coretypes.lisp
+// coretypes
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -402,8 +397,7 @@ static EVENT_CALLED: AtomicBool = AtomicBool::new(false);
 
 unsafe extern "C" fn on_event(sender: *mut sys::daqBaseObject, args: *mut sys::daqBaseObject) {
     EVENT_CALLED.store(true, Ordering::SeqCst);
-    // The handler receives ownership of both references (mirrors the Lisp
-    // callback, which releases them too).
+    // The handler receives ownership of both references and releases them.
     (api().daqBaseObject_releaseRef)(sender);
     (api().daqBaseObject_releaseRef)(args);
 }
@@ -756,7 +750,7 @@ fn coretypes_version_info() {
 }
 
 // ---------------------------------------------------------------------------
-// coreobjects.lisp
+// coreobjects
 // ---------------------------------------------------------------------------
 
 fn make_argument_info(name: &Obj, core_type: sys::CoreType) -> Obj {
@@ -1413,8 +1407,8 @@ fn coreobjects_validator() {
         "coreobjects/Validator expected a validation error for the invalid value"
     );
 
-    // errors.lisp essence at the FFI level: the failing call stores per-thread
-    // error info retrievable through daqGetErrorInfoMessage.
+    // At the FFI level, the failing call stores per-thread error info
+    // retrievable through daqGetErrorInfoMessage.
     let mut message: *mut sys::daqString = ptr::null_mut();
     let stored = unsafe { (api().daqGetErrorInfoMessage)(&mut message) };
     if !failed(stored) && !message.is_null() {
@@ -1428,13 +1422,12 @@ fn coreobjects_validator() {
 }
 
 // ---------------------------------------------------------------------------
-// errors.lisp
+// errors
 // ---------------------------------------------------------------------------
 
 #[test]
 fn opendaq_error_report_includes_code_name_and_message() {
-    // The Lisp test builds the condition by hand with code #x8000000A; the
-    // code-to-name table is directly checkable here...
+    // The code-to-name table is directly checkable here...
     assert_eq!(
         sys::error_code_name(0x8000_000A),
         Some("OPENDAQ_ERR_ALREADYEXISTS"),

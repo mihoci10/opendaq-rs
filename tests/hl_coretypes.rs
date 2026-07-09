@@ -1,5 +1,5 @@
-//! Port of the reference openDAQ bindings' high-level `coretypes` test suite
-//! (plus the tiny `compile` suite), one `#[test]` per source test.
+//! High-level tests for core types: boxed scalars, strings, lists, dicts,
+//! ratios, complex numbers, iterators, structs, enumerations, and events.
 //!
 //! Pure coretypes tests: no `opendaq::Instance` is created, so no
 //! `common::instance_lock()` is needed.
@@ -138,19 +138,17 @@ fn high_level_coretypes_unbox() -> opendaq::Result<()> {
         Some(Ratio::new(1, 2))
     );
 
-    // A generic base-object holding a boxed scalar unboxes with no cast.  The
-    // Lisp test uses a boxed string here, but StringObject::new has a binding
-    // bug (see high_level_compile_string_object); an integer-backed generic
-    // wrapper exercises the same runtime type discovery.  The string variant
-    // is asserted in the ignored test.
+    // A generic base-object holding a boxed scalar unboxes with no cast; an
+    // integer-backed wrapper exercises that runtime type discovery (the string
+    // variant is covered in high_level_compile_string_object).
     let boxed = IntegerObject::new(7)?.to_base_object();
     assert_eq!(boxed.to_value()?.as_i64(), Some(7));
 
     // An already-native value is unchanged by the Value round-trip.
     assert_eq!(Value::from(42).as_i64(), Some(42));
 
-    // An object with no natural Rust form: the Lisp UNBOX signals an error;
-    // the Rust to_value instead keeps it as a Value::Object wrapper.
+    // An object with no natural Rust form stays a Value::Object wrapper
+    // rather than erroring.
     let unboxed = PropertyObject::new()?.to_value()?;
     assert!(
         matches!(unboxed, Value::Object(_)),
@@ -249,9 +247,6 @@ fn high_level_coretypes_as_cast_failure() -> opendaq::Result<()> {
         "cast to a secondary interface should yield a working wrapper"
     );
 
-    // The Lisp variants "as with a keyword target" and "as on an already-
-    // released object" exercise Lisp-only dynamic typing / manual release;
-    // both misuses are impossible by construction in Rust.
     Ok(())
 }
 
@@ -472,7 +467,7 @@ fn high_level_coretypes_event_handler_routing() -> opendaq::Result<()> {
 }
 
 #[test]
-fn high_level_coretypes_procedure_from_lisp_function() -> opendaq::Result<()> {
+fn high_level_coretypes_procedure_from_closure() -> opendaq::Result<()> {
     // A Rust closure can back an openDAQ Procedure directly: openDAQ invokes
     // it through a trampoline with the params decoded to Rust values.
     let seen = Arc::new(Mutex::new(Vec::<Value>::new()));
@@ -535,7 +530,7 @@ fn high_level_coretypes_callable_params_conventions() -> opendaq::Result<()> {
 }
 
 #[test]
-fn high_level_coretypes_function_from_lisp_function() -> opendaq::Result<()> {
+fn high_level_coretypes_function_from_closure() -> opendaq::Result<()> {
     // A closure-backed Function computes its result from the decoded
     // arguments; the result is boxed for the caller and unboxes back.
     let function = FunctionObject::from_fn(|args| {
@@ -601,8 +596,8 @@ fn high_level_coretypes_callable_error_propagation() -> opendaq::Result<()> {
         "a closure error should surface to the caller"
     );
 
-    // A panic (the closest analogue of a signalled Lisp condition) is caught
-    // at the boundary and reported as an error too.
+    // A panic inside the closure is caught at the boundary and reported as an
+    // error too.
     let panicking = Procedure::from_fn(|_args| panic!("boom"))?;
     assert!(
         panicking.dispatch_args(&[]).is_err(),
@@ -611,12 +606,8 @@ fn high_level_coretypes_callable_error_propagation() -> opendaq::Result<()> {
     Ok(())
 }
 
-// The Lisp test high-level-ratio-automatic-release probes GC finalizers
-// (trivial-garbage weak pointers + release hooks).  Rust wrappers release
-// their native reference deterministically on Drop, so there is no
-// asynchronous finalization to probe; the test is Lisp-only and not ported.
-
-// --- from compile.lisp (high-level-compile-suite) ---
+// (A GC-finalizer / automatic-release test has no Rust analogue: wrappers
+// release their native reference deterministically on Drop.)
 
 #[test]
 fn high_level_compile_string_object() -> opendaq::Result<()> {
@@ -648,8 +639,7 @@ fn high_level_compile_string_object() -> opendaq::Result<()> {
         Some("hello"),
         "a generic base-object holding a string should unbox with no cast"
     );
-    // The Lisp test then releases explicitly and checks the raw pointer is
-    // cleared; Rust wrappers release deterministically on Drop instead, and
-    // expose no explicit release, so those two assertions are Lisp-only.
+    // (Rust wrappers release deterministically on Drop and expose no explicit
+    // release, so there is nothing further to assert here.)
     Ok(())
 }
