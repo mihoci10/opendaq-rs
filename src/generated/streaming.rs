@@ -323,7 +323,10 @@ impl crate::value::FromDaqOwned for SubscriptionEventArgs {
 
 impl MirroredDeviceConfig {
     /// Adds streaming source for device.
-    /// @param streaming The Streaming object representing the data source.
+    ///
+    /// # Parameters
+    /// - `streaming`: The Streaming object representing the data source.
+    ///
     /// Calls the openDAQ C function `daqMirroredDeviceConfig_addStreamingSource()`.
     pub fn add_streaming_source(&self, streaming_source: &Streaming) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqMirroredDeviceConfig_addStreamingSource)(self.as_raw() as *mut _, streaming_source.as_raw() as *mut _) };
@@ -332,7 +335,10 @@ impl MirroredDeviceConfig {
     }
 
     /// Removes streaming source for device e.g. when the streaming source is no longer available.
-    /// @param streamingConnectionString The connection string of streaming source to be removed.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of streaming source to be removed.
+    ///
     /// Calls the openDAQ C function `daqMirroredDeviceConfig_removeStreamingSource()`.
     pub fn remove_streaming_source(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -342,7 +348,10 @@ impl MirroredDeviceConfig {
     }
 
     /// Sets the device's type that corresponds to the client-side device module.
-    /// @param type The device's type.
+    ///
+    /// # Parameters
+    /// - `type`: The device's type.
+    ///
     /// Calls the openDAQ C function `daqMirroredDeviceConfig_setMirroredDeviceType()`.
     pub fn set_mirrored_device_type(&self, type_: &DeviceType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqMirroredDeviceConfig_setMirroredDeviceType)(self.as_raw() as *mut _, type_.as_raw() as *mut _) };
@@ -354,7 +363,10 @@ impl MirroredDeviceConfig {
 
 impl MirroredDevice {
     /// Gets the device's type that corresponds to the client-side device module.
-    /// @param type The device's type.
+    ///
+    /// # Parameters
+    /// - `type`: The device's type.
+    ///
     /// Calls the openDAQ C function `daqMirroredDevice_getMirroredDeviceType()`.
     pub fn mirrored_device_type(&self) -> Result<Option<DeviceType>> {
         let mut __type_: *mut sys::daqDeviceType = std::ptr::null_mut();
@@ -364,7 +376,10 @@ impl MirroredDevice {
     }
 
     /// Gets the global ID of the device as it appears on the remote instance.
-    /// @param\[out\] id The device ID.
+    ///
+    /// # Returns
+    /// - `id`: The device ID.
+    ///
     /// Calls the openDAQ C function `daqMirroredDevice_getRemoteId()`.
     pub fn remote_id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -374,7 +389,10 @@ impl MirroredDevice {
     }
 
     /// Gets a list of streaming objects representing all streaming sources of the device.
-    /// @param\[out\] streamingSources The list of streaming objects.
+    ///
+    /// # Returns
+    /// - `streaming_sources`: The list of streaming objects.
+    ///
     /// Calls the openDAQ C function `daqMirroredDevice_getStreamingSources()`.
     pub fn streaming_sources(&self) -> Result<Vec<Streaming>> {
         let mut __streaming_sources: *mut sys::daqList = std::ptr::null_mut();
@@ -387,7 +405,10 @@ impl MirroredDevice {
 
 impl MirroredInputPortConfig {
     /// Gets a connection strings of the active streaming source of the input port.
-    /// @param\[out\] streamingConnectionString The connection string of active streaming source.
+    ///
+    /// # Returns
+    /// - `streaming_connection_string`: The connection string of active streaming source.
+    ///
     /// Calls the openDAQ C function `daqMirroredInputPortConfig_getActiveStreamingSource()`.
     pub fn active_streaming_source(&self) -> Result<String> {
         let mut __streaming_connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -397,7 +418,10 @@ impl MirroredInputPortConfig {
     }
 
     /// Gets the global ID of the input port as it appears on the remote device.
-    /// @param\[out\] id The input port ID.
+    ///
+    /// # Returns
+    /// - `id`: The input port ID.
+    ///
     /// Calls the openDAQ C function `daqMirroredInputPortConfig_getRemoteId()`.
     pub fn remote_id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -407,7 +431,10 @@ impl MirroredInputPortConfig {
     }
 
     /// Gets a list of connection strings of all available streaming sources of the input port.
-    /// @param\[out\] streamingConnectionStrings The list of streaming connection strings.
+    ///
+    /// # Returns
+    /// - `streaming_connection_strings`: The list of streaming connection strings.
+    ///
     /// Calls the openDAQ C function `daqMirroredInputPortConfig_getStreamingSources()`.
     pub fn streaming_sources(&self) -> Result<Vec<String>> {
         let mut __streaming_connection_strings: *mut sys::daqList = std::ptr::null_mut();
@@ -417,8 +444,13 @@ impl MirroredInputPortConfig {
     }
 
     /// Sets the active streaming source of the input port.
-    /// @param streamingConnectionString The connection string of streaming source to be set as active.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the streaming source with the corresponding connection string is not part of the available streaming sources for the input port.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of streaming source to be set as active.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the streaming source with the corresponding connection string is not part of the available streaming sources for the input port.
+    ///
     /// Calls the openDAQ C function `daqMirroredInputPortConfig_setActiveStreamingSource()`.
     pub fn set_active_streaming_source(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -431,6 +463,7 @@ impl MirroredInputPortConfig {
 
 impl MirroredSignalConfig {
     /// Stops the streaming and clears the active streaming source of the signal.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_deactivateStreaming()`.
     pub fn deactivate_streaming(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqMirroredSignalConfig_deactivateStreaming)(self.as_raw() as *mut _) };
@@ -439,7 +472,10 @@ impl MirroredSignalConfig {
     }
 
     /// Gets a connection strings of the active streaming source of the signal.
-    /// @param\[out\] streamingConnectionString The connection string of active streaming source.
+    ///
+    /// # Returns
+    /// - `streaming_connection_string`: The connection string of active streaming source.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_getActiveStreamingSource()`.
     pub fn active_streaming_source(&self) -> Result<String> {
         let mut __streaming_connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -449,13 +485,10 @@ impl MirroredSignalConfig {
     }
 
     /// Gets the Event that is triggered whenever the acknowledgment for signal subscription completion is received from the streaming server.
-    /// @param\[out\] event The Event representing the acknowledgment of signal subscription completion.
-    /// A handler can be added to the event containing a callback function which is invoked whenever
-    /// the event is triggered. The callback function requires two parameters - a MirroredSignalConfig
-    /// object, as well as a "Subscription event args" object.
-    /// The callback will be invoked with the MirroredSignalConfig object as the first argument,
-    /// the second argument holds an event args object that contains the connection string of streaming
-    /// and the event type (Subscribed).
+    ///
+    /// # Returns
+    /// - `event`: The Event representing the acknowledgment of signal subscription completion. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a MirroredSignalConfig object, as well as a "Subscription event args" object. The callback will be invoked with the MirroredSignalConfig object as the first argument, the second argument holds an event args object that contains the connection string of streaming and the event type (Subscribed).
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_getOnSubscribeComplete()`.
     pub fn on_subscribe_complete(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -465,13 +498,10 @@ impl MirroredSignalConfig {
     }
 
     /// Gets the Event that is triggered whenever the acknowledgment for signal unsubscription completion is received from the streaming server.
-    /// @param\[out\] event The Event representing the acknowledgment of signal unsubscription completion.
-    /// A handler can be added to the event containing a callback function which is invoked whenever
-    /// the event is triggered. The callback function requires two parameters - a MirroredSignalConfig
-    /// object, as well as a "Subscription event args" object.
-    /// The callback will be invoked with the MirroredSignalConfig object as the first argument,
-    /// the second argument holds an event args object that contains the connection string of streaming
-    /// and the event type (Unsubscribed).
+    ///
+    /// # Returns
+    /// - `event`: The Event representing the acknowledgment of signal unsubscription completion. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a MirroredSignalConfig object, as well as a "Subscription event args" object. The callback will be invoked with the MirroredSignalConfig object as the first argument, the second argument holds an event args object that contains the connection string of streaming and the event type (Unsubscribed).
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_getOnUnsubscribeComplete()`.
     pub fn on_unsubscribe_complete(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -481,7 +511,10 @@ impl MirroredSignalConfig {
     }
 
     /// Gets the global ID of the signal as it appears on the remote device.
-    /// @param\[out\] id The signal ID.
+    ///
+    /// # Returns
+    /// - `id`: The signal ID.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_getRemoteId()`.
     pub fn remote_id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -491,7 +524,10 @@ impl MirroredSignalConfig {
     }
 
     /// Gets a list of connection strings of all available streaming sources of the signal.
-    /// @param\[out\] streamingConnectionStrings The list of streaming connection strings.
+    ///
+    /// # Returns
+    /// - `streaming_connection_strings`: The list of streaming connection strings.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_getStreamingSources()`.
     pub fn streaming_sources(&self) -> Result<Vec<String>> {
         let mut __streaming_connection_strings: *mut sys::daqList = std::ptr::null_mut();
@@ -501,8 +537,13 @@ impl MirroredSignalConfig {
     }
 
     /// Sets the active streaming source of the signal.
-    /// @param streamingConnectionString The connection string of streaming source to be set as active.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the streaming source with the corresponding connection string is not part of the available streaming sources for the signal.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of streaming source to be set as active.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the streaming source with the corresponding connection string is not part of the available streaming sources for the signal.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalConfig_setActiveStreamingSource()`.
     pub fn set_active_streaming_source(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -515,7 +556,10 @@ impl MirroredSignalConfig {
 
 impl MirroredSignalPrivate {
     /// Adds streaming source for signal.
-    /// @param streaming The Streaming object representing the data source.
+    ///
+    /// # Parameters
+    /// - `streaming`: The Streaming object representing the data source.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_addStreamingSource()`.
     pub fn add_streaming_source(&self, streaming: &Streaming) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqMirroredSignalPrivate_addStreamingSource)(self.as_raw() as *mut _, streaming.as_raw() as *mut _) };
@@ -540,7 +584,10 @@ impl MirroredSignalPrivate {
     }
 
     /// Removes streaming source for signal.
-    /// @param streamingConnectionString The connection string of streaming source to be removed.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of streaming source to be removed.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_removeStreamingSource()`.
     pub fn remove_streaming_source(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -564,7 +611,10 @@ impl MirroredSignalPrivate {
     }
 
     /// Handles the completion of subscription acknowledged by the specified streaming source.
-    /// @param streamingConnectionString The connection string of the streaming source that completed the subscription for the signal.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of the streaming source that completed the subscription for the signal.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_subscribeCompleted()`.
     pub fn subscribe_completed(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -574,8 +624,13 @@ impl MirroredSignalPrivate {
     }
 
     /// Handles event packet e.g. packet with changes of the signals descriptors or signal properties
-    /// @param eventPacket The event packet to be handled.
-    /// @returns True if the eventPacket should be sent along the signal path; False otherwise.
+    ///
+    /// # Parameters
+    /// - `event_packet`: The event packet to be handled.
+    ///
+    /// # Returns
+    /// True if the eventPacket should be sent along the signal path; False otherwise.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_triggerEvent()`.
     pub fn trigger_event(&self, event_packet: &EventPacket) -> Result<bool> {
         let mut __forward: u8 = 0;
@@ -585,7 +640,10 @@ impl MirroredSignalPrivate {
     }
 
     /// Handles the completion of unsubscription acknowledged by the specified streaming source.
-    /// @param streamingConnectionString The connection string of the streaming source that completed the unsubscription for the signal.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of the streaming source that completed the unsubscription for the signal.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_unsubscribeCompleted()`.
     pub fn unsubscribe_completed(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -595,7 +653,10 @@ impl MirroredSignalPrivate {
     }
 
     /// Acts the same as unsubscribeCompleted() but does not enter a critical section.
-    /// @param streamingConnectionString The connection string of the streaming source that completed the unsubscription for the signal.
+    ///
+    /// # Parameters
+    /// - `streaming_connection_string`: The connection string of the streaming source that completed the unsubscription for the signal.
+    ///
     /// Calls the openDAQ C function `daqMirroredSignalPrivate_unsubscribeCompletedNoLock()`.
     pub fn unsubscribe_completed_no_lock(&self, streaming_connection_string: &str) -> Result<()> {
         let __streaming_connection_string = crate::marshal::make_string(streaming_connection_string)?;
@@ -608,10 +669,13 @@ impl MirroredSignalPrivate {
 
 impl StreamingType {
     /// Creates a Streaming type object, with the id, name, description and optional defaultConfig.
-    /// @param id The unique type ID of the Streaming.
-    /// @param name The name of the Streaming. Eg. FFT.
-    /// @param description A short description of the Streaming and its behaviour.
-    /// @param defaultConfig The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the Streaming has its own configuration object.
+    ///
+    /// # Parameters
+    /// - `id`: The unique type ID of the Streaming.
+    /// - `name`: The name of the Streaming. Eg. FFT.
+    /// - `description`: A short description of the Streaming and its behaviour.
+    /// - `default_config`: The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the Streaming has its own configuration object.
+    ///
     /// Calls the openDAQ C function `daqStreamingType_createStreamingType()`.
     pub fn new(id: &str, name: &str, description: &str, prefix: &str, default_config: &PropertyObject) -> Result<StreamingType> {
         let __id = crate::marshal::make_string(id)?;

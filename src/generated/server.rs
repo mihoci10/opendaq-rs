@@ -56,10 +56,13 @@ impl crate::value::FromDaqOwned for ServerType {
 
 impl ServerType {
     /// Creates a Server type object, with the id, name, description and optional defaultConfig.
-    /// @param id The unique type ID of the server.
-    /// @param name The name of the server type.
-    /// @param description A short description of the server type.
-    /// @param defaultConfig The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the server has its own configuration object.
+    ///
+    /// # Parameters
+    /// - `id`: The unique type ID of the server.
+    /// - `name`: The name of the server type.
+    /// - `description`: A short description of the server type.
+    /// - `default_config`: The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the server has its own configuration object.
+    ///
     /// Calls the openDAQ C function `daqServerType_createServerType()`.
     pub fn new(id: &str, name: &str, description: &str, default_config: &PropertyObject) -> Result<ServerType> {
         let __id = crate::marshal::make_string(id)?;

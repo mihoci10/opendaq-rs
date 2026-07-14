@@ -474,7 +474,10 @@ impl BlockReaderStatus {
     }
 
     /// Returns the number of samples that were read. Sometimes, during the process of reading, an event packet may occur that stops the reading of remaining samples. Developers can use this function to determine how many samples were actually read.
-    /// @param\[out\] samplesCount the amount of samples that were read.
+    ///
+    /// # Returns
+    /// - `samples_count`: the amount of samples that were read.
+    ///
     /// Calls the openDAQ C function `daqBlockReaderStatus_getReadSamples()`.
     pub fn read_samples(&self) -> Result<usize> {
         let mut __read_samples: usize = Default::default();
@@ -487,10 +490,11 @@ impl BlockReaderStatus {
 
 impl EventPacket {
     /// Creates a DataDescriptorChanged Event packet.
-    /// @param dataDescriptor The data descriptor of the value signal.
-    /// @param domainDataDescriptor The data descriptor of the domain signal that carries domain data of the value signal.
-    /// The ID of the packet is "DATA_DESCRIPTOR_CHANGED". Its parameters dictionary contains the keys "DataDescriptor"
-    /// and "DomainDataDescriptor", carrying their respective Signal descriptor objects as values.
+    ///
+    /// # Parameters
+    /// - `data_descriptor`: The data descriptor of the value signal.
+    /// - `domain_data_descriptor`: The data descriptor of the domain signal that carries domain data of the value signal. The ID of the packet is "DATA_DESCRIPTOR_CHANGED". Its parameters dictionary contains the keys "DataDescriptor" and "DomainDataDescriptor", carrying their respective Signal descriptor objects as values.
+    ///
     /// Calls the openDAQ C function `daqEventPacket_createDataDescriptorChangedEventPacket()`.
     pub fn data_descriptor_changed(data_descriptor: &DataDescriptor, domain_data_descriptor: &DataDescriptor) -> Result<EventPacket> {
         let mut __obj: *mut sys::daqEventPacket = std::ptr::null_mut();
@@ -500,8 +504,11 @@ impl EventPacket {
     }
 
     /// Creates and Event packet with a given id and parameter dictionary.
-    /// @param id The ID of the event.
-    /// @param params The \<String, BaseObject\> dictionary containing the event parameters.
+    ///
+    /// # Parameters
+    /// - `id`: The ID of the event.
+    /// - `params`: The \<String, BaseObject\> dictionary containing the event parameters.
+    ///
     /// Calls the openDAQ C function `daqEventPacket_createEventPacket()`.
     pub fn new(id: &str, params: impl Into<Value>) -> Result<EventPacket> {
         let __id = crate::marshal::make_string(id)?;
@@ -513,9 +520,10 @@ impl EventPacket {
     }
 
     /// Creates a ImplicitDomainGapDetected Event packet.
-    /// @param diff The size of the gap in ticks or value
-    /// The ID of the packet is "IMPLICIT_DOMAIN_GAP_DETECTED". Its parameters dictionary contains the key "Diff", which holds
-    /// the size of the gap. The size can be negative, in which case it is an overlap of samples.
+    ///
+    /// # Parameters
+    /// - `diff`: The size of the gap in ticks or value The ID of the packet is "IMPLICIT_DOMAIN_GAP_DETECTED". Its parameters dictionary contains the key "Diff", which holds the size of the gap. The size can be negative, in which case it is an overlap of samples.
+    ///
     /// Calls the openDAQ C function `daqEventPacket_createImplicitDomainGapDetectedEventPacket()`.
     pub fn implicit_domain_gap_detected(diff: impl Into<Value>) -> Result<EventPacket> {
         let __diff = crate::value::to_daq_number(&diff.into())?;
@@ -526,7 +534,10 @@ impl EventPacket {
     }
 
     /// Gets the ID of the event as a string. In example "DATA_DESCRIPTOR_CHANGED".
-    /// @param\[out\] id The ID of the event.
+    ///
+    /// # Returns
+    /// - `id`: The ID of the event.
+    ///
     /// Calls the openDAQ C function `daqEventPacket_getEventId()`.
     pub fn event_id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -536,7 +547,10 @@ impl EventPacket {
     }
 
     /// Dictionary containing parameters as \<String, BaseObject\> pairs relevant to the event signalized by the Event packet.
-    /// @param\[out\] parameters The event parameters dictionary.
+    ///
+    /// # Returns
+    /// - `parameters`: The event parameters dictionary.
+    ///
     /// Calls the openDAQ C function `daqEventPacket_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -558,6 +572,7 @@ impl InputPortConfig {
     }
 
     /// Get a custom data attached to the object.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_getCustomData()`.
     pub fn custom_data(&self) -> Result<Value> {
         let mut __custom_data: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -567,7 +582,10 @@ impl InputPortConfig {
     }
 
     /// Returns the state of gap checking requested by the input port.
-    /// @param gapCheckingEnabled true if gap checking is requested by the input port.
+    ///
+    /// # Parameters
+    /// - `gap_checking_enabled`: true if gap checking is requested by the input port.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_getGapCheckingEnabled()`.
     pub fn gap_checking_enabled(&self) -> Result<bool> {
         let mut __gap_checking_enabled: u8 = 0;
@@ -577,6 +595,7 @@ impl InputPortConfig {
     }
 
     /// Gets the object receiving input-port related events and notifications.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_getListener()`.
     pub fn listener(&self) -> Result<Option<InputPortNotifications>> {
         let mut __port: *mut sys::daqInputPortNotifications = std::ptr::null_mut();
@@ -586,6 +605,7 @@ impl InputPortConfig {
     }
 
     /// Gets the input-ports response to the packet enqueued notification.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_getNotificationMethod()`.
     pub fn notification_method(&self) -> Result<PacketReadyNotification> {
         let mut __method: u32 = 0;
@@ -595,7 +615,10 @@ impl InputPortConfig {
     }
 
     /// Gets called when a packet was enqueued in a connection.
-    /// @param queueWasEmpty True if queue was empty before packet was enqueued.
+    ///
+    /// # Parameters
+    /// - `queue_was_empty`: True if queue was empty before packet was enqueued.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_notifyPacketEnqueued()`.
     pub fn notify_packet_enqueued(&self, queue_was_empty: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_notifyPacketEnqueued)(self.as_raw() as *mut _, u8::from(queue_was_empty)) };
@@ -605,6 +628,7 @@ impl InputPortConfig {
 
     /// Gets called when a packet was enqueued in a connection.
     /// The notification is called on the same thread that enqueued the packet.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_notifyPacketEnqueuedOnThisThread()`.
     pub fn notify_packet_enqueued_on_this_thread(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_notifyPacketEnqueuedOnThisThread)(self.as_raw() as *mut _) };
@@ -614,6 +638,7 @@ impl InputPortConfig {
 
     /// Gets called when a packet was enqueued in a connection.
     /// The notification is scheduled.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_notifyPacketEnqueuedWithScheduler()`.
     pub fn notify_packet_enqueued_with_scheduler(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_notifyPacketEnqueuedWithScheduler)(self.as_raw() as *mut _) };
@@ -622,6 +647,7 @@ impl InputPortConfig {
     }
 
     /// Set a custom data attached to the object.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_setCustomData()`.
     pub fn set_custom_data(&self, custom_data: impl Into<Value>) -> Result<()> {
         let __custom_data = crate::value::to_daq(&custom_data.into())?;
@@ -631,6 +657,7 @@ impl InputPortConfig {
     }
 
     /// Set the object receiving input-port related events and notifications.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_setListener()`.
     pub fn set_listener(&self, port: &InputPortNotifications) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_setListener)(self.as_raw() as *mut _, port.as_raw() as *mut _) };
@@ -639,6 +666,7 @@ impl InputPortConfig {
     }
 
     /// Sets the input-ports response to the packet enqueued notification.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_setNotificationMethod()`.
     pub fn set_notification_method(&self, method: PacketReadyNotification) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_setNotificationMethod)(self.as_raw() as *mut _, method as u32) };
@@ -647,9 +675,10 @@ impl InputPortConfig {
     }
 
     /// Sets requires signal flag of the input port.
-    /// @param requiresSignal True if the input port requires a signal to be connected; false otherwise.
-    /// If an input port requires a signal, then the input port must have a signal connected otherwise
-    /// the owner of the input port (function block) should report an error.
+    ///
+    /// # Parameters
+    /// - `requires_signal`: True if the input port requires a signal to be connected; false otherwise. If an input port requires a signal, then the input port must have a signal connected otherwise the owner of the input port (function block) should report an error.
+    ///
     /// Calls the openDAQ C function `daqInputPortConfig_setRequiresSignal()`.
     pub fn set_requires_signal(&self, requires_signal: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortConfig_setRequiresSignal)(self.as_raw() as *mut _, u8::from(requires_signal)) };
@@ -661,9 +690,14 @@ impl InputPortConfig {
 
 impl InputPortNotifications {
     /// Called when the Input port method `acceptsSignal` is called. Should return true if the signal is accepted; false otherwise.
-    /// @param port The input port on which the method was called.
-    /// @param signal The signal which is being checked for acceptance.
-    /// @param\[out\] accept True if the signal is accepted; false otherwise.
+    ///
+    /// # Parameters
+    /// - `port`: The input port on which the method was called.
+    /// - `signal`: The signal which is being checked for acceptance.
+    ///
+    /// # Returns
+    /// - `accept`: True if the signal is accepted; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqInputPortNotifications_acceptsSignal()`.
     pub fn accepts_signal(&self, port: &InputPort, signal: &Signal) -> Result<bool> {
         let mut __accept: u8 = 0;
@@ -673,7 +707,10 @@ impl InputPortNotifications {
     }
 
     /// Called when a signal is connected to the input port.
-    /// @param port The port to which the signal was connected.
+    ///
+    /// # Parameters
+    /// - `port`: The port to which the signal was connected.
+    ///
     /// Calls the openDAQ C function `daqInputPortNotifications_connected()`.
     pub fn connected(&self, port: &InputPort) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortNotifications_connected)(self.as_raw() as *mut _, port.as_raw() as *mut _) };
@@ -682,7 +719,10 @@ impl InputPortNotifications {
     }
 
     /// Called when a signal is disconnected from the input port.
-    /// @param port The port from which a signal was disconnected.
+    ///
+    /// # Parameters
+    /// - `port`: The port from which a signal was disconnected.
+    ///
     /// Calls the openDAQ C function `daqInputPortNotifications_disconnected()`.
     pub fn disconnected(&self, port: &InputPort) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortNotifications_disconnected)(self.as_raw() as *mut _, port.as_raw() as *mut _) };
@@ -691,7 +731,10 @@ impl InputPortNotifications {
     }
 
     /// Notifies the listener of the newly received packet on the specified input-port.
-    /// @param port The port on which the new packet was received.
+    ///
+    /// # Parameters
+    /// - `port`: The port on which the new packet was received.
+    ///
     /// Calls the openDAQ C function `daqInputPortNotifications_packetReceived()`.
     pub fn packet_received(&self, port: &InputPort) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortNotifications_packetReceived)(self.as_raw() as *mut _, port.as_raw() as *mut _) };
@@ -703,9 +746,16 @@ impl InputPortNotifications {
 
 impl InputPort {
     /// Returns true if the signal can be connected to the input port; false otherwise.
-    /// @param signal The signal being evaluated for compatibility.
-    /// @param\[out\] accepts True if the signal can be connected; false otherwise.
-    /// @retval OPENDAQ_ERR_NOTASSIGNED if the accepted signal criteria is not defined by the input port.
+    ///
+    /// # Parameters
+    /// - `signal`: The signal being evaluated for compatibility.
+    ///
+    /// # Returns
+    /// - `accepts`: True if the signal can be connected; false otherwise.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTASSIGNED`: if the accepted signal criteria is not defined by the input port.
+    ///
     /// Calls the openDAQ C function `daqInputPort_acceptsSignal()`.
     pub fn accepts_signal(&self, signal: &Signal) -> Result<bool> {
         let mut __accepts: u8 = 0;
@@ -715,8 +765,13 @@ impl InputPort {
     }
 
     /// Checks whether the given signals can be connected to the input port.
-    /// @param signals The signals to check.
-    /// @param\[out\] accepts Output list of boolean values matching @p signals by index. A value of `true` indicates that the corresponding signal can be connected; `false` otherwise.
+    ///
+    /// # Parameters
+    /// - `signals`: The signals to check.
+    ///
+    /// # Returns
+    /// - `accepts`: Output list of boolean values matching `signals` by index. A value of `true` indicates that the corresponding signal can be connected; `false` otherwise.
+    ///
     /// Calls the openDAQ C function `daqInputPort_acceptsSignals()`.
     pub fn accepts_signals(&self, signals: &[Signal]) -> Result<Vec<bool>> {
         let __signals = crate::marshal::list_from_interfaces(signals)?;
@@ -727,10 +782,14 @@ impl InputPort {
     }
 
     /// Connects the signal to the input port, forming a Connection.
-    /// @param signal The signal to be connected to the input port.
-    /// @retval OPENDAQ_ERR_SIGNAL_NOT_ACCEPTED if the signal is not accepted.
-    /// @retval OPENDAQ_ERR_NOTASSIGNED if the accepted signal criteria is not defined by the input port.
-    /// The signal is notified of the connection formed between it and the input port.
+    ///
+    /// # Parameters
+    /// - `signal`: The signal to be connected to the input port.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_SIGNAL_NOT_ACCEPTED`: if the signal is not accepted.
+    /// - `OPENDAQ_ERR_NOTASSIGNED`: if the accepted signal criteria is not defined by the input port. The signal is notified of the connection formed between it and the input port.
+    ///
     /// Calls the openDAQ C function `daqInputPort_connect()`.
     pub fn connect(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPort_connect)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -739,6 +798,7 @@ impl InputPort {
     }
 
     /// Disconnects the signal from the input port.
+    ///
     /// Calls the openDAQ C function `daqInputPort_disconnect()`.
     pub fn disconnect(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPort_disconnect)(self.as_raw() as *mut _) };
@@ -747,7 +807,10 @@ impl InputPort {
     }
 
     /// Gets the Connection object formed between the Signal and Input port.
-    /// @param\[out\] connection The Connection object.
+    ///
+    /// # Returns
+    /// - `connection`: The Connection object.
+    ///
     /// Calls the openDAQ C function `daqInputPort_getConnection()`.
     pub fn connection(&self) -> Result<Option<Connection>> {
         let mut __connection: *mut sys::daqConnection = std::ptr::null_mut();
@@ -757,7 +820,10 @@ impl InputPort {
     }
 
     /// Returns true if the port is public; false otherwise.
-    /// @param\[out\] isPublic True if the port is public; false otherwise.
+    ///
+    /// # Returns
+    /// - `is_public`: True if the port is public; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqInputPort_getPublic()`.
     pub fn public(&self) -> Result<bool> {
         let mut __is_public: u8 = 0;
@@ -767,7 +833,10 @@ impl InputPort {
     }
 
     /// Returns true if the input port requires a signal to be connected; false otherwise.
-    /// @param\[out\] requiresSignal True if the input port requires a signal to be connected; false otherwise.
+    ///
+    /// # Returns
+    /// - `requires_signal`: True if the input port requires a signal to be connected; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqInputPort_getRequiresSignal()`.
     pub fn requires_signal(&self) -> Result<bool> {
         let mut __requires_signal: u8 = 0;
@@ -777,7 +846,10 @@ impl InputPort {
     }
 
     /// Gets the signal connected to the input port.
-    /// @param\[out\] signal The signal connected to the input port.
+    ///
+    /// # Returns
+    /// - `signal`: The signal connected to the input port.
+    ///
     /// Calls the openDAQ C function `daqInputPort_getSignal()`.
     pub fn signal(&self) -> Result<Option<Signal>> {
         let mut __signal: *mut sys::daqSignal = std::ptr::null_mut();
@@ -787,7 +859,10 @@ impl InputPort {
     }
 
     /// Sets the port to be either public or private.
-    /// @param isPublic If false, the port is set to private; if true, the port is set to be public.
+    ///
+    /// # Parameters
+    /// - `is_public`: If false, the port is set to private; if true, the port is set to be public.
+    ///
     /// Calls the openDAQ C function `daqInputPort_setPublic()`.
     pub fn set_public(&self, is_public: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPort_setPublic)(self.as_raw() as *mut _, u8::from(is_public)) };
@@ -809,7 +884,10 @@ impl MultiReaderStatus {
     }
 
     /// Retrieves the dictionary of event packets from the reading process, ordered by signals.
-    /// @param\[out\] eventPackets The dictionary with global id of input port and the corresponding event packet.
+    ///
+    /// # Returns
+    /// - `event_packets`: The dictionary with global id of input port and the corresponding event packet.
+    ///
     /// Calls the openDAQ C function `daqMultiReaderStatus_getEventPackets()`.
     pub fn event_packets(&self) -> Result<std::collections::HashMap<String, EventPacket>> {
         let mut __event_packets: *mut sys::daqDict = std::ptr::null_mut();
@@ -819,7 +897,10 @@ impl MultiReaderStatus {
     }
 
     /// Retrieves the descriptor of main signal. The main signal is the first signal in the list of signals.
-    /// @param\[out\] descriptor The descriptor of the main signal.
+    ///
+    /// # Returns
+    /// - `descriptor`: The descriptor of the main signal.
+    ///
     /// Calls the openDAQ C function `daqMultiReaderStatus_getMainDescriptor()`.
     pub fn main_descriptor(&self) -> Result<Option<EventPacket>> {
         let mut __descriptor: *mut sys::daqEventPacket = std::ptr::null_mut();
@@ -832,7 +913,10 @@ impl MultiReaderStatus {
 
 impl Packet {
     /// Gets the reference count of the packet.
-    /// @param\[out\] refCount The reference count of the packet.
+    ///
+    /// # Returns
+    /// - `ref_count`: The reference count of the packet.
+    ///
     /// Calls the openDAQ C function `daqPacket_getRefCount()`.
     pub fn ref_count(&self) -> Result<usize> {
         let mut __ref_count: usize = Default::default();
@@ -842,7 +926,10 @@ impl Packet {
     }
 
     /// Gets the packet's type.
-    /// @param\[out\] type The packet type.
+    ///
+    /// # Returns
+    /// - `type`: The packet type.
+    ///
     /// Calls the openDAQ C function `daqPacket_getType()`.
     pub fn type_(&self) -> Result<PacketType> {
         let mut __type_: u32 = 0;
@@ -852,7 +939,10 @@ impl Packet {
     }
 
     /// Subscribes for notification when the packet is destroyed.
-    /// @param packetDestructCallback The callback that is called when the packet is destroyed.
+    ///
+    /// # Parameters
+    /// - `packet_destruct_callback`: The callback that is called when the packet is destroyed.
+    ///
     /// Calls the openDAQ C function `daqPacket_subscribeForDestructNotification()`.
     pub fn subscribe_for_destruct_notification(&self, packet_destruct_callback: &PacketDestructCallback) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPacket_subscribeForDestructNotification)(self.as_raw() as *mut _, packet_destruct_callback.as_raw() as *mut _) };
@@ -864,7 +954,10 @@ impl Packet {
 
 impl ReaderConfig {
     /// Gets the transform function that will be called with the read domain-data and currently valid Signal-Descriptor giving the user the chance add a custom post-processing step.
-    /// @param\[out\] transform The function performing the post-processing or @c nullptr if not assigned.
+    ///
+    /// # Returns
+    /// - `transform`: The function performing the post-processing or `nullptr` if not assigned.
+    ///
     /// Calls the openDAQ C function `daqReaderConfig_getDomainTransformFunction()`.
     pub fn domain_transform_function(&self) -> Result<Option<FunctionObject>> {
         let mut __transform: *mut sys::daqFunction = std::ptr::null_mut();
@@ -874,7 +967,10 @@ impl ReaderConfig {
     }
 
     /// Gets the internally created input-ports if used.
-    /// @param\[out\] ports The internal Input-Ports if used by the reader otherwise @c nullptr.
+    ///
+    /// # Returns
+    /// - `ports`: The internal Input-Ports if used by the reader otherwise `nullptr.`
+    ///
     /// Calls the openDAQ C function `daqReaderConfig_getInputPorts()`.
     pub fn input_ports(&self) -> Result<Vec<InputPortConfig>> {
         let mut __ports: *mut sys::daqList = std::ptr::null_mut();
@@ -892,7 +988,10 @@ impl ReaderConfig {
     }
 
     /// Gets the type of time-out handling used by the reader.
-    /// @param\[out\] timeoutType How the reader handles time-outs.
+    ///
+    /// # Returns
+    /// - `timeout_type`: How the reader handles time-outs.
+    ///
     /// Calls the openDAQ C function `daqReaderConfig_getReadTimeoutType()`.
     pub fn read_timeout_type(&self) -> Result<ReadTimeoutType> {
         let mut __timeout_type: u32 = 0;
@@ -902,7 +1001,10 @@ impl ReaderConfig {
     }
 
     /// Gets the transform function that will be called with the read value-data and currently valid Signal-Descriptor giving the user the chance add a custom post-processing step.
-    /// @param\[out\] transform The function performing the post-processing or @c nullptr if not assigned.
+    ///
+    /// # Returns
+    /// - `transform`: The function performing the post-processing or `nullptr` if not assigned.
+    ///
     /// Calls the openDAQ C function `daqReaderConfig_getValueTransformFunction()`.
     pub fn value_transform_function(&self) -> Result<Option<FunctionObject>> {
         let mut __transform: *mut sys::daqFunction = std::ptr::null_mut();
@@ -912,6 +1014,7 @@ impl ReaderConfig {
     }
 
     /// Marks the current reader as invalid preventing any additional operations to be performed on the reader except reusing its info and configuration in a new reader.
+    ///
     /// Calls the openDAQ C function `daqReaderConfig_markAsInvalid()`.
     pub fn mark_as_invalid(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqReaderConfig_markAsInvalid)(self.as_raw() as *mut _) };
@@ -932,7 +1035,10 @@ impl ReaderStatus {
     }
 
     /// Retrieves the event packet from the reading process.
-    /// @param\[out\] packet The event packet from the reading process.
+    ///
+    /// # Returns
+    /// - `packet`: The event packet from the reading process.
+    ///
     /// Calls the openDAQ C function `daqReaderStatus_getEventPacket()`.
     pub fn event_packet(&self) -> Result<Option<EventPacket>> {
         let mut __packet: *mut sys::daqEventPacket = std::ptr::null_mut();
@@ -942,7 +1048,10 @@ impl ReaderStatus {
     }
 
     /// Retrieves the offset of the the read values
-    /// @param\[out\] offset The offset of the read values
+    ///
+    /// # Returns
+    /// - `offset`: The offset of the read values
+    ///
     /// Calls the openDAQ C function `daqReaderStatus_getOffset()`.
     pub fn offset(&self) -> Result<Option<f64>> {
         let mut __offset: *mut sys::daqNumber = std::ptr::null_mut();
@@ -952,7 +1061,10 @@ impl ReaderStatus {
     }
 
     /// Retrieves the current reading status, indicating whether the reading process is in an "Ok" state, has encountered an Event, has failed, or is in an Unknown state.
-    /// @param\[out\] status a ReadStatus enum variable where the current reading status will be stored.
+    ///
+    /// # Returns
+    /// - `status`: a ReadStatus enum variable where the current reading status will be stored.
+    ///
     /// Calls the openDAQ C function `daqReaderStatus_getReadStatus()`.
     pub fn read_status(&self) -> Result<ReadStatus> {
         let mut __status: u32 = 0;
@@ -962,7 +1074,10 @@ impl ReaderStatus {
     }
 
     /// Checks the validity of the reader.
-    /// @param\[out\] valid Boolean value indicating the validity of the reader
+    ///
+    /// # Returns
+    /// - `valid`: Boolean value indicating the validity of the reader
+    ///
     /// Calls the openDAQ C function `daqReaderStatus_getValid()`.
     pub fn valid(&self) -> Result<bool> {
         let mut __valid: u8 = 0;

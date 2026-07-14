@@ -1150,13 +1150,11 @@ impl crate::value::FromDaqOwned for Streaming {
 /// Interface representing a Synchronization Component in a Test & Measurement system. A SynchronizationComponent ensures synchronization among measurement devices in the system. It can act as a sync source and/or as a sync output, with each component having one sync input and 0 to n sync outputs.
 /// SynchronizationComponents are configured via interfaces, which can include PTP, IRIQ, GPS,
 /// and CLK sync interfaces, among others.
-/// @note Every SynchronizationComponent has at least one interface. Only one interface can be set
-/// as an input, while others can be used as sync outputs to synchronize other devices.
-/// The configuration of these interfaces and the reading of their status is defined in Part 4.
-/// @note Depending on the setup, some interfaces may be switched off, and some interfaces may
-/// act as sync sources or outputs.
-/// @note A CLK interface can be used to let a device run in Fre-Run mode, where the device
-/// syncs internally to an internal quartz.
+///
+/// # Notes
+/// Every SynchronizationComponent has at least one interface. Only one interface can be set as an input, while others can be used as sync outputs to synchronize other devices. The configuration of these interfaces and the reading of their status is defined in Part 4.
+/// Depending on the setup, some interfaces may be switched off, and some interfaces may act as sync sources or outputs.
+/// A CLK interface can be used to let a device run in Fre-Run mode, where the device syncs internally to an internal quartz.
 /// Wrapper over the openDAQ `daqSyncComponent` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -1246,7 +1244,10 @@ impl crate::value::FromDaqOwned for UserLock {
 
 impl AddressInfoBuilder {
     /// Builds the address.
-    /// @param\[out\] address The address.
+    ///
+    /// # Returns
+    /// - `address`: The address.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_build()`.
     pub fn build(&self) -> Result<Option<AddressInfo>> {
         let mut __address: *mut sys::daqAddressInfo = std::ptr::null_mut();
@@ -1256,6 +1257,7 @@ impl AddressInfoBuilder {
     }
 
     /// Creates an Address builder with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_createAddressInfoBuilder()`.
     pub fn new() -> Result<AddressInfoBuilder> {
         let mut __obj: *mut sys::daqAddressInfoBuilder = std::ptr::null_mut();
@@ -1265,7 +1267,10 @@ impl AddressInfoBuilder {
     }
 
     /// Gets the server address as a string.
-    /// @param\[out\] address The server address as a string.
+    ///
+    /// # Returns
+    /// - `address`: The server address as a string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_getAddress()`.
     pub fn address(&self) -> Result<String> {
         let mut __address: *mut sys::daqString = std::ptr::null_mut();
@@ -1275,7 +1280,10 @@ impl AddressInfoBuilder {
     }
 
     /// Gets the connection string corresponding to the address.
-    /// @param\[out\] connectionString The connection string.
+    ///
+    /// # Returns
+    /// - `connection_string`: The connection string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -1285,9 +1293,10 @@ impl AddressInfoBuilder {
     }
 
     /// Gets the reachability status of the address.
-    /// @param addressReachability The reachability status of the address.
-    /// This status is set to "Unknown" by default. For IPv4 address types, the module manager checks
-    /// reachability when querying for available devices.
+    ///
+    /// # Parameters
+    /// - `address_reachability`: The reachability status of the address. This status is set to "Unknown" by default. For IPv4 address types, the module manager checks reachability when querying for available devices.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_getReachabilityStatus()`.
     pub fn reachability_status(&self) -> Result<AddressReachabilityStatus> {
         let mut __address_reachability: u32 = 0;
@@ -1297,8 +1306,10 @@ impl AddressInfoBuilder {
     }
 
     /// Gets the type of the address.
-    /// @param\[out\] type The type the address.
-    /// Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
+    /// # Returns
+    /// - `type`: The type the address. Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_getType()`.
     pub fn type_(&self) -> Result<String> {
         let mut __type_: *mut sys::daqString = std::ptr::null_mut();
@@ -1308,7 +1319,10 @@ impl AddressInfoBuilder {
     }
 
     /// Sets the server address as a string.
-    /// @param address The server address as a string.
+    ///
+    /// # Parameters
+    /// - `address`: The server address as a string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_setAddress()`.
     pub fn set_address(&self, address: &str) -> Result<()> {
         let __address = crate::marshal::make_string(address)?;
@@ -1318,7 +1332,10 @@ impl AddressInfoBuilder {
     }
 
     /// Sets the connection string corresponding to the address.
-    /// @param connectionString The connection string.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_setConnectionString()`.
     pub fn set_connection_string(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1328,9 +1345,10 @@ impl AddressInfoBuilder {
     }
 
     /// Sets the reachability status of the address.
-    /// @param addressReachability The reachability status of the address.
-    /// This status is set to "Unknown" by default. For IPv4 address types, the module manager checks
-    /// reachability when querying for available devices.
+    ///
+    /// # Parameters
+    /// - `address_reachability`: The reachability status of the address. This status is set to "Unknown" by default. For IPv4 address types, the module manager checks reachability when querying for available devices.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_setReachabilityStatus()`.
     pub fn set_reachability_status(&self, address_reachability: AddressReachabilityStatus) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqAddressInfoBuilder_setReachabilityStatus)(self.as_raw() as *mut _, address_reachability as u32) };
@@ -1339,8 +1357,10 @@ impl AddressInfoBuilder {
     }
 
     /// Sets the type of the address.
-    /// @param type The type the address.
-    /// Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
+    /// # Parameters
+    /// - `type`: The type the address. Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoBuilder_setType()`.
     pub fn set_type(&self, type_: &str) -> Result<()> {
         let __type_ = crate::marshal::make_string(type_)?;
@@ -1353,9 +1373,10 @@ impl AddressInfoBuilder {
 
 impl AddressInfoPrivate {
     /// Sets the reachability status of the address, ignoring the "Frozen" status of the address.
-    /// @param addressReachability The reachability status of the address.
-    /// This status is set to "Unknown" by default. For IPv4 address types, the module manager checks
-    /// reachability when querying for available devices.
+    ///
+    /// # Parameters
+    /// - `address_reachability`: The reachability status of the address. This status is set to "Unknown" by default. For IPv4 address types, the module manager checks reachability when querying for available devices.
+    ///
     /// Calls the openDAQ C function `daqAddressInfoPrivate_setReachabilityStatusPrivate()`.
     pub fn set_reachability_status_private(&self, address_reachability: AddressReachabilityStatus) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqAddressInfoPrivate_setReachabilityStatusPrivate)(self.as_raw() as *mut _, address_reachability as u32) };
@@ -1367,6 +1388,7 @@ impl AddressInfoPrivate {
 
 impl AddressInfo {
     /// Creates an Address with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_createAddressInfo()`.
     pub fn new() -> Result<AddressInfo> {
         let mut __obj: *mut sys::daqAddressInfo = std::ptr::null_mut();
@@ -1376,7 +1398,10 @@ impl AddressInfo {
     }
 
     /// Creates an Address using the builder's configuration parameters.
-    /// @param builder The address info builder.
+    ///
+    /// # Parameters
+    /// - `builder`: The address info builder.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_createAddressInfoFromBuilder()`.
     pub fn from_builder(builder: &AddressInfoBuilder) -> Result<AddressInfo> {
         let mut __obj: *mut sys::daqAddressInfo = std::ptr::null_mut();
@@ -1386,7 +1411,10 @@ impl AddressInfo {
     }
 
     /// Gets the server address as a string.
-    /// @param\[out\] address The server address as a string.
+    ///
+    /// # Returns
+    /// - `address`: The server address as a string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_getAddress()`.
     pub fn address(&self) -> Result<String> {
         let mut __address: *mut sys::daqString = std::ptr::null_mut();
@@ -1396,7 +1424,10 @@ impl AddressInfo {
     }
 
     /// Gets the connection string corresponding to the address.
-    /// @param\[out\] connectionString The connection string.
+    ///
+    /// # Returns
+    /// - `connection_string`: The connection string.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -1406,9 +1437,10 @@ impl AddressInfo {
     }
 
     /// Gets the reachability status of the address.
-    /// @param addressReachability The reachability status of the address.
-    /// This status is set to "Unknown" by default. For IPv4 address types, the module manager checks
-    /// reachability when querying for available devices.
+    ///
+    /// # Parameters
+    /// - `address_reachability`: The reachability status of the address. This status is set to "Unknown" by default. For IPv4 address types, the module manager checks reachability when querying for available devices.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_getReachabilityStatus()`.
     pub fn reachability_status(&self) -> Result<AddressReachabilityStatus> {
         let mut __address_reachability: u32 = 0;
@@ -1418,8 +1450,10 @@ impl AddressInfo {
     }
 
     /// Gets the type of the address.
-    /// @param type The type the address.
-    /// Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
+    /// # Parameters
+    /// - `type`: The type the address. Currently available address types in the main openDAQ modules are: IPv4 and IPv6.
+    ///
     /// Calls the openDAQ C function `daqAddressInfo_getType()`.
     pub fn type_(&self) -> Result<String> {
         let mut __type_: *mut sys::daqString = std::ptr::null_mut();
@@ -1432,6 +1466,7 @@ impl AddressInfo {
 
 impl ConnectedClientInfo {
     /// Creates a Connected client with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_createConnectedClientInfo()`.
     pub fn new() -> Result<ConnectedClientInfo> {
         let mut __obj: *mut sys::daqConnectedClientInfo = std::ptr::null_mut();
@@ -1441,11 +1476,14 @@ impl ConnectedClientInfo {
     }
 
     /// Creates a Connected client info using the provided parameters.
-    /// @param address The address of connected client.
-    /// @param protocolType The type of the protocol type used by the client.
-    /// @param protocolName The name of the protocol name used by the client.
-    /// @param clientType The configuration connection client type name.
-    /// @param hostName The host name of connected client.
+    ///
+    /// # Parameters
+    /// - `address`: The address of connected client.
+    /// - `protocol_type`: The type of the protocol type used by the client.
+    /// - `protocol_name`: The name of the protocol name used by the client.
+    /// - `client_type`: The configuration connection client type name.
+    /// - `host_name`: The host name of connected client.
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_createConnectedClientInfoWithParams()`.
     pub fn with_params(address: &str, protocol_type: ProtocolType, protocol_name: &str, client_type: &str, host_name: &str) -> Result<ConnectedClientInfo> {
         let __address = crate::marshal::make_string(address)?;
@@ -1459,7 +1497,10 @@ impl ConnectedClientInfo {
     }
 
     /// Gets the client address string.
-    /// @param\[out\] address The client address string.
+    ///
+    /// # Returns
+    /// - `address`: The client address string.
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_getAddress()`.
     pub fn address(&self) -> Result<String> {
         let mut __address: *mut sys::daqString = std::ptr::null_mut();
@@ -1469,7 +1510,10 @@ impl ConnectedClientInfo {
     }
 
     /// Gets the type of connected configuration connection client.
-    /// @param\[out\] type The string representation of client type ("Control", "ExclusiveControl", "ViewOnly").
+    ///
+    /// # Returns
+    /// - `type`: The string representation of client type ("Control", "ExclusiveControl", "ViewOnly").
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_getClientTypeName()`.
     pub fn client_type_name(&self) -> Result<String> {
         let mut __type_: *mut sys::daqString = std::ptr::null_mut();
@@ -1479,7 +1523,10 @@ impl ConnectedClientInfo {
     }
 
     /// Gets the client host name.
-    /// @param\[out\] hostName The client host name.
+    ///
+    /// # Returns
+    /// - `host_name`: The client host name.
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_getHostName()`.
     pub fn host_name(&self) -> Result<String> {
         let mut __host_name: *mut sys::daqString = std::ptr::null_mut();
@@ -1489,7 +1536,10 @@ impl ConnectedClientInfo {
     }
 
     /// Gets the name of the protocol used by the client.
-    /// @param\[out\] protocolName The name of the protocol (e.g., "OpenDAQNativeStreaming", "OpenDAQOPCUA", "OpenDAQLTStreaming").
+    ///
+    /// # Returns
+    /// - `protocol_name`: The name of the protocol (e.g., "OpenDAQNativeStreaming", "OpenDAQOPCUA", "OpenDAQLTStreaming").
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_getProtocolName()`.
     pub fn protocol_name(&self) -> Result<String> {
         let mut __protocol_name: *mut sys::daqString = std::ptr::null_mut();
@@ -1499,7 +1549,10 @@ impl ConnectedClientInfo {
     }
 
     /// Gets the type of protocol used by the client.
-    /// @param\[out\] type The type of protocol (Enumeration value reflecting protocol type: "ConfigurationAndStreaming", "Configuration", "Streaming", "Unknown").
+    ///
+    /// # Returns
+    /// - `type`: The type of protocol (Enumeration value reflecting protocol type: "ConfigurationAndStreaming", "Configuration", "Streaming", "Unknown").
+    ///
     /// Calls the openDAQ C function `daqConnectedClientInfo_getProtocolType()`.
     pub fn protocol_type(&self) -> Result<ProtocolType> {
         let mut __type_: u32 = 0;
@@ -1512,8 +1565,11 @@ impl ConnectedClientInfo {
 
 impl ConnectionStatusContainerPrivate {
     /// Adds a new configuration connection status with the specified connection string and initial value.
-    /// @param connectionString The connection string identifying the status.
-    /// @param initialValue The initial value of the status.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string identifying the status.
+    /// - `initial_value`: The initial value of the status.
+    ///
     /// Calls the openDAQ C function `daqConnectionStatusContainerPrivate_addConfigurationConnectionStatus()`.
     pub fn add_configuration_connection_status(&self, connection_string: &str, initial_value: &Enumeration) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1523,9 +1579,12 @@ impl ConnectionStatusContainerPrivate {
     }
 
     /// Adds a new streaming connection status with the specified connection string, initial value, and streaming object.
-    /// @param connectionString The connection string identifying the status.
-    /// @param initialValue The initial value of the status.
-    /// @param streamingObject The streaming object associated with the status.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string identifying the status.
+    /// - `initial_value`: The initial value of the status.
+    /// - `streaming_object`: The streaming object associated with the status.
+    ///
     /// Calls the openDAQ C function `daqConnectionStatusContainerPrivate_addStreamingConnectionStatus()`.
     pub fn add_streaming_connection_status(&self, connection_string: &str, initial_value: &Enumeration, streaming_object: &Streaming) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1535,7 +1594,10 @@ impl ConnectionStatusContainerPrivate {
     }
 
     /// Removes a streaming connection status associated with the specified connection string.
-    /// @param connectionString The connection string identifying the status to remove.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string identifying the status to remove.
+    ///
     /// Calls the openDAQ C function `daqConnectionStatusContainerPrivate_removeStreamingConnectionStatus()`.
     pub fn remove_streaming_connection_status(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1545,9 +1607,12 @@ impl ConnectionStatusContainerPrivate {
     }
 
     /// Updates the value of an existing connection status.
-    /// @param connectionString The connection string identifying the status to update.
-    /// @param value The new value of the status.
-    /// @param streamingObject The streaming object associated with the connection, used in triggered Core events. Set to nullptr for configuration connections.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string identifying the status to update.
+    /// - `value`: The new value of the status.
+    /// - `streaming_object`: The streaming object associated with the connection, used in triggered Core events. Set to nullptr for configuration connections.
+    ///
     /// Calls the openDAQ C function `daqConnectionStatusContainerPrivate_updateConnectionStatus()`.
     pub fn update_connection_status(&self, connection_string: &str, value: &Enumeration, streaming_object: &Streaming) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1557,10 +1622,13 @@ impl ConnectionStatusContainerPrivate {
     }
 
     /// Updates the value of an existing connection status with a message.
-    /// @param connectionString The connection string identifying the status to update.
-    /// @param value The new value of the status.
-    /// @param streamingObject The streaming object associated with the connection, used in triggered Core events. Set to nullptr for configuration connections.
-    /// @param message The new message of the connection status. Usually describes last reconnect attempt failure.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string identifying the status to update.
+    /// - `value`: The new value of the status.
+    /// - `streaming_object`: The streaming object associated with the connection, used in triggered Core events. Set to nullptr for configuration connections.
+    /// - `message`: The new message of the connection status. Usually describes last reconnect attempt failure.
+    ///
     /// Calls the openDAQ C function `daqConnectionStatusContainerPrivate_updateConnectionStatusWithMessage()`.
     pub fn update_connection_status_with_message(&self, connection_string: &str, value: &Enumeration, streaming_object: &Streaming, message: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1594,7 +1662,10 @@ impl DeviceDomain {
     }
 
     /// Gets the device's absolute origin. Most often this is a time epoch in the ISO 8601 format.
-    /// @param\[out\] origin The origin.
+    ///
+    /// # Returns
+    /// - `origin`: The origin.
+    ///
     /// Calls the openDAQ C function `daqDeviceDomain_getOrigin()`.
     pub fn origin(&self) -> Result<String> {
         let mut __origin: *mut sys::daqString = std::ptr::null_mut();
@@ -1604,8 +1675,10 @@ impl DeviceDomain {
     }
 
     /// Gets the Reference Domain Info.
-    /// @param\[out\] referenceDomainInfo The Reference Domain Info.
-    /// If set, gives additional information about the reference domain.
+    ///
+    /// # Returns
+    /// - `reference_domain_info`: The Reference Domain Info. If set, gives additional information about the reference domain.
+    ///
     /// Calls the openDAQ C function `daqDeviceDomain_getReferenceDomainInfo()`.
     pub fn reference_domain_info(&self) -> Result<Option<ReferenceDomainInfo>> {
         let mut __reference_domain_info: *mut sys::daqReferenceDomainInfo = std::ptr::null_mut();
@@ -1615,7 +1688,10 @@ impl DeviceDomain {
     }
 
     /// Gets domain (usually time) between two consecutive ticks. Resolution is provided in a domain unit.
-    /// @param\[out\] tickResolution The device's resolution.
+    ///
+    /// # Returns
+    /// - `tick_resolution`: The device's resolution.
+    ///
     /// Calls the openDAQ C function `daqDeviceDomain_getTickResolution()`.
     pub fn tick_resolution(&self) -> Result<Option<Ratio>> {
         let mut __tick_resolution: *mut sys::daqRatio = std::ptr::null_mut();
@@ -1625,7 +1701,10 @@ impl DeviceDomain {
     }
 
     /// Gets the domain unit (eg. seconds, hours, degrees...)
-    /// @param\[out\] unit The domain unit.
+    ///
+    /// # Returns
+    /// - `unit`: The domain unit.
+    ///
     /// Calls the openDAQ C function `daqDeviceDomain_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -1659,10 +1738,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the asset ID of the device. Represents a user writable alphanumeric character sequence uniquely identifying a component.
-    /// @param id The asset ID of the device.
-    /// The ID is provided by the integrator or user of the device. It contains typically an identifier
-    /// in a branch, use case or user specific naming scheme. This could be for example a reference to
-    /// an electric scheme.
+    ///
+    /// # Parameters
+    /// - `id`: The asset ID of the device. The ID is provided by the integrator or user of the device. It contains typically an identifier in a branch, use case or user specific naming scheme. This could be for example a reference to an electric scheme.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setAssetId()`.
     pub fn set_asset_id(&self, id: &str) -> Result<()> {
         let __id = crate::marshal::make_string(id)?;
@@ -1672,7 +1751,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the string representation of a connection address used to connect to the device.
-    /// @param connectionString The string used to connect to the device.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The string used to connect to the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setConnectionString()`.
     pub fn set_connection_string(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -1682,7 +1764,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the purpose of the device. For example "TestMeasurementDevice".
-    /// @param deviceClass The class of the device.
+    ///
+    /// # Parameters
+    /// - `device_class`: The class of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setDeviceClass()`.
     pub fn set_device_class(&self, device_class: &str) -> Result<()> {
         let __device_class = crate::marshal::make_string(device_class)?;
@@ -1692,7 +1777,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the address of the user manual. It may be a pathname in the file system or a URL (Web address)
-    /// @param deviceManual The manual of the device.
+    ///
+    /// # Parameters
+    /// - `device_manual`: The manual of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setDeviceManual()`.
     pub fn set_device_manual(&self, device_manual: &str) -> Result<()> {
         let __device_manual = crate::marshal::make_string(device_manual)?;
@@ -1702,7 +1790,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the revision level of the device.
-    /// @param deviceRevision The device revision level.
+    ///
+    /// # Parameters
+    /// - `device_revision`: The device revision level.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setDeviceRevision()`.
     pub fn set_device_revision(&self, device_revision: &str) -> Result<()> {
         let __device_revision = crate::marshal::make_string(device_revision)?;
@@ -1712,7 +1803,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets a device type as an object providing type id, name, short description and default device configuration.
-    /// @param\[out\] deviceType The device type object
+    ///
+    /// # Returns
+    /// - `device_type`: The device type object
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setDeviceType()`.
     pub fn set_device_type(&self, device_type: &DeviceType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoConfig_setDeviceType)(self.as_raw() as *mut _, device_type.as_raw() as *mut _) };
@@ -1721,7 +1815,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the revision level of the hardware
-    /// @param hardwareRevision The hardware revision of the device.
+    ///
+    /// # Parameters
+    /// - `hardware_revision`: The hardware revision of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setHardwareRevision()`.
     pub fn set_hardware_revision(&self, hardware_revision: &str) -> Result<()> {
         let __hardware_revision = crate::marshal::make_string(hardware_revision)?;
@@ -1731,7 +1828,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the location of the device.
-    /// @param\[out\] location The location of the device.
+    ///
+    /// # Returns
+    /// - `location`: The location of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setLocation()`.
     pub fn set_location(&self, location: &str) -> Result<()> {
         let __location = crate::marshal::make_string(location)?;
@@ -1741,7 +1841,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the Mac address of the device.
-    /// @param macAddress The Mac address.
+    ///
+    /// # Parameters
+    /// - `mac_address`: The Mac address.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setMacAddress()`.
     pub fn set_mac_address(&self, mac_address: &str) -> Result<()> {
         let __mac_address = crate::marshal::make_string(mac_address)?;
@@ -1751,7 +1854,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the company that manufactured the device
-    /// @param manufacturer The manufacturer of the device.
+    ///
+    /// # Parameters
+    /// - `manufacturer`: The manufacturer of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setManufacturer()`.
     pub fn set_manufacturer(&self, manufacturer: &str) -> Result<()> {
         let __manufacturer = crate::marshal::make_string(manufacturer)?;
@@ -1761,7 +1867,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the unique identifier of the company that manufactured the device. This identifier should be a fully qualified domain name; however, it may be a GUID or similar construct that ensures global uniqueness.
-    /// @param manufacturerUri The manufacturer uri of the device.
+    ///
+    /// # Parameters
+    /// - `manufacturer_uri`: The manufacturer uri of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setManufacturerUri()`.
     pub fn set_manufacturer_uri(&self, manufacturer_uri: &str) -> Result<()> {
         let __manufacturer_uri = crate::marshal::make_string(manufacturer_uri)?;
@@ -1771,7 +1880,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the model of the device
-    /// @param model The model of the device.
+    ///
+    /// # Parameters
+    /// - `model`: The model of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setModel()`.
     pub fn set_model(&self, model: &str) -> Result<()> {
         let __model = crate::marshal::make_string(model)?;
@@ -1781,7 +1893,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the name of the device
-    /// @param name The name of the device.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1791,7 +1906,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the Mac address of the device's parent.
-    /// @param macAddress The parent's Mac address.
+    ///
+    /// # Parameters
+    /// - `mac_address`: The parent's Mac address.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setParentMacAddress()`.
     pub fn set_parent_mac_address(&self, mac_address: &str) -> Result<()> {
         let __mac_address = crate::marshal::make_string(mac_address)?;
@@ -1801,7 +1919,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the platform of the device. The platform specifies whether real hardware is used or if the device is simulated.
-    /// @param platform The platform of the device.
+    ///
+    /// # Parameters
+    /// - `platform`: The platform of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setPlatform()`.
     pub fn set_platform(&self, platform: &str) -> Result<()> {
         let __platform = crate::marshal::make_string(platform)?;
@@ -1811,7 +1932,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the position of the device. The position specifies the position within a given system. For example in which slot or slice the device is in.
-    /// @param position The position of the device.
+    ///
+    /// # Parameters
+    /// - `position`: The position of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setPosition()`.
     pub fn set_position(&self, position: i64) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoConfig_setPosition)(self.as_raw() as *mut _, position) };
@@ -1820,7 +1944,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the unique combination of numbers and letters used to identify the device.
-    /// @param productCode The product code of the device.
+    ///
+    /// # Parameters
+    /// - `product_code`: The product code of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setProductCode()`.
     pub fn set_product_code(&self, product_code: &str) -> Result<()> {
         let __product_code = crate::marshal::make_string(product_code)?;
@@ -1830,7 +1957,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the globally unique resource identifier provided by the manufacturer. The recommended syntax of the ProductInstanceUri is: \<ManufacturerUri\>/\<any string\> where \<any string\> is unique among all instances using the same ManufacturerUri.
-    /// @param productInstanceUri The product instance uri of the device.
+    ///
+    /// # Parameters
+    /// - `product_instance_uri`: The product instance uri of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setProductInstanceUri()`.
     pub fn set_product_instance_uri(&self, product_instance_uri: &str) -> Result<()> {
         let __product_instance_uri = crate::marshal::make_string(product_instance_uri)?;
@@ -1840,7 +1970,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the incremental counter indicating the number of times the configuration data has been modified.
-    /// @param revisionCounter The revision counter of the device.
+    ///
+    /// # Parameters
+    /// - `revision_counter`: The revision counter of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setRevisionCounter()`.
     pub fn set_revision_counter(&self, revision_counter: i64) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoConfig_setRevisionCounter)(self.as_raw() as *mut _, revision_counter) };
@@ -1849,7 +1982,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the serial number of the device
-    /// @param serialNumber The serial number of the device.
+    ///
+    /// # Parameters
+    /// - `serial_number`: The serial number of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setSerialNumber()`.
     pub fn set_serial_number(&self, serial_number: &str) -> Result<()> {
         let __serial_number = crate::marshal::make_string(serial_number)?;
@@ -1859,7 +1995,10 @@ impl DeviceInfoConfig {
     }
 
     /// sets the revision level of the software component
-    /// @param softwareRevision The software revision of the device.
+    ///
+    /// # Parameters
+    /// - `software_revision`: The software revision of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setSoftwareRevision()`.
     pub fn set_software_revision(&self, software_revision: &str) -> Result<()> {
         let __software_revision = crate::marshal::make_string(software_revision)?;
@@ -1869,7 +2008,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the system type. The system type can, for example, be LayeredSystem, StandaloneSystem, or RackSystem.
-    /// @param type The system type of the device.
+    ///
+    /// # Parameters
+    /// - `type`: The system type of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setSystemType()`.
     pub fn set_system_type(&self, type_: &str) -> Result<()> {
         let __type_ = crate::marshal::make_string(type_)?;
@@ -1879,7 +2021,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the system UUID that represents a unique ID of a system. All devices in a system share this UUID.
-    /// @param uuid The unique ID of a system.
+    ///
+    /// # Parameters
+    /// - `uuid`: The unique ID of a system.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setSystemUuid()`.
     pub fn set_system_uuid(&self, uuid: &str) -> Result<()> {
         let __uuid = crate::marshal::make_string(uuid)?;
@@ -1889,9 +2034,10 @@ impl DeviceInfoConfig {
     }
 
     /// Sets the name of the current user of the device.
-    /// @param\[out\] userName The location of the device.
-    /// If the info object is obtained from a device that is already added (not through discovery),
-    /// the username string value matches that of the device's "userName" property.
+    ///
+    /// # Returns
+    /// - `user_name`: The location of the device. If the info object is obtained from a device that is already added (not through discovery), the username string value matches that of the device's "userName" property.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoConfig_setUserName()`.
     pub fn set_user_name(&self, user_name: &str) -> Result<()> {
         let __user_name = crate::marshal::make_string(user_name)?;
@@ -1904,9 +2050,14 @@ impl DeviceInfoConfig {
 
 impl DeviceInfoInternal {
     /// Registers a newly connected client or re-registers a reconnected client.
-    /// @param clientNumber If provided, represents the original ordinal number of the re-registered client. If unassigned or exceeding the total number of clients ever registered (including those that were later deregistered), it is set to the incremented total count; otherwise, the client is registered under the specified number.
-    /// @param clientInfo The connected client information object.
-    /// @return OPENDAQ_ERR_ALREADYEXISTS if a client with the specified number already registered.
+    ///
+    /// # Parameters
+    /// - `client_number`: If provided, represents the original ordinal number of the re-registered client. If unassigned or exceeding the total number of clients ever registered (including those that were later deregistered), it is set to the incremented total count; otherwise, the client is registered under the specified number.
+    /// - `client_info`: The connected client information object.
+    ///
+    /// # Returns
+    /// OPENDAQ_ERR_ALREADYEXISTS if a client with the specified number already registered.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_addConnectedClient()`.
     pub fn add_connected_client(&self, client_info: &ConnectedClientInfo) -> Result<usize> {
         let mut __client_number: usize = Default::default();
@@ -1916,9 +2067,11 @@ impl DeviceInfoInternal {
     }
 
     /// Adds a network interface to the dictionary of available interfaces.
-    /// @param networkInterface The available interface to add.
-    /// @param name The name of available interface to add.
-    /// The provided name should be unique within the device info as used as the key in the dictionary of available interfaces.
+    ///
+    /// # Parameters
+    /// - `network_interface`: The available interface to add.
+    /// - `name`: The name of available interface to add. The provided name should be unique within the device info as used as the key in the dictionary of available interfaces.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_addNetworkInteface()`.
     pub fn add_network_inteface(&self, name: &str, network_interface: &NetworkInterface) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1928,7 +2081,10 @@ impl DeviceInfoInternal {
     }
 
     /// Adds a protocol to the list of supported capabilities.
-    /// @param serverCapability The supported protocol to add.
+    ///
+    /// # Parameters
+    /// - `server_capability`: The supported protocol to add.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_addServerCapability()`.
     pub fn add_server_capability(&self, server_capability: &ServerCapability) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoInternal_addServerCapability)(self.as_raw() as *mut _, server_capability.as_raw() as *mut _) };
@@ -1937,6 +2093,7 @@ impl DeviceInfoInternal {
     }
 
     /// Removes all server streaming capabilities from the list of supported capabilities.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_clearServerStreamingCapabilities()`.
     pub fn clear_server_streaming_capabilities(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoInternal_clearServerStreamingCapabilities)(self.as_raw() as *mut _) };
@@ -1945,7 +2102,10 @@ impl DeviceInfoInternal {
     }
 
     /// Unregisters a previously connected client upon disconnection.
-    /// @param clientNumber The number identifying the disconnected client.
+    ///
+    /// # Parameters
+    /// - `client_number`: The number identifying the disconnected client.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_removeConnectedClient()`.
     pub fn remove_connected_client(&self, client_number: usize) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceInfoInternal_removeConnectedClient)(self.as_raw() as *mut _, client_number) };
@@ -1954,7 +2114,10 @@ impl DeviceInfoInternal {
     }
 
     /// Removes a protocol from the list of supported capabilities.
-    /// @param protocolId The ID of the protocol to remove.
+    ///
+    /// # Parameters
+    /// - `protocol_id`: The ID of the protocol to remove.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfoInternal_removeServerCapability()`.
     pub fn remove_server_capability(&self, protocol_id: &str) -> Result<()> {
         let __protocol_id = crate::marshal::make_string(protocol_id)?;
@@ -1967,10 +2130,10 @@ impl DeviceInfoInternal {
 
 impl DeviceInfo {
     /// Gets the asset ID of the device. Represents a user writable alphanumeric character sequence uniquely identifying a component.
-    /// @param\[out\] id The asset ID of the device.
-    /// The ID is provided by the integrator or user of the device. It contains typically an identifier
-    /// in a branch, use case or user specific naming scheme. This could be for example a reference to
-    /// an electric scheme. The ID must be a string representation of an Int32 number.
+    ///
+    /// # Returns
+    /// - `id`: The asset ID of the device. The ID is provided by the integrator or user of the device. It contains typically an identifier in a branch, use case or user specific naming scheme. This could be for example a reference to an electric scheme. The ID must be a string representation of an Int32 number.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getAssetId()`.
     pub fn asset_id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -1980,9 +2143,10 @@ impl DeviceInfo {
     }
 
     /// Retrieves the configuration connection information of the server to which the client is connected.
-    /// @param\[out\] connectionInfo The server capability with the configuration connection information.
-    /// This method returns the configuration connection information of the server to which the client is connected.
-    /// If the connection to the server is not established, the fields of the server capability object are empty.
+    ///
+    /// # Returns
+    /// - `connection_info`: The server capability with the configuration connection information. This method returns the configuration connection information of the server to which the client is connected. If the connection to the server is not established, the fields of the server capability object are empty.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getConfigurationConnectionInfo()`.
     pub fn configuration_connection_info(&self) -> Result<Option<ServerCapability>> {
         let mut __connection_info: *mut sys::daqServerCapability = std::ptr::null_mut();
@@ -1992,7 +2156,10 @@ impl DeviceInfo {
     }
 
     /// Gets the list of connected client information objects.
-    /// @param\[out\] connectedClientsInfo The list of connected client information objects.
+    ///
+    /// # Returns
+    /// - `connected_clients_info`: The list of connected client information objects.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getConnectedClientsInfo()`.
     pub fn connected_clients_info(&self) -> Result<Vec<ConnectedClientInfo>> {
         let mut __connected_clients_info: *mut sys::daqList = std::ptr::null_mut();
@@ -2002,7 +2169,10 @@ impl DeviceInfo {
     }
 
     /// Gets the string representation of a connection address used to connect to the device.
-    /// @param\[out\] connectionString The string used to connect to the device.
+    ///
+    /// # Returns
+    /// - `connection_string`: The string used to connect to the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -2012,7 +2182,10 @@ impl DeviceInfo {
     }
 
     /// Gets the list of property names that are not in the default set of Device info properties. Default properties are all info properties that have a corresponding getter method.
-    /// @param\[out\] customInfoNames The list of names of custom properties.
+    ///
+    /// # Returns
+    /// - `custom_info_names`: The list of names of custom properties.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getCustomInfoPropertyNames()`.
     pub fn custom_info_property_names(&self) -> Result<Vec<String>> {
         let mut __custom_info_names: *mut sys::daqList = std::ptr::null_mut();
@@ -2022,7 +2195,10 @@ impl DeviceInfo {
     }
 
     /// Gets the purpose of the device. For example "TestMeasurementDevice".
-    /// @param\[out\] deviceClass The class of the device.
+    ///
+    /// # Returns
+    /// - `device_class`: The class of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getDeviceClass()`.
     pub fn device_class(&self) -> Result<String> {
         let mut __device_class: *mut sys::daqString = std::ptr::null_mut();
@@ -2032,7 +2208,10 @@ impl DeviceInfo {
     }
 
     /// Gets the address of the user manual. It may be a pathname in the file system or a URL (Web address)
-    /// @param\[out\] deviceManual The manual of the device.
+    ///
+    /// # Returns
+    /// - `device_manual`: The manual of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getDeviceManual()`.
     pub fn device_manual(&self) -> Result<String> {
         let mut __device_manual: *mut sys::daqString = std::ptr::null_mut();
@@ -2042,7 +2221,10 @@ impl DeviceInfo {
     }
 
     /// Gets the revision level of the device.
-    /// @param\[out\] deviceRevision The device revision level.
+    ///
+    /// # Returns
+    /// - `device_revision`: The device revision level.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getDeviceRevision()`.
     pub fn device_revision(&self) -> Result<String> {
         let mut __device_revision: *mut sys::daqString = std::ptr::null_mut();
@@ -2052,7 +2234,10 @@ impl DeviceInfo {
     }
 
     /// Gets a device type as an object providing type id, name, short description and default device configuration. By using default config object as a starting point, users can easily modify the preset properties to tailor the configuration of the client device accordingly.
-    /// @param\[out\] deviceType The device type object
+    ///
+    /// # Returns
+    /// - `device_type`: The device type object
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getDeviceType()`.
     pub fn device_type(&self) -> Result<Option<DeviceType>> {
         let mut __device_type: *mut sys::daqDeviceType = std::ptr::null_mut();
@@ -2062,7 +2247,10 @@ impl DeviceInfo {
     }
 
     /// Gets the revision level of the hardware.
-    /// @param\[out\] hardwareRevision The hardware revision of the device.
+    ///
+    /// # Returns
+    /// - `hardware_revision`: The hardware revision of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getHardwareRevision()`.
     pub fn hardware_revision(&self) -> Result<String> {
         let mut __hardware_revision: *mut sys::daqString = std::ptr::null_mut();
@@ -2072,9 +2260,10 @@ impl DeviceInfo {
     }
 
     /// Gets the location of the device.
-    /// @param\[out\] location The location of the device.
-    /// If the info object is obtained from a device that is already added (not through discovery),
-    /// the location string value matches that of the device's "location" property.
+    ///
+    /// # Returns
+    /// - `location`: The location of the device. If the info object is obtained from a device that is already added (not through discovery), the location string value matches that of the device's "location" property.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getLocation()`.
     pub fn location(&self) -> Result<String> {
         let mut __location: *mut sys::daqString = std::ptr::null_mut();
@@ -2084,7 +2273,10 @@ impl DeviceInfo {
     }
 
     /// Gets the Mac address of the device.
-    /// @param\[out\] macAddress The Mac address.
+    ///
+    /// # Returns
+    /// - `mac_address`: The Mac address.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getMacAddress()`.
     pub fn mac_address(&self) -> Result<String> {
         let mut __mac_address: *mut sys::daqString = std::ptr::null_mut();
@@ -2094,7 +2286,10 @@ impl DeviceInfo {
     }
 
     /// Gets the company that manufactured the device
-    /// @param\[out\] manufacturer The manufacturer of the device.
+    ///
+    /// # Returns
+    /// - `manufacturer`: The manufacturer of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getManufacturer()`.
     pub fn manufacturer(&self) -> Result<String> {
         let mut __manufacturer: *mut sys::daqString = std::ptr::null_mut();
@@ -2104,7 +2299,10 @@ impl DeviceInfo {
     }
 
     /// Gets the unique identifier of the company that manufactured the device This identifier should be a fully qualified domain name; however, it may be a GUID or similar construct that ensures global uniqueness.
-    /// @param\[out\] manufacturerUri The manufacturer uri of the device.
+    ///
+    /// # Returns
+    /// - `manufacturer_uri`: The manufacturer uri of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getManufacturerUri()`.
     pub fn manufacturer_uri(&self) -> Result<String> {
         let mut __manufacturer_uri: *mut sys::daqString = std::ptr::null_mut();
@@ -2114,7 +2312,10 @@ impl DeviceInfo {
     }
 
     /// Gets the model of the device
-    /// @param\[out\] model The model of the device.
+    ///
+    /// # Returns
+    /// - `model`: The model of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getModel()`.
     pub fn model(&self) -> Result<String> {
         let mut __model: *mut sys::daqString = std::ptr::null_mut();
@@ -2124,9 +2325,10 @@ impl DeviceInfo {
     }
 
     /// Gets the name of the device
-    /// @param\[out\] name The name of the device.
-    /// If the info object is obtained from a device that is already added (not through discovery),
-    /// the name string value matches that of the device's "Name" attribute.
+    ///
+    /// # Returns
+    /// - `name`: The name of the device. If the info object is obtained from a device that is already added (not through discovery), the name string value matches that of the device's "Name" attribute.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -2136,9 +2338,16 @@ impl DeviceInfo {
     }
 
     /// Gets the network interface with a given name.
-    /// @param interfaceName The name of the device network interface.
-    /// @param\[out\] intf The device network interface with the given name.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the network interface with the given name is not available.
+    ///
+    /// # Parameters
+    /// - `interface_name`: The name of the device network interface.
+    ///
+    /// # Returns
+    /// - `intf`: The device network interface with the given name.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the network interface with the given name is not available.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getNetworkInterface()`.
     pub fn network_interface(&self, interface_name: &str) -> Result<Option<NetworkInterface>> {
         let __interface_name = crate::marshal::make_string(interface_name)?;
@@ -2149,9 +2358,10 @@ impl DeviceInfo {
     }
 
     /// Gets the dictionary of network interfaces stored in device info.
-    /// @param\[out\] interfaces The dictionary of device network interfaces.
-    /// Obtained dictionary contains INetworkInterface objects, representing the available network interfaces
-    /// and allowing to manage their configurations. The dictionary key corresponds to interface identifier (e.g. "eth0").
+    ///
+    /// # Returns
+    /// - `interfaces`: The dictionary of device network interfaces. Obtained dictionary contains INetworkInterface objects, representing the available network interfaces and allowing to manage their configurations. The dictionary key corresponds to interface identifier (e.g. "eth0").
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getNetworkInterfaces()`.
     pub fn network_interfaces(&self) -> Result<std::collections::HashMap<String, NetworkInterface>> {
         let mut __interfaces: *mut sys::daqDict = std::ptr::null_mut();
@@ -2161,7 +2371,10 @@ impl DeviceInfo {
     }
 
     /// Gets the Mac address of the device's parent.
-    /// @param\[out\] macAddress The parent's Mac address.
+    ///
+    /// # Returns
+    /// - `mac_address`: The parent's Mac address.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getParentMacAddress()`.
     pub fn parent_mac_address(&self) -> Result<String> {
         let mut __mac_address: *mut sys::daqString = std::ptr::null_mut();
@@ -2171,7 +2384,10 @@ impl DeviceInfo {
     }
 
     /// Gets the platform of the device. The platform specifies whether real hardware is used or if the device is simulated.
-    /// @param\[out\] platform The platform of the device.
+    ///
+    /// # Returns
+    /// - `platform`: The platform of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getPlatform()`.
     pub fn platform(&self) -> Result<String> {
         let mut __platform: *mut sys::daqString = std::ptr::null_mut();
@@ -2181,8 +2397,10 @@ impl DeviceInfo {
     }
 
     /// Gets the position of the device. The position specifies the position within a given system. For example in which slot or slice the device is in.
-    /// @param\[out\] position The position of the device.
-    /// The Position should be a positive integer in the range supported by the UInt16 data type.
+    ///
+    /// # Returns
+    /// - `position`: The position of the device. The Position should be a positive integer in the range supported by the UInt16 data type.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getPosition()`.
     pub fn position(&self) -> Result<i64> {
         let mut __position: i64 = Default::default();
@@ -2192,7 +2410,10 @@ impl DeviceInfo {
     }
 
     /// Gets the unique combination of numbers and letters used to identify the device.
-    /// @param\[out\] productCode The product code of the device.
+    ///
+    /// # Returns
+    /// - `product_code`: The product code of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getProductCode()`.
     pub fn product_code(&self) -> Result<String> {
         let mut __product_code: *mut sys::daqString = std::ptr::null_mut();
@@ -2202,7 +2423,10 @@ impl DeviceInfo {
     }
 
     /// Gets the globally unique resource identifier provided by the manufacturer. The recommended syntax of the ProductInstanceUri is: \<ManufacturerUri\>/\<any string\> where \<any string\> is unique among all instances using the same ManufacturerUri.
-    /// @param\[out\] productInstanceUri The product instance uri of the device.
+    ///
+    /// # Returns
+    /// - `product_instance_uri`: The product instance uri of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getProductInstanceUri()`.
     pub fn product_instance_uri(&self) -> Result<String> {
         let mut __product_instance_uri: *mut sys::daqString = std::ptr::null_mut();
@@ -2212,7 +2436,10 @@ impl DeviceInfo {
     }
 
     /// Gets the incremental counter indicating the number of times the configuration data has been modified.
-    /// @param\[out\] revisionCounter The revision counter of the device.
+    ///
+    /// # Returns
+    /// - `revision_counter`: The revision counter of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getRevisionCounter()`.
     pub fn revision_counter(&self) -> Result<i64> {
         let mut __revision_counter: i64 = Default::default();
@@ -2222,7 +2449,10 @@ impl DeviceInfo {
     }
 
     /// Gets the version of the SDK used to build said device. Can be empty if the device does not use the SDK as its firmware/is implemented at a protocol-level.
-    /// @param\[out\] version The SDK version.
+    ///
+    /// # Returns
+    /// - `version`: The SDK version.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getSdkVersion()`.
     pub fn sdk_version(&self) -> Result<String> {
         let mut __version: *mut sys::daqString = std::ptr::null_mut();
@@ -2232,7 +2462,10 @@ impl DeviceInfo {
     }
 
     /// Gets the unique production number provided by the manufacturer
-    /// @param\[out\] serialNumber The serial number of the device.
+    ///
+    /// # Returns
+    /// - `serial_number`: The serial number of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getSerialNumber()`.
     pub fn serial_number(&self) -> Result<String> {
         let mut __serial_number: *mut sys::daqString = std::ptr::null_mut();
@@ -2242,7 +2475,10 @@ impl DeviceInfo {
     }
 
     /// Gets the list of server capabilities stored in device info.
-    /// @param\[out\] serverCapabilities The list of device supported protocols (List containing IServerCapability objects, representing the supported protocols along with their properties).
+    ///
+    /// # Returns
+    /// - `server_capabilities`: The list of device supported protocols (List containing IServerCapability objects, representing the supported protocols along with their properties).
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getServerCapabilities()`.
     pub fn server_capabilities(&self) -> Result<Vec<ServerCapability>> {
         let mut __server_capabilities: *mut sys::daqList = std::ptr::null_mut();
@@ -2252,9 +2488,16 @@ impl DeviceInfo {
     }
 
     /// Gets the server capability with a given ID.
-    /// @param protocolId The ID of the server capability protocol.
-    /// @param\[out\] serverCapability The server capability with the given ID.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the server capability is not available.
+    ///
+    /// # Parameters
+    /// - `protocol_id`: The ID of the server capability protocol.
+    ///
+    /// # Returns
+    /// - `server_capability`: The server capability with the given ID.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the server capability is not available.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getServerCapability()`.
     pub fn server_capability(&self, protocol_id: &str) -> Result<Option<ServerCapability>> {
         let __protocol_id = crate::marshal::make_string(protocol_id)?;
@@ -2265,7 +2508,10 @@ impl DeviceInfo {
     }
 
     /// Gets the revision level of the software component.
-    /// @param\[out\] softwareRevision The software revision of the device.
+    ///
+    /// # Returns
+    /// - `software_revision`: The software revision of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getSoftwareRevision()`.
     pub fn software_revision(&self) -> Result<String> {
         let mut __software_revision: *mut sys::daqString = std::ptr::null_mut();
@@ -2275,7 +2521,10 @@ impl DeviceInfo {
     }
 
     /// Gets the system type. The system type can, for example, be LayeredSystem, StandaloneSystem, or RackSystem.
-    /// @param\[out\] type The system type of the device.
+    ///
+    /// # Returns
+    /// - `type`: The system type of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getSystemType()`.
     pub fn system_type(&self) -> Result<String> {
         let mut __type_: *mut sys::daqString = std::ptr::null_mut();
@@ -2285,7 +2534,10 @@ impl DeviceInfo {
     }
 
     /// Gets the system UUID that represents a unique ID of a system. All devices in a system share this UUID.
-    /// @param\[out\] uuid The unique ID of a system.
+    ///
+    /// # Returns
+    /// - `uuid`: The unique ID of a system.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getSystemUuid()`.
     pub fn system_uuid(&self) -> Result<String> {
         let mut __uuid: *mut sys::daqString = std::ptr::null_mut();
@@ -2295,9 +2547,10 @@ impl DeviceInfo {
     }
 
     /// Gets the name of the current user of the device.
-    /// @param\[out\] userName The name of the current user of the device.
-    /// If the info object is obtained from a device that is already added (not through discovery),
-    /// the username string value matches that of the device's "userName" property.
+    ///
+    /// # Returns
+    /// - `user_name`: The name of the current user of the device. If the info object is obtained from a device that is already added (not through discovery), the username string value matches that of the device's "userName" property.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_getUserName()`.
     pub fn user_name(&self) -> Result<String> {
         let mut __user_name: *mut sys::daqString = std::ptr::null_mut();
@@ -2307,8 +2560,13 @@ impl DeviceInfo {
     }
 
     /// Checks whether the server capability with a given ID is available.
-    /// @param protocolId The ID of the server capability protocol.
-    /// @param\[out\] hasCapability True if the protocol is available; False otherwise.
+    ///
+    /// # Parameters
+    /// - `protocol_id`: The ID of the server capability protocol.
+    ///
+    /// # Returns
+    /// - `has_capability`: True if the protocol is available; False otherwise.
+    ///
     /// Calls the openDAQ C function `daqDeviceInfo_hasServerCapability()`.
     pub fn has_server_capability(&self, protocol_id: &str) -> Result<bool> {
         let __protocol_id = crate::marshal::make_string(protocol_id)?;
@@ -2322,7 +2580,10 @@ impl DeviceInfo {
 
 impl DeviceNetworkConfig {
     /// Checks if the device supports network configuration management.
-    /// @param\[out\] enabled A flag indicating whether the device supports managing network configurations.
+    ///
+    /// # Returns
+    /// - `enabled`: A flag indicating whether the device supports managing network configurations.
+    ///
     /// Calls the openDAQ C function `daqDeviceNetworkConfig_getNetworkConfigurationEnabled()`.
     pub fn network_configuration_enabled(&self) -> Result<bool> {
         let mut __enabled: u8 = 0;
@@ -2332,8 +2593,13 @@ impl DeviceNetworkConfig {
     }
 
     /// Gets the names of all configurable network interfaces on the device.
-    /// @param\[out\] ifaceNames A list containing the names of network interface adapters available for configuration.
-    /// @retval OPENDAQ_ERR_NOTIMPLEMENTED if the device does not support network configuration management.
+    ///
+    /// # Returns
+    /// - `iface_names`: A list containing the names of network interface adapters available for configuration.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTIMPLEMENTED`: if the device does not support network configuration management.
+    ///
     /// Calls the openDAQ C function `daqDeviceNetworkConfig_getNetworkInterfaceNames()`.
     pub fn network_interface_names(&self) -> Result<Vec<String>> {
         let mut __iface_names: *mut sys::daqList = std::ptr::null_mut();
@@ -2343,9 +2609,16 @@ impl DeviceNetworkConfig {
     }
 
     /// Retrieves the currently active configuration of a specified network interface.
-    /// @param ifaceName The name of the network interface adapter as registered in the operating system. Typically, this is a short symbolic identifier for the adapter, e.g. "eth0".
-    /// @param\[out\] config The property object containing the active configuration of the network interface.
-    /// @retval OPENDAQ_ERR_NOTIMPLEMENTED if the device does not support retrieving network configurations.
+    ///
+    /// # Parameters
+    /// - `iface_name`: The name of the network interface adapter as registered in the operating system. Typically, this is a short symbolic identifier for the adapter, e.g. "eth0".
+    ///
+    /// # Returns
+    /// - `config`: The property object containing the active configuration of the network interface.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTIMPLEMENTED`: if the device does not support retrieving network configurations.
+    ///
     /// Calls the openDAQ C function `daqDeviceNetworkConfig_retrieveNetworkConfiguration()`.
     pub fn retrieve_network_configuration(&self, iface_name: &str) -> Result<Option<PropertyObject>> {
         let __iface_name = crate::marshal::make_string(iface_name)?;
@@ -2356,9 +2629,14 @@ impl DeviceNetworkConfig {
     }
 
     /// Submits a new configuration parameters to a specified network interface.
-    /// @param ifaceName The name of the network interface adapter as registered in the operating system. Typically, this is a short symbolic identifier for the adapter, e.g. "eth0".
-    /// @param config The property object with new configuration parameters to submit. The format of the properties matches that used in INetworkInterface.
-    /// @retval OPENDAQ_ERR_NOTIMPLEMENTED if the device does not support network configuration management.
+    ///
+    /// # Parameters
+    /// - `iface_name`: The name of the network interface adapter as registered in the operating system. Typically, this is a short symbolic identifier for the adapter, e.g. "eth0".
+    /// - `config`: The property object with new configuration parameters to submit. The format of the properties matches that used in INetworkInterface.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTIMPLEMENTED`: if the device does not support network configuration management.
+    ///
     /// Calls the openDAQ C function `daqDeviceNetworkConfig_submitNetworkConfiguration()`.
     pub fn submit_network_configuration(&self, iface_name: &str, config: &PropertyObject) -> Result<()> {
         let __iface_name = crate::marshal::make_string(iface_name)?;
@@ -2425,10 +2703,13 @@ impl DevicePrivate {
 
 impl DeviceType {
     /// Creates a Device type object, with the id, name, description and optional defaultConfig.
-    /// @param id The unique type ID of the device.
-    /// @param name The name of the device type.
-    /// @param description A short description of the device type.
-    /// @param defaultConfig The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the device has its own configuration object.
+    ///
+    /// # Parameters
+    /// - `id`: The unique type ID of the device.
+    /// - `name`: The name of the device type.
+    /// - `description`: A short description of the device type.
+    /// - `default_config`: The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the device has its own configuration object.
+    ///
     /// Calls the openDAQ C function `daqDeviceType_createDeviceType()`.
     pub fn new(id: &str, name: &str, description: &str, default_config: &PropertyObject, prefix: &str) -> Result<DeviceType> {
         let __id = crate::marshal::make_string(id)?;
@@ -2453,9 +2734,14 @@ impl DeviceType {
 
 impl Device {
     /// Connects to a device at the given connection string and returns it.
-    /// @param\[out\] device The added device.
-    /// @param connectionString The connection string containing the address of the device. In example an IPv4/IPv6 address. The connection string can be found in the Device Info objects returned by `getAvailableDevices`.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. Can be created from its corresponding Device type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the device. In example an IPv4/IPv6 address. The connection string can be found in the Device Info objects returned by `getAvailableDevices`.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. Can be created from its corresponding Device type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `device`: The added device.
+    ///
     /// Calls the openDAQ C function `daqDevice_addDevice()`.
     pub fn add_device(&self, connection_string: &str) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -2466,9 +2752,14 @@ impl Device {
     }
 
     /// Connects to a device at the given connection string and returns it.
-    /// @param\[out\] device The added device.
-    /// @param connectionString The connection string containing the address of the device. In example an IPv4/IPv6 address. The connection string can be found in the Device Info objects returned by `getAvailableDevices`.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. Can be created from its corresponding Device type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the device. In example an IPv4/IPv6 address. The connection string can be found in the Device Info objects returned by `getAvailableDevices`.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. Can be created from its corresponding Device type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `device`: The added device.
+    ///
     /// Calls the openDAQ C function `daqDevice_addDevice()`.
     pub fn add_device_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -2479,13 +2770,16 @@ impl Device {
     }
 
     /// Connects to multiple devices in parallel using the provided connection strings and returns the connected devices. Each connection is established concurrently to improve performance when handling multiple devices. The additions, in turn, are performed sequentially in the order specified by connectionArgs.
-    /// @param\[out\] devices A dictionary that maps each connection string to the corresponding added device object. If a device connection or addition attempt fails, the value will be `nullptr` for that entry.
-    /// @param connectionArgs A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
-    /// @param errCodes An optional dictionary used to populate error codes for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error code.
-    /// @param errorInfos An optional dictionary used to populate detailed error info for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error info object.
-    /// @return OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created and added, but not all of them;
-    /// OPENDAQ_ERR_GENERALERROR if no devices were created or added;
-    /// OPENDAQ_IGNORED if adding the devices from modules is not allowed within the device.
+    ///
+    /// # Parameters
+    /// - `connection_args`: A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
+    /// - `err_codes`: An optional dictionary used to populate error codes for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error code.
+    /// - `error_infos`: An optional dictionary used to populate detailed error info for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error info object.
+    ///
+    /// # Returns
+    /// OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created and added, but not all of them; OPENDAQ_ERR_GENERALERROR if no devices were created or added; OPENDAQ_IGNORED if adding the devices from modules is not allowed within the device.
+    /// - `devices`: A dictionary that maps each connection string to the corresponding added device object. If a device connection or addition attempt fails, the value will be `nullptr` for that entry.
+    ///
     /// Calls the openDAQ C function `daqDevice_addDevices()`.
     pub fn add_devices(&self, connection_args: impl Into<Value>) -> Result<std::collections::HashMap<String, Device>> {
         let __connection_args = crate::value::to_daq(&connection_args.into())?;
@@ -2496,13 +2790,16 @@ impl Device {
     }
 
     /// Connects to multiple devices in parallel using the provided connection strings and returns the connected devices. Each connection is established concurrently to improve performance when handling multiple devices. The additions, in turn, are performed sequentially in the order specified by connectionArgs.
-    /// @param\[out\] devices A dictionary that maps each connection string to the corresponding added device object. If a device connection or addition attempt fails, the value will be `nullptr` for that entry.
-    /// @param connectionArgs A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
-    /// @param errCodes An optional dictionary used to populate error codes for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error code.
-    /// @param errorInfos An optional dictionary used to populate detailed error info for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error info object.
-    /// @return OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created and added, but not all of them;
-    /// OPENDAQ_ERR_GENERALERROR if no devices were created or added;
-    /// OPENDAQ_IGNORED if adding the devices from modules is not allowed within the device.
+    ///
+    /// # Parameters
+    /// - `connection_args`: A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
+    /// - `err_codes`: An optional dictionary used to populate error codes for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error code.
+    /// - `error_infos`: An optional dictionary used to populate detailed error info for failed connection or addition attempts. For each failed attempt, the key is the connection string, and the value contains the error info object.
+    ///
+    /// # Returns
+    /// OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created and added, but not all of them; OPENDAQ_ERR_GENERALERROR if no devices were created or added; OPENDAQ_IGNORED if adding the devices from modules is not allowed within the device.
+    /// - `devices`: A dictionary that maps each connection string to the corresponding added device object. If a device connection or addition attempt fails, the value will be `nullptr` for that entry.
+    ///
     /// Calls the openDAQ C function `daqDevice_addDevices()`.
     pub fn add_devices_with(&self, connection_args: impl Into<Value>, err_codes: impl Into<Value>, error_infos: impl Into<Value>) -> Result<std::collections::HashMap<String, Device>> {
         let __connection_args = crate::value::to_daq(&connection_args.into())?;
@@ -2515,9 +2812,14 @@ impl Device {
     }
 
     /// Creates and adds a function block to the device with the provided unique ID and returns it.
-    /// @param\[out\] functionBlock The added function block.
-    /// @param typeId The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
-    /// @param config A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Parameters
+    /// - `type_id`: The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
+    /// - `config`: A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Returns
+    /// - `function_block`: The added function block.
+    ///
     /// Calls the openDAQ C function `daqDevice_addFunctionBlock()`.
     pub fn add_function_block(&self, type_id: &str) -> Result<Option<FunctionBlock>> {
         let __type_id = crate::marshal::make_string(type_id)?;
@@ -2528,9 +2830,14 @@ impl Device {
     }
 
     /// Creates and adds a function block to the device with the provided unique ID and returns it.
-    /// @param\[out\] functionBlock The added function block.
-    /// @param typeId The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
-    /// @param config A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Parameters
+    /// - `type_id`: The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
+    /// - `config`: A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Returns
+    /// - `function_block`: The added function block.
+    ///
     /// Calls the openDAQ C function `daqDevice_addFunctionBlock()`.
     pub fn add_function_block_with(&self, type_id: &str, config: Option<&PropertyObject>) -> Result<Option<FunctionBlock>> {
         let __type_id = crate::marshal::make_string(type_id)?;
@@ -2541,9 +2848,14 @@ impl Device {
     }
 
     /// Creates and adds to the device a server with the provided unique type ID and returns it.
-    /// @param\[out\] server The added server.
-    /// @param typeId The unique type ID of the server. Can be obtained from its corresponding Server type object.
-    /// @param config A config object to configure a server with custom settings specific to that server type.
+    ///
+    /// # Parameters
+    /// - `type_id`: The unique type ID of the server. Can be obtained from its corresponding Server type object.
+    /// - `config`: A config object to configure a server with custom settings specific to that server type.
+    ///
+    /// # Returns
+    /// - `server`: The added server.
+    ///
     /// Calls the openDAQ C function `daqDevice_addServer()`.
     pub fn add_server(&self, type_id: &str, config: &PropertyObject) -> Result<Option<Server>> {
         let __type_id = crate::marshal::make_string(type_id)?;
@@ -2554,9 +2866,14 @@ impl Device {
     }
 
     /// Connects to a streaming at the given connection string, adds it as a streaming source of device and returns created streaming object.
-    /// @param\[out\] streaming The added streaming source.
-    /// @param connectionString The connection string containing the address of the streaming. In example an IPv4/IPv6 address. The connection string can be found in the Server Capability objects returned by `getInfo().getServerCapabilities()`.
-    /// @param config A config object to configure a streaming connection. This object can contain properties like various connection timeouts or other streaming protocol specific settings. Can be created from its corresponding Streaming type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the streaming. In example an IPv4/IPv6 address. The connection string can be found in the Server Capability objects returned by `getInfo().getServerCapabilities()`.
+    /// - `config`: A config object to configure a streaming connection. This object can contain properties like various connection timeouts or other streaming protocol specific settings. Can be created from its corresponding Streaming type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `streaming`: The added streaming source.
+    ///
     /// Calls the openDAQ C function `daqDevice_addStreaming()`.
     pub fn add_streaming(&self, connection_string: &str) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -2567,9 +2884,14 @@ impl Device {
     }
 
     /// Connects to a streaming at the given connection string, adds it as a streaming source of device and returns created streaming object.
-    /// @param\[out\] streaming The added streaming source.
-    /// @param connectionString The connection string containing the address of the streaming. In example an IPv4/IPv6 address. The connection string can be found in the Server Capability objects returned by `getInfo().getServerCapabilities()`.
-    /// @param config A config object to configure a streaming connection. This object can contain properties like various connection timeouts or other streaming protocol specific settings. Can be created from its corresponding Streaming type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the streaming. In example an IPv4/IPv6 address. The connection string can be found in the Server Capability objects returned by `getInfo().getServerCapabilities()`.
+    /// - `config`: A config object to configure a streaming connection. This object can contain properties like various connection timeouts or other streaming protocol specific settings. Can be created from its corresponding Streaming type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `streaming`: The added streaming source.
+    ///
     /// Calls the openDAQ C function `daqDevice_addStreaming()`.
     pub fn add_streaming_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -2580,10 +2902,13 @@ impl Device {
     }
 
     /// Creates an openDAQ client.
-    /// @param ctx The context object.
-    /// @param localId The localID of the client.
-    /// @param defaultDeviceInfo The DeviceInfo to be used by the client device.
-    /// @param parent The parent component of the client.
+    ///
+    /// # Parameters
+    /// - `ctx`: The context object.
+    /// - `local_id`: The localID of the client.
+    /// - `default_device_info`: The DeviceInfo to be used by the client device.
+    /// - `parent`: The parent component of the client.
+    ///
     /// Calls the openDAQ C function `daqDevice_createClient()`.
     pub fn client(ctx: &Context, local_id: &str, default_device_info: &DeviceInfo, parent: &Component) -> Result<Device> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2594,14 +2919,10 @@ impl Device {
     }
 
     /// Creates config object that can be used when adding a device. Contains Device and Streaming default configuration for all available Device/Streaming types. Also contains general add-device configuration settings.
-    /// @param\[out\] defaultConfig The configuration object containing default settings for adding a device.
-    /// The default config object is organized to always have 3 object-type properties:
-    /// - "General" Contains general properties such as "AutomaticallyConnectStreaming"
-    /// - "Device": Contains a child object-type property for each available device type, with the key of each property
-    /// being the ID of the device type. These can be configured to customize the `addDevice` call when using
-    /// connecting to the selected device type (eg. via the native or OPC UA protocols).
-    /// - "Streaming": Same as device, but used to configure each individual streaming connection established
-    /// when calling `addDevice`.
+    ///
+    /// # Returns
+    /// - `default_config`: The configuration object containing default settings for adding a device. The default config object is organized to always have 3 object-type properties: - "General" Contains general properties such as "AutomaticallyConnectStreaming" - "Device": Contains a child object-type property for each available device type, with the key of each property being the ID of the device type. These can be configured to customize the `addDevice` call when using connecting to the selected device type (eg. via the native or OPC UA protocols). - "Streaming": Same as device, but used to configure each individual streaming connection established when calling `addDevice`.
+    ///
     /// Calls the openDAQ C function `daqDevice_createDefaultAddDeviceConfig()`.
     pub fn create_default_add_device_config(&self) -> Result<Option<PropertyObject>> {
         let mut __default_config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -2611,7 +2932,10 @@ impl Device {
     }
 
     /// Get a dictionary of available device types as \<IString, IDeviceType\> pairs
-    /// @param\[out\] deviceTypes The dictionary of available device types.
+    ///
+    /// # Returns
+    /// - `device_types`: The dictionary of available device types.
+    ///
     /// Calls the openDAQ C function `daqDevice_getAvailableDeviceTypes()`.
     pub fn available_device_types(&self) -> Result<std::collections::HashMap<String, DeviceType>> {
         let mut __device_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -2621,10 +2945,10 @@ impl Device {
     }
 
     /// Gets a list of available devices, containing their Device Info.
-    /// @param\[out\] availableDevices The list of available devices.
-    /// The getAvailableDevices most often runs a discovery client, querying for available devices that
-    /// a device module can connect to. The replies are formed into Device Info objects and inserted to the
-    /// list of available devices.
+    ///
+    /// # Returns
+    /// - `available_devices`: The list of available devices. The getAvailableDevices most often runs a discovery client, querying for available devices that a device module can connect to. The replies are formed into Device Info objects and inserted to the list of available devices.
+    ///
     /// Calls the openDAQ C function `daqDevice_getAvailableDevices()`.
     pub fn available_devices(&self) -> Result<Vec<DeviceInfo>> {
         let mut __available_devices: *mut sys::daqList = std::ptr::null_mut();
@@ -2634,7 +2958,10 @@ impl Device {
     }
 
     /// Gets all function block types that are supported by the device, containing their description.
-    /// @param\[out\] functionBlockTypes A dictionary of available function block types.
+    ///
+    /// # Returns
+    /// - `function_block_types`: A dictionary of available function block types.
+    ///
     /// Calls the openDAQ C function `daqDevice_getAvailableFunctionBlockTypes()`.
     pub fn available_function_block_types(&self) -> Result<std::collections::HashMap<String, FunctionBlockType>> {
         let mut __function_block_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -2644,7 +2971,10 @@ impl Device {
     }
 
     /// Gets a list of available operation modes for the device.
-    /// @param\[out\] availableOpModes The list of available operation modes.
+    ///
+    /// # Returns
+    /// - `available_op_modes`: The list of available operation modes.
+    ///
     /// Calls the openDAQ C function `daqDevice_getAvailableOperationModes()`.
     pub fn available_operation_modes(&self) -> Result<Vec<i64>> {
         let mut __available_op_modes: *mut sys::daqList = std::ptr::null_mut();
@@ -2654,10 +2984,13 @@ impl Device {
     }
 
     /// Gets a flat list of the device's physical channels.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] channels The flat list of channels.
-    /// If searchFilter is not provided, the returned list contains only visible channels and does not include those of
-    /// child devices.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `channels`: The flat list of channels. If searchFilter is not provided, the returned list contains only visible channels and does not include those of child devices.
+    ///
     /// Calls the openDAQ C function `daqDevice_getChannels()`.
     pub fn channels(&self) -> Result<Vec<Channel>> {
         let mut __channels: *mut sys::daqList = std::ptr::null_mut();
@@ -2667,10 +3000,13 @@ impl Device {
     }
 
     /// Gets a flat list of the device's physical channels.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] channels The flat list of channels.
-    /// If searchFilter is not provided, the returned list contains only visible channels and does not include those of
-    /// child devices.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `channels`: The flat list of channels. If searchFilter is not provided, the returned list contains only visible channels and does not include those of child devices.
+    ///
     /// Calls the openDAQ C function `daqDevice_getChannels()`.
     pub fn channels_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Channel>> {
         let mut __channels: *mut sys::daqList = std::ptr::null_mut();
@@ -2680,8 +3016,13 @@ impl Device {
     }
 
     /// Gets a flat list of the device's physical channels. Also finds all visible channels of visible child devices
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] channels The flat list of channels.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `channels`: The flat list of channels.
+    ///
     /// Calls the openDAQ C function `daqDevice_getChannelsRecursive()`.
     pub fn channels_recursive(&self) -> Result<Vec<Channel>> {
         let mut __channels: *mut sys::daqList = std::ptr::null_mut();
@@ -2691,8 +3032,13 @@ impl Device {
     }
 
     /// Gets a flat list of the device's physical channels. Also finds all visible channels of visible child devices
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] channels The flat list of channels.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `channels`: The flat list of channels.
+    ///
     /// Calls the openDAQ C function `daqDevice_getChannelsRecursive()`.
     pub fn channels_recursive_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Channel>> {
         let mut __channels: *mut sys::daqList = std::ptr::null_mut();
@@ -2702,7 +3048,10 @@ impl Device {
     }
 
     /// Gets the container holding the statuses of device configuration and streaming connections.
-    /// @param\[out\] statusContainer The container for the device connection statuses.
+    ///
+    /// # Returns
+    /// - `status_container`: The container for the device connection statuses.
+    ///
     /// Calls the openDAQ C function `daqDevice_getConnectionStatusContainer()`.
     pub fn connection_status_container(&self) -> Result<Option<ComponentStatusContainer>> {
         let mut __status_container: *mut sys::daqComponentStatusContainer = std::ptr::null_mut();
@@ -2712,7 +3061,10 @@ impl Device {
     }
 
     /// Gets a list of all components/folders in a device that are not titled 'IO', 'Sig', 'Dev', 'Synchronization' or 'FB'
-    /// @param\[out\] customComponents The list of custom components.
+    ///
+    /// # Returns
+    /// - `custom_components`: The list of custom components.
+    ///
     /// Calls the openDAQ C function `daqDevice_getCustomComponents()`.
     pub fn custom_components(&self) -> Result<Vec<Component>> {
         let mut __custom_components: *mut sys::daqList = std::ptr::null_mut();
@@ -2722,10 +3074,13 @@ impl Device {
     }
 
     /// Gets a list of child devices that the device is connected to.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] devices The list of devices.
-    /// If searchFilter is not provided, the returned list contains only visible devices and does not include those of
-    /// child devices.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `devices`: The list of devices. If searchFilter is not provided, the returned list contains only visible devices and does not include those of child devices.
+    ///
     /// Calls the openDAQ C function `daqDevice_getDevices()`.
     pub fn devices(&self) -> Result<Vec<Device>> {
         let mut __devices: *mut sys::daqList = std::ptr::null_mut();
@@ -2735,10 +3090,13 @@ impl Device {
     }
 
     /// Gets a list of child devices that the device is connected to.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] devices The list of devices.
-    /// If searchFilter is not provided, the returned list contains only visible devices and does not include those of
-    /// child devices.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `devices`: The list of devices. If searchFilter is not provided, the returned list contains only visible devices and does not include those of child devices.
+    ///
     /// Calls the openDAQ C function `daqDevice_getDevices()`.
     pub fn devices_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Device>> {
         let mut __devices: *mut sys::daqList = std::ptr::null_mut();
@@ -2748,7 +3106,10 @@ impl Device {
     }
 
     /// Gets the device's domain data. It allows for querying the device for its domain (time) values.
-    /// @param\[out\] domain The device domain.
+    ///
+    /// # Returns
+    /// - `domain`: The device domain.
+    ///
     /// Calls the openDAQ C function `daqDevice_getDomain()`.
     pub fn domain(&self) -> Result<Option<DeviceDomain>> {
         let mut __domain: *mut sys::daqDeviceDomain = std::ptr::null_mut();
@@ -2758,10 +3119,13 @@ impl Device {
     }
 
     /// Gets the list of added function blocks.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] functionBlocks The list of added function blocks.
-    /// If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of
-    /// child function blocks, devices, or channels.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `function_blocks`: The list of added function blocks. If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of child function blocks, devices, or channels.
+    ///
     /// Calls the openDAQ C function `daqDevice_getFunctionBlocks()`.
     pub fn function_blocks(&self) -> Result<Vec<FunctionBlock>> {
         let mut __function_blocks: *mut sys::daqList = std::ptr::null_mut();
@@ -2771,10 +3135,13 @@ impl Device {
     }
 
     /// Gets the list of added function blocks.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] functionBlocks The list of added function blocks.
-    /// If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of
-    /// child function blocks, devices, or channels.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `function_blocks`: The list of added function blocks. If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of child function blocks, devices, or channels.
+    ///
     /// Calls the openDAQ C function `daqDevice_getFunctionBlocks()`.
     pub fn function_blocks_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<FunctionBlock>> {
         let mut __function_blocks: *mut sys::daqList = std::ptr::null_mut();
@@ -2784,7 +3151,10 @@ impl Device {
     }
 
     /// Gets the device info. It contains data about the device such as the device's serial number, location, and connection string.
-    /// @param\[out\] info The device info.
+    ///
+    /// # Returns
+    /// - `info`: The device info.
+    ///
     /// Calls the openDAQ C function `daqDevice_getInfo()`.
     pub fn info(&self) -> Result<Option<DeviceInfo>> {
         let mut __info: *mut sys::daqDeviceInfo = std::ptr::null_mut();
@@ -2794,8 +3164,10 @@ impl Device {
     }
 
     /// Gets a folder containing channels.
-    /// @param\[out\] inputsOutputsFolder The folder that contains channels.
-    /// The InputsOutputs folder can contain other folders that themselves contain channels.
+    ///
+    /// # Returns
+    /// - `inputs_outputs_folder`: The folder that contains channels. The InputsOutputs folder can contain other folders that themselves contain channels.
+    ///
     /// Calls the openDAQ C function `daqDevice_getInputsOutputsFolder()`.
     pub fn inputs_outputs_folder(&self) -> Result<Option<Folder>> {
         let mut __inputs_outputs_folder: *mut sys::daqFolder = std::ptr::null_mut();
@@ -2807,11 +3179,15 @@ impl Device {
     /// Retrieves a chunk of the log file with the provided ID.
     /// This function extracts a specified portion (or the entire content) of the log file, starting at the given offset.
     /// If the size and offset are not specified, it will attempt to return the entire log file by default.
-    /// @param\[out\] log A string which stores requested log chunk.
-    /// @param id Rhe ID of the log file to retrieve.
-    /// @param size The size of the log chunk to retrieve in bytes. Defaults to -1, which means it will return all remaining bytes from the offset.
-    /// @param offset The offset, in bytes, from where the log chunk should be read. Defaults to 0 (start of the file).
-    /// If size is set to -1, and offset is 0, the entire log file will be returned.
+    ///
+    /// # Parameters
+    /// - `id`: Rhe ID of the log file to retrieve.
+    /// - `size`: The size of the log chunk to retrieve in bytes. Defaults to -1, which means it will return all remaining bytes from the offset.
+    /// - `offset`: The offset, in bytes, from where the log chunk should be read. Defaults to 0 (start of the file). If size is set to -1, and offset is 0, the entire log file will be returned.
+    ///
+    /// # Returns
+    /// - `log`: A string which stores requested log chunk.
+    ///
     /// Calls the openDAQ C function `daqDevice_getLog()`.
     pub fn log(&self, id: &str) -> Result<String> {
         let __id = crate::marshal::make_string(id)?;
@@ -2824,11 +3200,15 @@ impl Device {
     /// Retrieves a chunk of the log file with the provided ID.
     /// This function extracts a specified portion (or the entire content) of the log file, starting at the given offset.
     /// If the size and offset are not specified, it will attempt to return the entire log file by default.
-    /// @param\[out\] log A string which stores requested log chunk.
-    /// @param id Rhe ID of the log file to retrieve.
-    /// @param size The size of the log chunk to retrieve in bytes. Defaults to -1, which means it will return all remaining bytes from the offset.
-    /// @param offset The offset, in bytes, from where the log chunk should be read. Defaults to 0 (start of the file).
-    /// If size is set to -1, and offset is 0, the entire log file will be returned.
+    ///
+    /// # Parameters
+    /// - `id`: Rhe ID of the log file to retrieve.
+    /// - `size`: The size of the log chunk to retrieve in bytes. Defaults to -1, which means it will return all remaining bytes from the offset.
+    /// - `offset`: The offset, in bytes, from where the log chunk should be read. Defaults to 0 (start of the file). If size is set to -1, and offset is 0, the entire log file will be returned.
+    ///
+    /// # Returns
+    /// - `log`: A string which stores requested log chunk.
+    ///
     /// Calls the openDAQ C function `daqDevice_getLog()`.
     pub fn log_with(&self, id: &str, size: i64, offset: i64) -> Result<String> {
         let __id = crate::marshal::make_string(id)?;
@@ -2839,7 +3219,10 @@ impl Device {
     }
 
     /// Gets a list of available log files.
-    /// @param\[out\] logFileInfos The list of available log files.
+    ///
+    /// # Returns
+    /// - `log_file_infos`: The list of available log files.
+    ///
     /// Calls the openDAQ C function `daqDevice_getLogFileInfos()`.
     pub fn log_file_infos(&self) -> Result<Vec<LogFileInfo>> {
         let mut __log_file_infos: *mut sys::daqList = std::ptr::null_mut();
@@ -2849,7 +3232,10 @@ impl Device {
     }
 
     /// Get list of added servers.
-    /// @param\[out\] servers List of added servers.
+    ///
+    /// # Returns
+    /// - `servers`: List of added servers.
+    ///
     /// Calls the openDAQ C function `daqDevice_getServers()`.
     pub fn servers(&self) -> Result<Vec<Server>> {
         let mut __servers: *mut sys::daqList = std::ptr::null_mut();
@@ -2859,11 +3245,13 @@ impl Device {
     }
 
     /// Gets a list of the device's signals.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The flat list of signals.
-    /// If searchFilter is not provided, the returned list contains only visible signals and does not include those of
-    /// child function blocks, devices, or channels.
-    /// Device signals are most often domain signals shared by other signals that belong to channels and/or function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. If searchFilter is not provided, the returned list contains only visible signals and does not include those of child function blocks, devices, or channels. Device signals are most often domain signals shared by other signals that belong to channels and/or function blocks.
+    ///
     /// Calls the openDAQ C function `daqDevice_getSignals()`.
     pub fn signals(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -2873,11 +3261,13 @@ impl Device {
     }
 
     /// Gets a list of the device's signals.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The flat list of signals.
-    /// If searchFilter is not provided, the returned list contains only visible signals and does not include those of
-    /// child function blocks, devices, or channels.
-    /// Device signals are most often domain signals shared by other signals that belong to channels and/or function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. If searchFilter is not provided, the returned list contains only visible signals and does not include those of child function blocks, devices, or channels. Device signals are most often domain signals shared by other signals that belong to channels and/or function blocks.
+    ///
     /// Calls the openDAQ C function `daqDevice_getSignals()`.
     pub fn signals_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -2887,10 +3277,13 @@ impl Device {
     }
 
     /// Gets a list of the signals that belong to the device.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The flat list of signals.
-    /// The list includes visible signals that belong to visible channels, function blocks, or sub devices
-    /// of the device.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. The list includes visible signals that belong to visible channels, function blocks, or sub devices of the device.
+    ///
     /// Calls the openDAQ C function `daqDevice_getSignalsRecursive()`.
     pub fn signals_recursive(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -2900,10 +3293,13 @@ impl Device {
     }
 
     /// Gets a list of the signals that belong to the device.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The flat list of signals.
-    /// The list includes visible signals that belong to visible channels, function blocks, or sub devices
-    /// of the device.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. The list includes visible signals that belong to visible channels, function blocks, or sub devices of the device.
+    ///
     /// Calls the openDAQ C function `daqDevice_getSignalsRecursive()`.
     pub fn signals_recursive_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -2913,7 +3309,10 @@ impl Device {
     }
 
     /// Gets the sync component of the device.
-    /// @param\[out\] sync The sync component.
+    ///
+    /// # Returns
+    /// - `sync`: The sync component.
+    ///
     /// Calls the openDAQ C function `daqDevice_getSyncComponent()`.
     pub fn sync_component(&self) -> Result<Option<SyncComponent>> {
         let mut __sync: *mut sys::daqSyncComponent = std::ptr::null_mut();
@@ -2923,8 +3322,10 @@ impl Device {
     }
 
     /// Gets the number of ticks passed since the device's absolute origin.
-    /// @param\[out\] ticks The number of ticks.
-    /// To scale the ticks into a domain unit, the Device's Domain should be used.
+    ///
+    /// # Returns
+    /// - `ticks`: The number of ticks. To scale the ticks into a domain unit, the Device's Domain should be used.
+    ///
     /// Calls the openDAQ C function `daqDevice_getTicksSinceOrigin()`.
     pub fn ticks_since_origin(&self) -> Result<u64> {
         let mut __ticks: u64 = Default::default();
@@ -2934,7 +3335,10 @@ impl Device {
     }
 
     /// Returns true if device is locked. Once locked, no properties of the device can be changed via the protocol layer.
-    /// @param\[out\] locked True if device is locked.
+    ///
+    /// # Returns
+    /// - `locked`: True if device is locked.
+    ///
     /// Calls the openDAQ C function `daqDevice_isLocked()`.
     pub fn is_locked(&self) -> Result<bool> {
         let mut __locked: u8 = 0;
@@ -2944,7 +3348,10 @@ impl Device {
     }
 
     /// Loads the configuration of the device from string.
-    /// @param configuration Serialized configuration of the device.
+    ///
+    /// # Parameters
+    /// - `configuration`: Serialized configuration of the device.
+    ///
     /// Calls the openDAQ C function `daqDevice_loadConfiguration()`.
     pub fn load_configuration(&self, configuration: &str) -> Result<()> {
         let __configuration = crate::marshal::make_string(configuration)?;
@@ -2954,7 +3361,10 @@ impl Device {
     }
 
     /// Loads the configuration of the device from string.
-    /// @param configuration Serialized configuration of the device.
+    ///
+    /// # Parameters
+    /// - `configuration`: Serialized configuration of the device.
+    ///
     /// Calls the openDAQ C function `daqDevice_loadConfiguration()`.
     pub fn load_configuration_with(&self, configuration: &str, config: Option<&UpdateParameters>) -> Result<()> {
         let __configuration = crate::marshal::make_string(configuration)?;
@@ -2964,6 +3374,7 @@ impl Device {
     }
 
     /// Lock a device with a session user. Once locked, no properties of the device can be changed via the protocol layer. Only the same user who locked the device can unlock it. If no user was specified when the device was locked, any user will be able to unlock it.
+    ///
     /// Calls the openDAQ C function `daqDevice_lock()`.
     pub fn lock(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_lock)(self.as_raw() as *mut _) };
@@ -2972,7 +3383,10 @@ impl Device {
     }
 
     /// Disconnects from the device provided as argument and removes it from the internal list of devices.
-    /// @param device The device to be removed.
+    ///
+    /// # Parameters
+    /// - `device`: The device to be removed.
+    ///
     /// Calls the openDAQ C function `daqDevice_removeDevice()`.
     pub fn remove_device(&self, device: &Device) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_removeDevice)(self.as_raw() as *mut _, device.as_raw() as *mut _) };
@@ -2981,7 +3395,10 @@ impl Device {
     }
 
     /// Removes the function block provided as argument, disconnecting its signals and input ports.
-    /// @param functionBlock The function block to be removed.
+    ///
+    /// # Parameters
+    /// - `function_block`: The function block to be removed.
+    ///
     /// Calls the openDAQ C function `daqDevice_removeFunctionBlock()`.
     pub fn remove_function_block(&self, function_block: &FunctionBlock) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_removeFunctionBlock)(self.as_raw() as *mut _, function_block.as_raw() as *mut _) };
@@ -2990,7 +3407,10 @@ impl Device {
     }
 
     /// Removes the server provided as argument.
-    /// @param server The server to be removed.
+    ///
+    /// # Parameters
+    /// - `server`: The server to be removed.
+    ///
     /// Calls the openDAQ C function `daqDevice_removeServer()`.
     pub fn remove_server(&self, server: &Server) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_removeServer)(self.as_raw() as *mut _, server.as_raw() as *mut _) };
@@ -2999,7 +3419,10 @@ impl Device {
     }
 
     /// Saves the configuration of the device to string.
-    /// @param\[out\] configuration Serialized configuration of the device.
+    ///
+    /// # Returns
+    /// - `configuration`: Serialized configuration of the device.
+    ///
     /// Calls the openDAQ C function `daqDevice_saveConfiguration()`.
     pub fn save_configuration(&self) -> Result<String> {
         let mut __configuration: *mut sys::daqString = std::ptr::null_mut();
@@ -3009,7 +3432,10 @@ impl Device {
     }
 
     /// Sets the operation mode of the device subtree excluding the sub-devices.
-    /// @param modeType The operation mode to set.
+    ///
+    /// # Parameters
+    /// - `mode_type`: The operation mode to set.
+    ///
     /// Calls the openDAQ C function `daqDevice_setOperationMode()`.
     pub fn set_operation_mode(&self, mode_type: OperationModeType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_setOperationMode)(self.as_raw() as *mut _, mode_type as u32) };
@@ -3018,7 +3444,10 @@ impl Device {
     }
 
     /// Sets the operation mode of the device subtree including the sub-devices.
-    /// @param modeType The operation mode to set.
+    ///
+    /// # Parameters
+    /// - `mode_type`: The operation mode to set.
+    ///
     /// Calls the openDAQ C function `daqDevice_setOperationModeRecursive()`.
     pub fn set_operation_mode_recursive(&self, mode_type: OperationModeType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_setOperationModeRecursive)(self.as_raw() as *mut _, mode_type as u32) };
@@ -3027,6 +3456,7 @@ impl Device {
     }
 
     /// Unlock a device with a session user. A device can only be unlocked by the same user who locked it. If no user was specified when the device was locked, any user will be able to unlock it.
+    ///
     /// Calls the openDAQ C function `daqDevice_unlock()`.
     pub fn unlock(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDevice_unlock)(self.as_raw() as *mut _) };
@@ -3038,9 +3468,14 @@ impl Device {
 
 impl FunctionBlock {
     /// Creates and adds a function block as the nested of current function block with the provided unique ID and returns it.
-    /// @param\[out\] functionBlock The added function block.
-    /// @param typeId The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
-    /// @param config A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Parameters
+    /// - `type_id`: The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
+    /// - `config`: A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Returns
+    /// - `function_block`: The added function block.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_addFunctionBlock()`.
     pub fn add_function_block(&self, type_id: &str) -> Result<Option<FunctionBlock>> {
         let __type_id = crate::marshal::make_string(type_id)?;
@@ -3051,9 +3486,14 @@ impl FunctionBlock {
     }
 
     /// Creates and adds a function block as the nested of current function block with the provided unique ID and returns it.
-    /// @param\[out\] functionBlock The added function block.
-    /// @param typeId The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
-    /// @param config A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Parameters
+    /// - `type_id`: The unique ID of the function block. Can be obtained from its corresponding Function Block Info object.
+    /// - `config`: A config object to configure a function block with custom settings specific to that function block type.
+    ///
+    /// # Returns
+    /// - `function_block`: The added function block.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_addFunctionBlock()`.
     pub fn add_function_block_with(&self, type_id: &str, config: Option<&PropertyObject>) -> Result<Option<FunctionBlock>> {
         let __type_id = crate::marshal::make_string(type_id)?;
@@ -3064,7 +3504,10 @@ impl FunctionBlock {
     }
 
     /// Gets all nested function block types that are supported, containing their description.
-    /// @param\[out\] functionBlockTypes A dictionary of available function block types.
+    ///
+    /// # Returns
+    /// - `function_block_types`: A dictionary of available function block types.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getAvailableFunctionBlockTypes()`.
     pub fn available_function_block_types(&self) -> Result<std::collections::HashMap<String, FunctionBlockType>> {
         let mut __function_block_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -3074,7 +3517,10 @@ impl FunctionBlock {
     }
 
     /// Gets an information structure contain metadata of the function block type.
-    /// @param\[out\] type The Function block type object.
+    ///
+    /// # Returns
+    /// - `type`: The Function block type object.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getFunctionBlockType()`.
     pub fn function_block_type(&self) -> Result<Option<FunctionBlockType>> {
         let mut __type_: *mut sys::daqFunctionBlockType = std::ptr::null_mut();
@@ -3084,10 +3530,13 @@ impl FunctionBlock {
     }
 
     /// Gets a list of sub-function blocks.
-    /// @param searchFilter Provides optional parameters such as "recursive" and "visibleOnly" to modify the search pattern.
-    /// @param\[out\] functionBlocks The list of sub-function blocks.
-    /// If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides optional parameters such as "recursive" and "visibleOnly" to modify the search pattern.
+    ///
+    /// # Returns
+    /// - `function_blocks`: The list of sub-function blocks. If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getFunctionBlocks()`.
     pub fn function_blocks(&self) -> Result<Vec<FunctionBlock>> {
         let mut __function_blocks: *mut sys::daqList = std::ptr::null_mut();
@@ -3097,10 +3546,13 @@ impl FunctionBlock {
     }
 
     /// Gets a list of sub-function blocks.
-    /// @param searchFilter Provides optional parameters such as "recursive" and "visibleOnly" to modify the search pattern.
-    /// @param\[out\] functionBlocks The list of sub-function blocks.
-    /// If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides optional parameters such as "recursive" and "visibleOnly" to modify the search pattern.
+    ///
+    /// # Returns
+    /// - `function_blocks`: The list of sub-function blocks. If searchFilter is not provided, the returned list contains only visible function blocks and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getFunctionBlocks()`.
     pub fn function_blocks_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<FunctionBlock>> {
         let mut __function_blocks: *mut sys::daqList = std::ptr::null_mut();
@@ -3110,10 +3562,13 @@ impl FunctionBlock {
     }
 
     /// Gets a list of the function block's input ports.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] ports The list of input ports.
-    /// If searchFilter is not provided, the returned list contains only visible input ports and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `ports`: The list of input ports. If searchFilter is not provided, the returned list contains only visible input ports and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getInputPorts()`.
     pub fn input_ports(&self) -> Result<Vec<InputPort>> {
         let mut __ports: *mut sys::daqList = std::ptr::null_mut();
@@ -3123,10 +3578,13 @@ impl FunctionBlock {
     }
 
     /// Gets a list of the function block's input ports.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] ports The list of input ports.
-    /// If searchFilter is not provided, the returned list contains only visible input ports and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `ports`: The list of input ports. If searchFilter is not provided, the returned list contains only visible input ports and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getInputPorts()`.
     pub fn input_ports_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<InputPort>> {
         let mut __ports: *mut sys::daqList = std::ptr::null_mut();
@@ -3136,10 +3594,13 @@ impl FunctionBlock {
     }
 
     /// Gets the list of the function block's output signals.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The list of output signals.
-    /// If searchFilter is not provided, the returned list contains only visible signals and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The list of output signals. If searchFilter is not provided, the returned list contains only visible signals and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getSignals()`.
     pub fn signals(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3149,10 +3610,13 @@ impl FunctionBlock {
     }
 
     /// Gets the list of the function block's output signals.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The list of output signals.
-    /// If searchFilter is not provided, the returned list contains only visible signals and does not include those of
-    /// child function blocks.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The list of output signals. If searchFilter is not provided, the returned list contains only visible signals and does not include those of child function blocks.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getSignals()`.
     pub fn signals_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3162,8 +3626,13 @@ impl FunctionBlock {
     }
 
     /// Gets the list of the function block's visible output signals including signals from visible child function blocks.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The list of output signals.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The list of output signals.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getSignalsRecursive()`.
     pub fn signals_recursive(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3173,8 +3642,13 @@ impl FunctionBlock {
     }
 
     /// Gets the list of the function block's visible output signals including signals from visible child function blocks.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] signals The list of output signals.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `signals`: The list of output signals.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getSignalsRecursive()`.
     pub fn signals_recursive_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3184,9 +3658,10 @@ impl FunctionBlock {
     }
 
     /// Gets the function block's status signal.
-    /// @param\[out\] statusSignal The status signal.
-    /// The status signal sends out a status event packet every time it is connected to an input port.
-    /// Additionally, a status event packet is sent whenever the status of the function block changes.
+    ///
+    /// # Returns
+    /// - `status_signal`: The status signal. The status signal sends out a status event packet every time it is connected to an input port. Additionally, a status event packet is sent whenever the status of the function block changes.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_getStatusSignal()`.
     pub fn status_signal(&self) -> Result<Option<Signal>> {
         let mut __status_signal: *mut sys::daqSignal = std::ptr::null_mut();
@@ -3196,7 +3671,10 @@ impl FunctionBlock {
     }
 
     /// Removes the function block provided as argument, disconnecting its signals and input ports.
-    /// @param functionBlock The function block to be removed.
+    ///
+    /// # Parameters
+    /// - `function_block`: The function block to be removed.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlock_removeFunctionBlock()`.
     pub fn remove_function_block(&self, function_block: &FunctionBlock) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqFunctionBlock_removeFunctionBlock)(self.as_raw() as *mut _, function_block.as_raw() as *mut _) };
@@ -3208,7 +3686,10 @@ impl FunctionBlock {
 
 impl LogFileInfoBuilder {
     /// Builds the log file info.
-    /// @param\[out\] logFileInfo The log file info.
+    ///
+    /// # Returns
+    /// - `log_file_info`: The log file info.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_build()`.
     pub fn build(&self) -> Result<Option<LogFileInfo>> {
         let mut __log_file_info: *mut sys::daqLogFileInfo = std::ptr::null_mut();
@@ -3218,6 +3699,7 @@ impl LogFileInfoBuilder {
     }
 
     /// Creates an LogFileInfo Builder with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_createLogFileInfoBuilder()`.
     pub fn new() -> Result<LogFileInfoBuilder> {
         let mut __obj: *mut sys::daqLogFileInfoBuilder = std::ptr::null_mut();
@@ -3227,7 +3709,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the description of the log file.
-    /// @param\[out\] description The description of the log file.
+    ///
+    /// # Returns
+    /// - `description`: The description of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -3237,7 +3722,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the encoding of the log file.
-    /// @param\[out\] encoding The encoding of the log file.
+    ///
+    /// # Returns
+    /// - `encoding`: The encoding of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getEncoding()`.
     pub fn encoding(&self) -> Result<String> {
         let mut __encoding: *mut sys::daqString = std::ptr::null_mut();
@@ -3247,7 +3735,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the id of the log file. If the local path is not assigned, the id is equal to the `localPath + "/" + name`.
-    /// @param id The id of the log file.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -3257,7 +3748,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the date of the last modification of the log file in ISO 8601 format.
-    /// @param\[out\] lastModified The date of the last modification of the log file.
+    ///
+    /// # Returns
+    /// - `last_modified`: The date of the last modification of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getLastModified()`.
     pub fn last_modified(&self) -> Result<String> {
         let mut __last_modified: *mut sys::daqString = std::ptr::null_mut();
@@ -3267,7 +3761,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the local path of the log file. The local path can be not assigned as it is optional.
-    /// @param\[out\] localPath The local path of the log file.
+    ///
+    /// # Returns
+    /// - `local_path`: The local path of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getLocalPath()`.
     pub fn local_path(&self) -> Result<String> {
         let mut __local_path: *mut sys::daqString = std::ptr::null_mut();
@@ -3277,7 +3774,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the name of the log file.
-    /// @param\[out\] name The name of the log file.
+    ///
+    /// # Returns
+    /// - `name`: The name of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -3287,7 +3787,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Gets the size of the log file in bytes.
-    /// @param\[out\] size The size of the log file.
+    ///
+    /// # Returns
+    /// - `size`: The size of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_getSize()`.
     pub fn size(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -3297,7 +3800,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the description of the log file.
-    /// @param description The description of the log file.
+    ///
+    /// # Parameters
+    /// - `description`: The description of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setDescription()`.
     pub fn set_description(&self, description: &str) -> Result<()> {
         let __description = crate::marshal::make_string(description)?;
@@ -3307,7 +3813,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the encoding of the log file.
-    /// @param encoding The encoding of the log file.
+    ///
+    /// # Parameters
+    /// - `encoding`: The encoding of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setEncoding()`.
     pub fn set_encoding(&self, encoding: &str) -> Result<()> {
         let __encoding = crate::marshal::make_string(encoding)?;
@@ -3317,7 +3826,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the id of the log file. Oth
-    /// @param id The id of the log file.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setId()`.
     pub fn set_id(&self, id: &str) -> Result<()> {
         let __id = crate::marshal::make_string(id)?;
@@ -3327,7 +3839,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the date of the last modification of the log file in ISO 8601 format.
-    /// @param lastModified The date of the last modification of the log file.
+    ///
+    /// # Parameters
+    /// - `last_modified`: The date of the last modification of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setLastModified()`.
     pub fn set_last_modified(&self, last_modified: &str) -> Result<()> {
         let __last_modified = crate::marshal::make_string(last_modified)?;
@@ -3337,7 +3852,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the local path of the log file. The local path can be not assigned as it is optional.
-    /// @param localPath The local path of the log file.
+    ///
+    /// # Parameters
+    /// - `local_path`: The local path of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setLocalPath()`.
     pub fn set_local_path(&self, local_path: &str) -> Result<()> {
         let __local_path = crate::marshal::make_string(local_path)?;
@@ -3347,7 +3865,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the name of the log file.
-    /// @param name The name of the log file.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -3357,7 +3878,10 @@ impl LogFileInfoBuilder {
     }
 
     /// Sets the size of the log file in bytes.
-    /// @param size The size of the log file.
+    ///
+    /// # Parameters
+    /// - `size`: The size of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfoBuilder_setSize()`.
     pub fn set_size(&self, size: usize) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLogFileInfoBuilder_setSize)(self.as_raw() as *mut _, size) };
@@ -3369,7 +3893,10 @@ impl LogFileInfoBuilder {
 
 impl LogFileInfo {
     /// Creates an log file info from the builder.
-    /// @param builder The log file info builder.
+    ///
+    /// # Parameters
+    /// - `builder`: The log file info builder.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_createLogFileInfoFromBuilder()`.
     pub fn from_builder(builder: &LogFileInfoBuilder) -> Result<LogFileInfo> {
         let mut __obj: *mut sys::daqLogFileInfo = std::ptr::null_mut();
@@ -3379,7 +3906,10 @@ impl LogFileInfo {
     }
 
     /// Gets the description of the log file.
-    /// @param\[out\] description The description of the log file.
+    ///
+    /// # Returns
+    /// - `description`: The description of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -3389,7 +3919,10 @@ impl LogFileInfo {
     }
 
     /// Gets the encoding of the log file.
-    /// @param\[out\] encoding The encoding of the log file.
+    ///
+    /// # Returns
+    /// - `encoding`: The encoding of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getEncoding()`.
     pub fn encoding(&self) -> Result<String> {
         let mut __encoding: *mut sys::daqString = std::ptr::null_mut();
@@ -3399,7 +3932,10 @@ impl LogFileInfo {
     }
 
     /// Gets the id of the log file in format `getLocalPath() + "/" + getName()`.
-    /// @param\[out\] id The id of the log file.
+    ///
+    /// # Returns
+    /// - `id`: The id of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -3409,7 +3945,10 @@ impl LogFileInfo {
     }
 
     /// Gets the date of the last modification of the log file in ISO 8601 format.
-    /// @param\[out\] lastModified The date of the last modification of the log file.
+    ///
+    /// # Returns
+    /// - `last_modified`: The date of the last modification of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getLastModified()`.
     pub fn last_modified(&self) -> Result<String> {
         let mut __last_modified: *mut sys::daqString = std::ptr::null_mut();
@@ -3419,7 +3958,10 @@ impl LogFileInfo {
     }
 
     /// Gets the local path of the log file. The local path can be not assigned as it is optional.
-    /// @param\[out\] localPath The local path of the log file.
+    ///
+    /// # Returns
+    /// - `local_path`: The local path of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getLocalPath()`.
     pub fn local_path(&self) -> Result<String> {
         let mut __local_path: *mut sys::daqString = std::ptr::null_mut();
@@ -3429,7 +3971,10 @@ impl LogFileInfo {
     }
 
     /// Gets the name of the log file.
-    /// @param\[out\] name The name of the log file.
+    ///
+    /// # Returns
+    /// - `name`: The name of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -3439,7 +3984,10 @@ impl LogFileInfo {
     }
 
     /// Gets the size of the log file in bytes.
-    /// @param\[out\] size The size of the log file.
+    ///
+    /// # Returns
+    /// - `size`: The size of the log file.
+    ///
     /// Calls the openDAQ C function `daqLogFileInfo_getSize()`.
     pub fn size(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -3452,8 +4000,10 @@ impl LogFileInfo {
 
 impl NetworkInterface {
     /// Creates a property object containing default configuration values for a network interface.
-    /// @param\[out\] defaultConfig The configuration object containing default settings for configuring device's network interface.
-    /// The created object can be modified or directly submitted using the `submitConfiguration` method.
+    ///
+    /// # Returns
+    /// - `default_config`: The configuration object containing default settings for configuring device's network interface. The created object can be modified or directly submitted using the `submitConfiguration` method.
+    ///
     /// Calls the openDAQ C function `daqNetworkInterface_createDefaultConfiguration()`.
     pub fn create_default_configuration(&self) -> Result<Option<PropertyObject>> {
         let mut __default_config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -3475,8 +4025,13 @@ impl NetworkInterface {
     }
 
     /// Requests the currently active configuration for the network interface.
-    /// @param\[out\] config The property object containing the currently active configuration.
-    /// @retval OPENDAQ_ERR_NOTIMPLEMENTED if the device doesn't support retrieving the active configuration.
+    ///
+    /// # Returns
+    /// - `config`: The property object containing the currently active configuration.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTIMPLEMENTED`: if the device doesn't support retrieving the active configuration.
+    ///
     /// Calls the openDAQ C function `daqNetworkInterface_requestCurrentConfiguration()`.
     pub fn request_current_configuration(&self) -> Result<Option<PropertyObject>> {
         let mut __config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -3486,10 +4041,13 @@ impl NetworkInterface {
     }
 
     /// Submits a new configuration for the network interface.
-    /// @param config The new configuration to apply.
-    /// @retval OPENDAQ_SUCCESS if the new configuration is applied successfully; otherwise, returns an informative error code.
-    /// The provided configuration must adhere to the required properties, including "dhcp4", "address4", "gateway4", and their IPv6 equivalents,
-    /// as described in the class-level documentation.
+    ///
+    /// # Parameters
+    /// - `config`: The new configuration to apply.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_SUCCESS`: if the new configuration is applied successfully; otherwise, returns an informative error code. The provided configuration must adhere to the required properties, including "dhcp4", "address4", "gateway4", and their IPv6 equivalents, as described in the class-level documentation.
+    ///
     /// Calls the openDAQ C function `daqNetworkInterface_submitConfiguration()`.
     pub fn submit_configuration(&self, config: &PropertyObject) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqNetworkInterface_submitConfiguration)(self.as_raw() as *mut _, config.as_raw() as *mut _) };
@@ -3501,7 +4059,10 @@ impl NetworkInterface {
 
 impl ReferenceDomainInfo {
     /// Creates a Reference Domain Info using Builder
-    /// @param builder Reference Domain Info Builder
+    ///
+    /// # Parameters
+    /// - `builder`: Reference Domain Info Builder
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfo_createReferenceDomainInfoFromBuilder()`.
     pub fn from_builder(builder: &ReferenceDomainInfoBuilder) -> Result<ReferenceDomainInfo> {
         let mut __obj: *mut sys::daqReferenceDomainInfo = std::ptr::null_mut();
@@ -3511,13 +4072,10 @@ impl ReferenceDomainInfo {
     }
 
     /// Gets the Reference Domain ID.
-    /// @param\[out\] referenceDomainId The Reference Domain ID.
-    /// If set, gives the common identifier of one domain group.
-    /// Signals with the same Reference Domain ID share a common synchronization source
-    /// (all the signals in a group either come from the same device
-    /// or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.).
-    /// Those signals can always be read together, implying that a Multi Reader
-    /// can be used to read the signals if their sampling rates are compatible.
+    ///
+    /// # Returns
+    /// - `reference_domain_id`: The Reference Domain ID. If set, gives the common identifier of one domain group. Signals with the same Reference Domain ID share a common synchronization source (all the signals in a group either come from the same device or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.). Those signals can always be read together, implying that a Multi Reader can be used to read the signals if their sampling rates are compatible.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfo_getReferenceDomainId()`.
     pub fn reference_domain_id(&self) -> Result<String> {
         let mut __reference_domain_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3527,15 +4085,10 @@ impl ReferenceDomainInfo {
     }
 
     /// Gets the Reference Domain Offset.
-    /// @param\[out\] referenceDomainOffset The Reference Domain Offset.
-    /// If set, denotes the offset in ticks that must be added to the domain values of the signal
-    /// for them to be equal to that of the sync source. The sync source will always have an offset of 0.
-    /// This offset is changed only if the sync source changes and should be kept at 0 otherwise,
-    /// allowing clients to differentiate between data loss and resync events.
-    /// Any device can choose to always keep the offset at 0, representing changes in the offset in
-    /// the domain packet values instead. This implementation prevents clients from differentiating
-    /// between errors (data loss) and resync events. Additionally, if the offset is not configured,
-    /// clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
+    /// # Returns
+    /// - `reference_domain_offset`: The Reference Domain Offset. If set, denotes the offset in ticks that must be added to the domain values of the signal for them to be equal to that of the sync source. The sync source will always have an offset of 0. This offset is changed only if the sync source changes and should be kept at 0 otherwise, allowing clients to differentiate between data loss and resync events. Any device can choose to always keep the offset at 0, representing changes in the offset in the domain packet values instead. This implementation prevents clients from differentiating between errors (data loss) and resync events. Additionally, if the offset is not configured, clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfo_getReferenceDomainOffset()`.
     pub fn reference_domain_offset(&self) -> Result<Option<i64>> {
         let mut __reference_domain_offset: *mut sys::daqInteger = std::ptr::null_mut();
@@ -3545,13 +4098,10 @@ impl ReferenceDomainInfo {
     }
 
     /// Gets the value that indicates the Reference Time Source.
-    /// @param\[out\] referenceTimeProtocol The value that indicates the Reference Time Source.
-    /// If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according
-    /// to the chosen time standard. The possible values are Gps, Tai, and Utc.
-    /// This field is used to determine if two signals with different Domain IDs can be read
-    /// together. Signals that have configured a Reference Time Source are trusted to have absolute
-    /// time stamps that correlate to the chosen time standard (eg. two separate PTP networks,
-    /// both driven through GPS can be read together, as their absolute time is the same).
+    ///
+    /// # Returns
+    /// - `reference_time_protocol`: The value that indicates the Reference Time Source. If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according to the chosen time standard. The possible values are Gps, Tai, and Utc. This field is used to determine if two signals with different Domain IDs can be read together. Signals that have configured a Reference Time Source are trusted to have absolute time stamps that correlate to the chosen time standard (eg. two separate PTP networks, both driven through GPS can be read together, as their absolute time is the same).
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfo_getReferenceTimeProtocol()`.
     pub fn reference_time_protocol(&self) -> Result<TimeProtocol> {
         let mut __reference_time_protocol: u32 = 0;
@@ -3561,8 +4111,10 @@ impl ReferenceDomainInfo {
     }
 
     /// Gets the value that indicates if offset is used.
-    /// @param\[out\] usesOffset The value that indicates if offset is used.
-    /// If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
+    /// # Returns
+    /// - `uses_offset`: The value that indicates if offset is used. If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfo_getUsesOffset()`.
     pub fn uses_offset(&self) -> Result<UsesOffset> {
         let mut __uses_offset: u32 = 0;
@@ -3575,7 +4127,10 @@ impl ReferenceDomainInfo {
 
 impl ServerCapabilityConfig {
     /// Sets the device's address
-    /// @param\[out\] address The device's address
+    ///
+    /// # Returns
+    /// - `address`: The device's address
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_addAddress()`.
     pub fn add_address(&self, address: &str) -> Result<()> {
         let __address = crate::marshal::make_string(address)?;
@@ -3592,7 +4147,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the connection string of device with current protocol
-    /// @param connectionString The connection string of device
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string of device
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_addConnectionString()`.
     pub fn add_connection_string(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -3612,7 +4170,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the connection string of device with current protocol
-    /// @param connectionString The connection string of device
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string of device
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setConnectionString()`.
     pub fn set_connection_string(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -3622,7 +4183,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the type of connection
-    /// @param type The type of connection
+    ///
+    /// # Parameters
+    /// - `type`: The type of connection
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setConnectionType()`.
     pub fn set_connection_type(&self, type_: &str) -> Result<()> {
         let __type_ = crate::marshal::make_string(type_)?;
@@ -3632,7 +4196,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the boolean flag indicating whether the server capability supports core event propagation to clients
-    /// @param enabled True if core events are enabled; false otherwise
+    ///
+    /// # Parameters
+    /// - `enabled`: True if core events are enabled; false otherwise
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setCoreEventsEnabled()`.
     pub fn set_core_events_enabled(&self, enabled: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqServerCapabilityConfig_setCoreEventsEnabled)(self.as_raw() as *mut _, u8::from(enabled)) };
@@ -3641,7 +4208,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the port of the device
-    /// @param port The port of the device
+    ///
+    /// # Parameters
+    /// - `port`: The port of the device
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setPort()`.
     pub fn set_port(&self, port: i64) -> Result<()> {
         let __port = crate::value::int_to_ref(port)?;
@@ -3651,7 +4221,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the prefix of the connection string (eg. "daq.nd" or "daq.opcua")
-    /// @param prefix The connection string prefix
+    ///
+    /// # Parameters
+    /// - `prefix`: The connection string prefix
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setPrefix()`.
     pub fn set_prefix(&self, prefix: &str) -> Result<()> {
         let __prefix = crate::marshal::make_string(prefix)?;
@@ -3661,7 +4234,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the ID of protocol
-    /// @param protocolId The ID of protocol
+    ///
+    /// # Parameters
+    /// - `protocol_id`: The ID of protocol
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setProtocolId()`.
     pub fn set_protocol_id(&self, protocol_id: &str) -> Result<()> {
         let __protocol_id = crate::marshal::make_string(protocol_id)?;
@@ -3671,7 +4247,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the name of protocol
-    /// @param protocolName The name of protocol
+    ///
+    /// # Parameters
+    /// - `protocol_name`: The name of protocol
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setProtocolName()`.
     pub fn set_protocol_name(&self, protocol_name: &str) -> Result<()> {
         let __protocol_name = crate::marshal::make_string(protocol_name)?;
@@ -3681,7 +4260,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the type of protocol
-    /// @param type The type of protocol
+    ///
+    /// # Parameters
+    /// - `type`: The type of protocol
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setProtocolType()`.
     pub fn set_protocol_type(&self, type_: ProtocolType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqServerCapabilityConfig_setProtocolType)(self.as_raw() as *mut _, type_ as u32) };
@@ -3690,7 +4272,10 @@ impl ServerCapabilityConfig {
     }
 
     /// Sets the protocol version
-    /// @param version The protocol version
+    ///
+    /// # Parameters
+    /// - `version`: The protocol version
+    ///
     /// Calls the openDAQ C function `daqServerCapabilityConfig_setProtocolVersion()`.
     pub fn set_protocol_version(&self, version: &str) -> Result<()> {
         let __version = crate::marshal::make_string(version)?;
@@ -3703,9 +4288,10 @@ impl ServerCapabilityConfig {
 
 impl ServerCapability {
     /// Gets the list of address information objects.
-    /// @param\[out\] addressInfo The list of address information objects.
-    /// Address information duplicates the connection string and address as available on the Server Capability object.
-    /// Additionally, it provides information on what type of address it is (e.g., IPv4, IPv6), as well as whether the address is reachable.
+    ///
+    /// # Returns
+    /// - `address_info`: The list of address information objects. Address information duplicates the connection string and address as available on the Server Capability object. Additionally, it provides information on what type of address it is (e.g., IPv4, IPv6), as well as whether the address is reachable.
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getAddressInfo()`.
     pub fn address_info(&self) -> Result<Vec<AddressInfo>> {
         let mut __address_info: *mut sys::daqList = std::ptr::null_mut();
@@ -3715,7 +4301,10 @@ impl ServerCapability {
     }
 
     /// Gets the device's list of addresses with the current protocol.
-    /// @param\[out\] addresses The device's list of addresses (hosts)
+    ///
+    /// # Returns
+    /// - `addresses`: The device's list of addresses (hosts)
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getAddresses()`.
     pub fn addresses(&self) -> Result<Vec<String>> {
         let mut __addresses: *mut sys::daqList = std::ptr::null_mut();
@@ -3725,7 +4314,10 @@ impl ServerCapability {
     }
 
     /// Gets the connection string of the device with the current protocol.
-    /// @param\[out\] connectionString The connection string of the device (URL to connect).
+    ///
+    /// # Returns
+    /// - `connection_string`: The connection string of the device (URL to connect).
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -3735,7 +4327,10 @@ impl ServerCapability {
     }
 
     /// Gets the connection string of the device with the current protocol.
-    /// @param\[out\] connectionStrings The connection string of the device (URL to connect).
+    ///
+    /// # Returns
+    /// - `connection_strings`: The connection string of the device (URL to connect).
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getConnectionStrings()`.
     pub fn connection_strings(&self) -> Result<Vec<String>> {
         let mut __connection_strings: *mut sys::daqList = std::ptr::null_mut();
@@ -3745,7 +4340,10 @@ impl ServerCapability {
     }
 
     /// Gets the type of connection supported by the device.
-    /// @param\[out\] type The type of connection (e.g., "TCP/IP").
+    ///
+    /// # Returns
+    /// - `type`: The type of connection (e.g., "TCP/IP").
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getConnectionType()`.
     pub fn connection_type(&self) -> Result<String> {
         let mut __type_: *mut sys::daqString = std::ptr::null_mut();
@@ -3755,7 +4353,10 @@ impl ServerCapability {
     }
 
     /// Gets the client update method supported by the device.
-    /// @param\[out\] enabled The client update method (Boolean value indicating if core events are enabled for communication between server and client device).
+    ///
+    /// # Returns
+    /// - `enabled`: The client update method (Boolean value indicating if core events are enabled for communication between server and client device).
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getCoreEventsEnabled()`.
     pub fn core_events_enabled(&self) -> Result<bool> {
         let mut __enabled: u8 = 0;
@@ -3765,7 +4366,10 @@ impl ServerCapability {
     }
 
     /// Gets the port of the device with the current protocol.
-    /// @param\[out\] port The port of the device.
+    ///
+    /// # Returns
+    /// - `port`: The port of the device.
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getPort()`.
     pub fn port(&self) -> Result<Option<i64>> {
         let mut __port: *mut sys::daqInteger = std::ptr::null_mut();
@@ -3775,7 +4379,10 @@ impl ServerCapability {
     }
 
     /// Gets the prefix of the connection string (eg. "daq.nd" or "daq.opcua")
-    /// @param prefix The connection string prefix
+    ///
+    /// # Parameters
+    /// - `prefix`: The connection string prefix
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getPrefix()`.
     pub fn prefix(&self) -> Result<String> {
         let mut __prefix: *mut sys::daqString = std::ptr::null_mut();
@@ -3785,7 +4392,10 @@ impl ServerCapability {
     }
 
     /// Gets the id of the protocol supported by the device. Should not contain spaces or special characters except for '_' and '-'.
-    /// @param\[out\] protocolId The id of the protocol.
+    ///
+    /// # Returns
+    /// - `protocol_id`: The id of the protocol.
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getProtocolId()`.
     pub fn protocol_id(&self) -> Result<String> {
         let mut __protocol_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3795,7 +4405,10 @@ impl ServerCapability {
     }
 
     /// Gets the name of the protocol supported by the device.
-    /// @param\[out\] protocolName The name of the protocol (e.g., "OpenDAQNativeStreaming", "OpenDAQOPCUA", "OpenDAQLTStreaming").
+    ///
+    /// # Returns
+    /// - `protocol_name`: The name of the protocol (e.g., "OpenDAQNativeStreaming", "OpenDAQOPCUA", "OpenDAQLTStreaming").
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getProtocolName()`.
     pub fn protocol_name(&self) -> Result<String> {
         let mut __protocol_name: *mut sys::daqString = std::ptr::null_mut();
@@ -3805,7 +4418,10 @@ impl ServerCapability {
     }
 
     /// Gets the type of protocol supported by the device.
-    /// @param\[out\] type The type of protocol (Enumeration value reflecting protocol type: "ConfigurationAndStreaming", "Configuration", "Streaming", "Unknown").
+    ///
+    /// # Returns
+    /// - `type`: The type of protocol (Enumeration value reflecting protocol type: "ConfigurationAndStreaming", "Configuration", "Streaming", "Unknown").
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getProtocolType()`.
     pub fn protocol_type(&self) -> Result<ProtocolType> {
         let mut __type_: u32 = 0;
@@ -3815,7 +4431,10 @@ impl ServerCapability {
     }
 
     /// Gets the protocol version supported by the device's protocol.
-    /// @param\[out\] version The protocol version.
+    ///
+    /// # Returns
+    /// - `version`: The protocol version.
+    ///
     /// Calls the openDAQ C function `daqServerCapability_getProtocolVersion()`.
     pub fn protocol_version(&self) -> Result<String> {
         let mut __version: *mut sys::daqString = std::ptr::null_mut();
@@ -3828,6 +4447,7 @@ impl ServerCapability {
 
 impl Server {
     /// Disables the server to be discovered by the clients.
+    ///
     /// Calls the openDAQ C function `daqServer_disableDiscovery()`.
     pub fn disable_discovery(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqServer_disableDiscovery)(self.as_raw() as *mut _) };
@@ -3836,6 +4456,7 @@ impl Server {
     }
 
     /// Enables the server to be discovered by the clients.
+    ///
     /// Calls the openDAQ C function `daqServer_enableDiscovery()`.
     pub fn enable_discovery(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqServer_enableDiscovery)(self.as_raw() as *mut _) };
@@ -3844,7 +4465,10 @@ impl Server {
     }
 
     /// Gets the server id.
-    /// @param\[out\] serverId The server id.
+    ///
+    /// # Returns
+    /// - `server_id`: The server id.
+    ///
     /// Calls the openDAQ C function `daqServer_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __server_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3854,8 +4478,10 @@ impl Server {
     }
 
     /// Gets a list of the server's signals.
-    /// @param\[out\] signals The flat list of signals.
-    /// Server signals are most often the mirrored representations of signals that belong to the client connected to the instance via this server.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. Server signals are most often the mirrored representations of signals that belong to the client connected to the instance via this server.
+    ///
     /// Calls the openDAQ C function `daqServer_getSignals()`.
     pub fn signals(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3865,8 +4491,10 @@ impl Server {
     }
 
     /// Gets a list of the server's signals.
-    /// @param\[out\] signals The flat list of signals.
-    /// Server signals are most often the mirrored representations of signals that belong to the client connected to the instance via this server.
+    ///
+    /// # Returns
+    /// - `signals`: The flat list of signals. Server signals are most often the mirrored representations of signals that belong to the client connected to the instance via this server.
+    ///
     /// Calls the openDAQ C function `daqServer_getSignals()`.
     pub fn signals_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -3876,10 +4504,10 @@ impl Server {
     }
 
     /// Gets a streaming source associated with server.
-    /// @param\[out\] streaming The streaming object that represents the server’s client-to-device streaming source.
-    /// The streaming object is assigned on servers that support the generalized client-to-device streaming mechanism.
-    /// The object is expected to be associated with mirrored server-side copies of client signals and is responsible for receiving
-    /// their data sent from the client to the device.
+    ///
+    /// # Returns
+    /// - `streaming`: The streaming object that represents the server’s client-to-device streaming source. The streaming object is assigned on servers that support the generalized client-to-device streaming mechanism. The object is expected to be associated with mirrored server-side copies of client signals and is responsible for receiving their data sent from the client to the device.
+    ///
     /// Calls the openDAQ C function `daqServer_getStreaming()`.
     pub fn streaming(&self) -> Result<Option<Streaming>> {
         let mut __streaming: *mut sys::daqStreaming = std::ptr::null_mut();
@@ -3889,6 +4517,7 @@ impl Server {
     }
 
     /// Stops the server. This is called when we remove the server from the Instance or Instance is closing.
+    ///
     /// Calls the openDAQ C function `daqServer_stop()`.
     pub fn stop(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqServer_stop)(self.as_raw() as *mut _) };
@@ -3900,11 +4529,14 @@ impl Server {
 
 impl Streaming {
     /// Adds input ports to the Streaming.
-    /// @param inputPorts The list of input ports to be added.
-    /// @retval OPENDAQ_ERR_DUPLICATEITEM if an input port on the list is already added to the Streaming.
-    /// @retval OPENDAQ_ERR_NOINTERFACE if an input port on the list is not a mirrored signal.
-    /// After an input port is added to the Streaming, the Streaming automatically appears in the list of
-    /// available streaming sources of an input port.
+    ///
+    /// # Parameters
+    /// - `input_ports`: The list of input ports to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_DUPLICATEITEM`: if an input port on the list is already added to the Streaming.
+    /// - `OPENDAQ_ERR_NOINTERFACE`: if an input port on the list is not a mirrored signal. After an input port is added to the Streaming, the Streaming automatically appears in the list of available streaming sources of an input port.
+    ///
     /// Calls the openDAQ C function `daqStreaming_addInputPorts()`.
     pub fn add_input_ports(&self, input_ports: &[MirroredInputPortConfig]) -> Result<()> {
         let __input_ports = crate::marshal::list_from_interfaces(input_ports)?;
@@ -3914,12 +4546,14 @@ impl Streaming {
     }
 
     /// Adds signals to the Streaming.
-    /// @param signals The list of signals to be added.
-    /// @retval OPENDAQ_ERR_DUPLICATEITEM if a signal on the list is already added to the Streaming.
-    /// @retval OPENDAQ_ERR_NOINTERFACE if a signal on the list is not a mirrored signal.
-    /// After a signal is added to the Streaming, the Streaming automatically appears in the list of
-    /// available streaming sources of a signal. Some signals, however, may be silently ignored
-    /// without triggering an error - for example, private signals are excluded by default.
+    ///
+    /// # Parameters
+    /// - `signals`: The list of signals to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_DUPLICATEITEM`: if a signal on the list is already added to the Streaming.
+    /// - `OPENDAQ_ERR_NOINTERFACE`: if a signal on the list is not a mirrored signal. After a signal is added to the Streaming, the Streaming automatically appears in the list of available streaming sources of a signal. Some signals, however, may be silently ignored without triggering an error - for example, private signals are excluded by default.
+    ///
     /// Calls the openDAQ C function `daqStreaming_addSignals()`.
     pub fn add_signals(&self, signals: &[Signal]) -> Result<()> {
         let __signals = crate::marshal::list_from_interfaces(signals)?;
@@ -3929,7 +4563,10 @@ impl Streaming {
     }
 
     /// Gets the active state of the Streaming.
-    /// @param\[out\] active True if the Streaming is active; false otherwise.
+    ///
+    /// # Returns
+    /// - `active`: True if the Streaming is active; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqStreaming_getActive()`.
     pub fn active(&self) -> Result<bool> {
         let mut __active: u8 = 0;
@@ -3939,7 +4576,10 @@ impl Streaming {
     }
 
     /// Checks whether client-to-device streaming is enabled for this streaming object.
-    /// @param\[out\] enabled The flag indicating if client-to-device streaming is enabled.
+    ///
+    /// # Returns
+    /// - `enabled`: The flag indicating if client-to-device streaming is enabled.
+    ///
     /// Calls the openDAQ C function `daqStreaming_getClientToDeviceStreamingEnabled()`.
     pub fn client_to_device_streaming_enabled(&self) -> Result<bool> {
         let mut __enabled: u8 = 0;
@@ -3949,7 +4589,10 @@ impl Streaming {
     }
 
     /// Retrieves the current status of the streaming connection.
-    /// @param\[out\] connectionStatus The connection status, represented as an enumeration of type "ConnectionStatusType" with possible values: "Connected", "Reconnecting", or "Unrecoverable".
+    ///
+    /// # Returns
+    /// - `connection_status`: The connection status, represented as an enumeration of type "ConnectionStatusType" with possible values: "Connected", "Reconnecting", or "Unrecoverable".
+    ///
     /// Calls the openDAQ C function `daqStreaming_getConnectionStatus()`.
     pub fn connection_status(&self) -> Result<Option<Enumeration>> {
         let mut __connection_status: *mut sys::daqEnumeration = std::ptr::null_mut();
@@ -3959,7 +4602,10 @@ impl Streaming {
     }
 
     /// Gets the string representation of a connection address used to connect to the streaming service of the device.
-    /// @param\[out\] connectionString The string used to connect to the streaming service.
+    ///
+    /// # Returns
+    /// - `connection_string`: The string used to connect to the streaming service.
+    ///
     /// Calls the openDAQ C function `daqStreaming_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -3969,7 +4615,10 @@ impl Streaming {
     }
 
     /// Gets the global ID of the device (as it appears on the remote instance) to which this streaming object establishes a connection.
-    /// @param\[out\] deviceRemoteId The string representing the device's remote ID.
+    ///
+    /// # Returns
+    /// - `device_remote_id`: The string representing the device's remote ID.
+    ///
     /// Calls the openDAQ C function `daqStreaming_getOwnerDeviceRemoteId()`.
     pub fn owner_device_remote_id(&self) -> Result<String> {
         let mut __device_remote_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3979,7 +4628,10 @@ impl Streaming {
     }
 
     /// Gets the identifier of the data transfer protocol (e.g., "OpenDAQNativeStreaming", "OpenDAQLTStreaming") used by this streaming object.
-    /// @param\[out\] protocolId The string representing the protocol ID.
+    ///
+    /// # Returns
+    /// - `protocol_id`: The string representing the protocol ID.
+    ///
     /// Calls the openDAQ C function `daqStreaming_getProtocolId()`.
     pub fn protocol_id(&self) -> Result<String> {
         let mut __protocol_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3989,6 +4641,7 @@ impl Streaming {
     }
 
     /// Removes all added input ports from the Streaming.
+    ///
     /// Calls the openDAQ C function `daqStreaming_removeAllInputPorts()`.
     pub fn remove_all_input_ports(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqStreaming_removeAllInputPorts)(self.as_raw() as *mut _) };
@@ -3997,6 +4650,7 @@ impl Streaming {
     }
 
     /// Removes all added signals from the Streaming.
+    ///
     /// Calls the openDAQ C function `daqStreaming_removeAllSignals()`.
     pub fn remove_all_signals(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqStreaming_removeAllSignals)(self.as_raw() as *mut _) };
@@ -4005,10 +4659,13 @@ impl Streaming {
     }
 
     /// Removes input ports from the Streaming.
-    /// @param inputPorts The list of input ports to be removed.
-    /// @retval OPENDAQ_ERR_NOTFOUND if an input port on the list was not added to the Streaming.
-    /// After an input port is removed from the Streaming, the Streaming is automatically excluded in the list of
-    /// available streaming sources of an input port.
+    ///
+    /// # Parameters
+    /// - `input_ports`: The list of input ports to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if an input port on the list was not added to the Streaming. After an input port is removed from the Streaming, the Streaming is automatically excluded in the list of available streaming sources of an input port.
+    ///
     /// Calls the openDAQ C function `daqStreaming_removeInputPorts()`.
     pub fn remove_input_ports(&self, input_ports: &[MirroredInputPortConfig]) -> Result<()> {
         let __input_ports = crate::marshal::list_from_interfaces(input_ports)?;
@@ -4018,10 +4675,13 @@ impl Streaming {
     }
 
     /// Removes signals from the Streaming.
-    /// @param signals The list of signals to be removed.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a signal on the list was not added to the Streaming.
-    /// After a signal is removed from the Streaming, the Streaming is automatically excluded in the list of
-    /// available streaming sources of a signal.
+    ///
+    /// # Parameters
+    /// - `signals`: The list of signals to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a signal on the list was not added to the Streaming. After a signal is removed from the Streaming, the Streaming is automatically excluded in the list of available streaming sources of a signal.
+    ///
     /// Calls the openDAQ C function `daqStreaming_removeSignals()`.
     pub fn remove_signals(&self, signals: &[Signal]) -> Result<()> {
         let __signals = crate::marshal::list_from_interfaces(signals)?;
@@ -4031,7 +4691,10 @@ impl Streaming {
     }
 
     /// Sets the Streaming to be either active or inactive.
-    /// @param active The new active state of the Streaming.
+    ///
+    /// # Parameters
+    /// - `active`: The new active state of the Streaming.
+    ///
     /// Calls the openDAQ C function `daqStreaming_setActive()`.
     pub fn set_active(&self, active: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqStreaming_setActive)(self.as_raw() as *mut _, u8::from(active)) };
@@ -4052,7 +4715,10 @@ impl SyncComponent {
     }
 
     /// Retrieves the list of interfaces associated with this synchronization component.
-    /// @param\[out\] interfaces List of interfaces associated with this component.
+    ///
+    /// # Returns
+    /// - `interfaces`: List of interfaces associated with this component.
+    ///
     /// Calls the openDAQ C function `daqSyncComponent_getInterfaces()`.
     pub fn interfaces(&self) -> Result<std::collections::HashMap<String, PropertyObject>> {
         let mut __interfaces: *mut sys::daqDict = std::ptr::null_mut();
@@ -4062,7 +4728,10 @@ impl SyncComponent {
     }
 
     /// Retrieves the selected sync source interface.
-    /// @param\[out\] selectedSource The selected sync source interface.
+    ///
+    /// # Returns
+    /// - `selected_source`: The selected sync source interface.
+    ///
     /// Calls the openDAQ C function `daqSyncComponent_getSelectedSource()`.
     pub fn selected_source(&self) -> Result<i64> {
         let mut __selected_source: i64 = Default::default();
@@ -4072,7 +4741,10 @@ impl SyncComponent {
     }
 
     /// Retrieves the synchronization lock status.
-    /// @param\[out\] synchronizationLocked True if synchronization is locked; false otherwise.
+    ///
+    /// # Returns
+    /// - `synchronization_locked`: True if synchronization is locked; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqSyncComponent_getSyncLocked()`.
     pub fn sync_locked(&self) -> Result<bool> {
         let mut __synchronization_locked: u8 = 0;
@@ -4082,7 +4754,10 @@ impl SyncComponent {
     }
 
     /// Sets the selected sync source interface.
-    /// @param selectedSource The selected sync source interface.
+    ///
+    /// # Parameters
+    /// - `selected_source`: The selected sync source interface.
+    ///
     /// Calls the openDAQ C function `daqSyncComponent_setSelectedSource()`.
     pub fn set_selected_source(&self, selected_source: i64) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSyncComponent_setSelectedSource)(self.as_raw() as *mut _, selected_source) };
@@ -4094,6 +4769,7 @@ impl SyncComponent {
 
 impl UserLock {
     /// Creates an unlocked UserLock object.
+    ///
     /// Calls the openDAQ C function `daqUserLock_createUserLock()`.
     pub fn new() -> Result<UserLock> {
         let mut __obj: *mut sys::daqUserLock = std::ptr::null_mut();
@@ -4103,6 +4779,7 @@ impl UserLock {
     }
 
     /// Forcefully unlock the object. A force unlock will always succeed, regardless of which user initially locked the object.
+    ///
     /// Calls the openDAQ C function `daqUserLock_forceUnlock()`.
     pub fn force_unlock(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUserLock_forceUnlock)(self.as_raw() as *mut _) };
@@ -4111,7 +4788,10 @@ impl UserLock {
     }
 
     /// Returns true if the object is locked.
-    /// @param isLockedOut\[out\] True if the object is locked.
+    ///
+    /// # Parameters
+    /// - `is_locked_out`: \[out\] True if the object is locked.
+    ///
     /// Calls the openDAQ C function `daqUserLock_isLocked()`.
     pub fn is_locked(&self) -> Result<bool> {
         let mut __is_locked_out: u8 = 0;
@@ -4121,7 +4801,10 @@ impl UserLock {
     }
 
     /// Lock the object. Only the user who locked the object can unlock it. If the object was locked without a specific user, or with an anonymous user, any user can unlock it.
-    /// @param user User performing the lock action.
+    ///
+    /// # Parameters
+    /// - `user`: User performing the lock action.
+    ///
     /// Calls the openDAQ C function `daqUserLock_lock()`.
     pub fn lock(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUserLock_lock)(self.as_raw() as *mut _, std::ptr::null_mut()) };
@@ -4130,7 +4813,10 @@ impl UserLock {
     }
 
     /// Lock the object. Only the user who locked the object can unlock it. If the object was locked without a specific user, or with an anonymous user, any user can unlock it.
-    /// @param user User performing the lock action.
+    ///
+    /// # Parameters
+    /// - `user`: User performing the lock action.
+    ///
     /// Calls the openDAQ C function `daqUserLock_lock()`.
     pub fn lock_with(&self, user: Option<&User>) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUserLock_lock)(self.as_raw() as *mut _, user.map_or(std::ptr::null_mut(), |o| o.as_raw() as *mut _)) };
@@ -4139,7 +4825,10 @@ impl UserLock {
     }
 
     /// Unlock the object. Only the user who locked the object can unlock it. If the object was locked without a specific user, or with an anonymous user, any user can unlock it.
-    /// @param user User performing the unlock action.
+    ///
+    /// # Parameters
+    /// - `user`: User performing the unlock action.
+    ///
     /// Calls the openDAQ C function `daqUserLock_unlock()`.
     pub fn unlock(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUserLock_unlock)(self.as_raw() as *mut _, std::ptr::null_mut()) };
@@ -4148,7 +4837,10 @@ impl UserLock {
     }
 
     /// Unlock the object. Only the user who locked the object can unlock it. If the object was locked without a specific user, or with an anonymous user, any user can unlock it.
-    /// @param user User performing the unlock action.
+    ///
+    /// # Parameters
+    /// - `user`: User performing the unlock action.
+    ///
     /// Calls the openDAQ C function `daqUserLock_unlock()`.
     pub fn unlock_with(&self, user: Option<&User>) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUserLock_unlock)(self.as_raw() as *mut _, user.map_or(std::ptr::null_mut(), |o| o.as_raw() as *mut _)) };

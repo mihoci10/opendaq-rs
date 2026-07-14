@@ -209,7 +209,10 @@ impl ConfigProvider {
     }
 
     /// Populate the existing options dictionary with variables from config provider
-    /// @param options The options dictionary
+    ///
+    /// # Parameters
+    /// - `options`: The options dictionary
+    ///
     /// Calls the openDAQ C function `daqConfigProvider_populateOptions()`.
     pub fn populate_options(&self, options: impl Into<Value>) -> Result<()> {
         let __options = crate::value::to_daq(&options.into())?;
@@ -222,7 +225,10 @@ impl ConfigProvider {
 
 impl InstanceBuilder {
     /// Populates internal options dictionary with values from set config provider
-    /// @param configProvider The configuration provider
+    ///
+    /// # Parameters
+    /// - `config_provider`: The configuration provider
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_addConfigProvider()`.
     pub fn add_config_provider(&self, config_provider: &ConfigProvider) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_addConfigProvider)(self.as_raw() as *mut _, config_provider.as_raw() as *mut _) };
@@ -231,8 +237,10 @@ impl InstanceBuilder {
     }
 
     /// Adds a discovery server to the context
-    /// @param serverName The discovery server to add
-    /// openDAQ supports the "mdns" server by default, but must be added to the instance builder to be enabled.
+    ///
+    /// # Parameters
+    /// - `server_name`: The discovery server to add openDAQ supports the "mdns" server by default, but must be added to the instance builder to be enabled.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_addDiscoveryServer()`.
     pub fn add_discovery_server(&self, server_name: &str) -> Result<()> {
         let __server_name = crate::marshal::make_string(server_name)?;
@@ -242,7 +250,10 @@ impl InstanceBuilder {
     }
 
     /// Adds the logger sink of the default Instance logger. If Logger has been set, configuring of the Logger sink has no effect in building Instance.
-    /// @param sink The logger sink of the default Instance logger
+    ///
+    /// # Parameters
+    /// - `sink`: The logger sink of the default Instance logger
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_addLoggerSink()`.
     pub fn add_logger_sink(&self, sink: &LoggerSink) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_addLoggerSink)(self.as_raw() as *mut _, sink.as_raw() as *mut _) };
@@ -251,7 +262,10 @@ impl InstanceBuilder {
     }
 
     /// Add the path for the default ModuleManager of the Instance. If Module manager has been set, configuring of Module path has no effect in building Instance.
-    /// @param path The path for the default ModuleManager of Instance
+    ///
+    /// # Parameters
+    /// - `path`: The path for the default ModuleManager of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_addModulePath()`.
     pub fn add_module_path(&self, path: &str) -> Result<()> {
         let __path = crate::marshal::make_string(path)?;
@@ -261,7 +275,10 @@ impl InstanceBuilder {
     }
 
     /// Builds and returns an Instance object using the currently set values of the Builder.
-    /// @param\[out\] instance The built Instance.
+    ///
+    /// # Returns
+    /// - `instance`: The built Instance.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_build()`.
     pub fn build(&self) -> Result<Option<Instance>> {
         let mut __instance: *mut sys::daqInstance = std::ptr::null_mut();
@@ -271,6 +288,7 @@ impl InstanceBuilder {
     }
 
     /// Creates a InstanceBuilder with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_createInstanceBuilder()`.
     pub fn new() -> Result<InstanceBuilder> {
         let mut __obj: *mut sys::daqInstanceBuilder = std::ptr::null_mut();
@@ -280,7 +298,10 @@ impl InstanceBuilder {
     }
 
     /// Allows enabling or disabling standard configuration providers, including JsonConfigProvider, based on the specified flag.
-    /// @param flag Boolean flag indicating whether to enable (true) or disable (false) standard config providers.
+    ///
+    /// # Parameters
+    /// - `flag`: Boolean flag indicating whether to enable (true) or disable (false) standard config providers.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_enableStandardProviders()`.
     pub fn enable_standard_providers(&self, flag: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_enableStandardProviders)(self.as_raw() as *mut _, u8::from(flag)) };
@@ -289,7 +310,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the AuthenticationProvider of Instance
-    /// @param\[out\] authenticationProvider The AuthenticationProvider of Instance.
+    ///
+    /// # Returns
+    /// - `authentication_provider`: The AuthenticationProvider of Instance.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getAuthenticationProvider()`.
     pub fn authentication_provider(&self) -> Result<Option<AuthenticationProvider>> {
         let mut __authentication_provider: *mut sys::daqAuthenticationProvider = std::ptr::null_mut();
@@ -299,7 +323,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the dictionary of component names and log level which will be added to logger components
-    /// @param\[out\] components The dictionary of component names and log level
+    ///
+    /// # Returns
+    /// - `components`: The dictionary of component names and log level
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getComponentsLogLevel()`.
     pub fn components_log_level(&self) -> Result<std::collections::HashMap<String, NumberObject>> {
         let mut __components: *mut sys::daqDict = std::ptr::null_mut();
@@ -309,7 +336,10 @@ impl InstanceBuilder {
     }
 
     /// Returns a context object of the instance.
-    /// @param\[out\] context The Context object of the instance.
+    ///
+    /// # Returns
+    /// - `context`: The Context object of the instance.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getContext()`.
     pub fn context(&self) -> Result<Option<Context>> {
         let mut __context: *mut sys::daqContext = std::ptr::null_mut();
@@ -319,7 +349,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the default device info of Instance
-    /// @param deviceInfo The default device info of Instance. Returns nullptr, if default device info has not been set.
+    ///
+    /// # Parameters
+    /// - `device_info`: The default device info of Instance. Returns nullptr, if default device info has not been set.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getDefaultRootDeviceInfo()`.
     pub fn default_root_device_info(&self) -> Result<Option<DeviceInfo>> {
         let mut __device_info: *mut sys::daqDeviceInfo = std::ptr::null_mut();
@@ -329,7 +362,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the default root device local id
-    /// @param\[out\] localId The default root device local id. Returns empty string id default root device local is has not been set.
+    ///
+    /// # Returns
+    /// - `local_id`: The default root device local id. Returns empty string id default root device local is has not been set.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getDefaultRootDeviceLocalId()`.
     pub fn default_root_device_local_id(&self) -> Result<String> {
         let mut __local_id: *mut sys::daqString = std::ptr::null_mut();
@@ -339,7 +375,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the dictionary of discovery servers
-    /// @param\[out\] serverNames The dictionary of discovery server names
+    ///
+    /// # Returns
+    /// - `server_names`: The dictionary of discovery server names
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getDiscoveryServers()`.
     pub fn discovery_servers(&self) -> Result<Vec<String>> {
         let mut __server_names: *mut sys::daqList = std::ptr::null_mut();
@@ -349,7 +388,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the default Logger global level of Instance
-    /// @param\[out\] logLevel The Logger global level of Instance. Returns LogLevel::Default, If global log level has not been set
+    ///
+    /// # Returns
+    /// - `log_level`: The Logger global level of Instance. Returns LogLevel::Default, If global log level has not been set
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getGlobalLogLevel()`.
     pub fn global_log_level(&self) -> Result<LogLevel> {
         let mut __log_level: u32 = 0;
@@ -367,7 +409,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the Logger of the Instance. Returns nullptr if custom logger has not been set
-    /// @param\[out\] logger The Logger of Instance
+    ///
+    /// # Returns
+    /// - `logger`: The Logger of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getLogger()`.
     pub fn logger(&self) -> Result<Option<Logger>> {
         let mut __logger: *mut sys::daqLogger = std::ptr::null_mut();
@@ -377,7 +422,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the list of logger sinks for the default Instance logger.
-    /// @param\[out\] sinks The list of logger sinks of the default Instance logger
+    ///
+    /// # Returns
+    /// - `sinks`: The list of logger sinks of the default Instance logger
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getLoggerSinks()`.
     pub fn logger_sinks(&self) -> Result<Vec<LoggerSink>> {
         let mut __sinks: *mut sys::daqList = std::ptr::null_mut();
@@ -387,7 +435,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the authenticator object.
-    /// @param\[out\] authenticator Verifier object. Will return nullptr if not set.
+    ///
+    /// # Returns
+    /// - `authenticator`: Verifier object. Will return nullptr if not set.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getModuleAuthenticator()`.
     pub fn module_authenticator(&self) -> Result<Option<ModuleAuthenticator>> {
         let mut __authenticator: *mut sys::daqModuleAuthenticator = std::ptr::null_mut();
@@ -397,7 +448,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the custom ModuleManager of Instance
-    /// @param\[out\] moduleManager The ModuleManager of Instance. Returns nullptr, if custom ModuleManager has not been set
+    ///
+    /// # Returns
+    /// - `module_manager`: The ModuleManager of Instance. Returns nullptr, if custom ModuleManager has not been set
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getModuleManager()`.
     pub fn module_manager(&self) -> Result<Option<ModuleManager>> {
         let mut __module_manager: *mut sys::daqModuleManager = std::ptr::null_mut();
@@ -407,7 +461,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the path for the default ModuleManager of Instance.
-    /// @param\[out\] path The path for the default ModuleManager of Instance. Returns empty string, If module path has not been set
+    ///
+    /// # Returns
+    /// - `path`: The path for the default ModuleManager of Instance. Returns empty string, If module path has not been set
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getModulePath()`.
     pub fn module_path(&self) -> Result<String> {
         let mut __path: *mut sys::daqString = std::ptr::null_mut();
@@ -417,7 +474,10 @@ impl InstanceBuilder {
     }
 
     /// Get the list of paths for the default ModuleManager of the Instance. If Module manager has been set, configuring of Module path has no effect in building Instance.
-    /// @param paths The paths for the default ModuleManager of Instance
+    ///
+    /// # Parameters
+    /// - `paths`: The paths for the default ModuleManager of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getModulePathsList()`.
     pub fn module_paths_list(&self) -> Result<Vec<String>> {
         let mut __paths: *mut sys::daqList = std::ptr::null_mut();
@@ -427,7 +487,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the dictionary of instance options
-    /// @param\[out\] options The dictionary of instance options
+    ///
+    /// # Returns
+    /// - `options`: The dictionary of instance options
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getOptions()`.
     pub fn options(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __options: *mut sys::daqDict = std::ptr::null_mut();
@@ -437,7 +500,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the connection string for the default root device of Instance.
-    /// @param\[out\] connectionString The connection string for the root device of Instance. Returns nullptr, if root device connection string has not been set.
+    ///
+    /// # Returns
+    /// - `connection_string`: The connection string for the root device of Instance. Returns nullptr, if root device connection string has not been set.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getRootDevice()`.
     pub fn root_device(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -447,7 +513,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the configuration property object for the default root device of Instance.
-    /// @param\[out\] config The configuraton property object for the root device of Instance. Returns nullptr, for the default configuration property object.
+    ///
+    /// # Returns
+    /// - `config`: The configuraton property object for the root device of Instance. Returns nullptr, for the default configuration property object.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getRootDeviceConfig()`.
     pub fn root_device_config(&self) -> Result<Option<PropertyObject>> {
         let mut __config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -457,7 +526,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the custom scheduler of Instance
-    /// @param\[out\] scheduler The custom scheduler of Instance. Returns nullptr, if custom Scheduler has not been set.
+    ///
+    /// # Returns
+    /// - `scheduler`: The custom scheduler of Instance. Returns nullptr, if custom Scheduler has not been set.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getScheduler()`.
     pub fn scheduler(&self) -> Result<Option<Scheduler>> {
         let mut __scheduler: *mut sys::daqScheduler = std::ptr::null_mut();
@@ -467,7 +539,10 @@ impl InstanceBuilder {
     }
 
     /// Gets the amount of worker threads in the scheduler of Instance.
-    /// @param\[out\] numWorkers The amount of worker threads in the scheduler of Instance. Returns 0, if worker num has not been set
+    ///
+    /// # Returns
+    /// - `num_workers`: The amount of worker threads in the scheduler of Instance. Returns 0, if worker num has not been set
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getSchedulerWorkerNum()`.
     pub fn scheduler_worker_num(&self) -> Result<usize> {
         let mut __num_workers: usize = Default::default();
@@ -477,7 +552,10 @@ impl InstanceBuilder {
     }
 
     /// Checks whether the scheduler will be created with main loop support.
-    /// @param\[out\] useMainLoop True if the scheduler will be configured with main loop support; otherwise, false.
+    ///
+    /// # Returns
+    /// - `use_main_loop`: True if the scheduler will be configured with main loop support; otherwise, false.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_getUsingSchedulerMainLoop()`.
     pub fn using_scheduler_main_loop(&self) -> Result<bool> {
         let mut __use_main_loop: u8 = 0;
@@ -487,7 +565,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the AuthenticationProvider for the Instance.
-    /// @param authenticationProvider The AuthenticationProvider for the Instance
+    ///
+    /// # Parameters
+    /// - `authentication_provider`: The AuthenticationProvider for the Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setAuthenticationProvider()`.
     pub fn set_authentication_provider(&self, authentication_provider: &AuthenticationProvider) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setAuthenticationProvider)(self.as_raw() as *mut _, authentication_provider.as_raw() as *mut _) };
@@ -496,8 +577,11 @@ impl InstanceBuilder {
     }
 
     /// Sets The Logger level for a specific component of the Instance. Log messages related to that component will be processed according to the specified log level.
-    /// @param component The name of Instance component
-    /// @param logLevel The log level of Instance component
+    ///
+    /// # Parameters
+    /// - `component`: The name of Instance component
+    /// - `log_level`: The log level of Instance component
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setComponentLogLevel()`.
     pub fn set_component_log_level(&self, component: &str, log_level: LogLevel) -> Result<()> {
         let __component = crate::marshal::make_string(component)?;
@@ -507,7 +591,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the Context object of the instance. This overwrites other context related settings such as logger, scheduler and module manager settings.
-    /// @param context The Context object for instance.
+    ///
+    /// # Parameters
+    /// - `context`: The Context object for instance.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setContext()`.
     pub fn set_context(&self, context: &Context) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setContext)(self.as_raw() as *mut _, context.as_raw() as *mut _) };
@@ -516,7 +603,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the default device info of Instance. If device info has been set, method getInfo of Instance will return set device info if Root Device has not been set
-    /// @param deviceInfo The device info of the default device of Instance
+    ///
+    /// # Parameters
+    /// - `device_info`: The device info of the default device of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setDefaultRootDeviceInfo()`.
     pub fn set_default_root_device_info(&self, device_info: &DeviceInfo) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setDefaultRootDeviceInfo)(self.as_raw() as *mut _, device_info.as_raw() as *mut _) };
@@ -525,7 +615,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the local id for default device. Has no effect if `Root device` has been congigured.
-    /// @param localId The default root device local id
+    ///
+    /// # Parameters
+    /// - `local_id`: The default root device local id
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setDefaultRootDeviceLocalId()`.
     pub fn set_default_root_device_local_id(&self, local_id: &str) -> Result<()> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -535,7 +628,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the Logger global log level for the Instance. All log messages with a severity level equal to or higher than the specified level will be processed.
-    /// @param logLevel The Logger global level of Instance
+    ///
+    /// # Parameters
+    /// - `log_level`: The Logger global level of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setGlobalLogLevel()`.
     pub fn set_global_log_level(&self, log_level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setGlobalLogLevel)(self.as_raw() as *mut _, log_level as u32) };
@@ -551,7 +647,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the custom Logger for the Instance. This logger will be used for logging messages related to the Instance and its components. When configured, the `Logger sink` will be ignored, as it is in use only with the default Instance logger.
-    /// @param logger The custom Logger of Instance
+    ///
+    /// # Parameters
+    /// - `logger`: The custom Logger of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setLogger()`.
     pub fn set_logger(&self, logger: &Logger) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setLogger)(self.as_raw() as *mut _, logger.as_raw() as *mut _) };
@@ -560,7 +659,10 @@ impl InstanceBuilder {
     }
 
     /// Set verification class for modules. The class will check each module DLL and verify it's authenticity before it is loaded.
-    /// @param authenticator Verifier object.
+    ///
+    /// # Parameters
+    /// - `authenticator`: Verifier object.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setModuleAuthenticator()`.
     pub fn set_module_authenticator(&self, authenticator: &ModuleAuthenticator) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setModuleAuthenticator)(self.as_raw() as *mut _, authenticator.as_raw() as *mut _) };
@@ -569,7 +671,10 @@ impl InstanceBuilder {
     }
 
     /// Sets The custom ModuleManager for the Instance.
-    /// @param moduleManager The custom ModuleManager of Instance
+    ///
+    /// # Parameters
+    /// - `module_manager`: The custom ModuleManager of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setModuleManager()`.
     pub fn set_module_manager(&self, module_manager: &ModuleManager) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setModuleManager)(self.as_raw() as *mut _, module_manager.as_raw() as *mut _) };
@@ -578,7 +683,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the path for the default ModuleManager of the Instance. If Module manager has been set, configuring of Module path has no effect in building Instance.
-    /// @param path The path for the default ModuleManager of Instance
+    ///
+    /// # Parameters
+    /// - `path`: The path for the default ModuleManager of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setModulePath()`.
     pub fn set_module_path(&self, path: &str) -> Result<()> {
         let __path = crate::marshal::make_string(path)?;
@@ -588,8 +696,11 @@ impl InstanceBuilder {
     }
 
     /// Sets the connection string for a device that replaces the default openDAQ root device. When the instance is created, a connection to the device with the given connection string will be established, and the device will be placed at the root of the component tree structure.
-    /// @param connectionString The connection string for the root device of the Instance.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string for the root device of the Instance.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setRootDevice()`.
     pub fn set_root_device(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -599,8 +710,11 @@ impl InstanceBuilder {
     }
 
     /// Sets the connection string for a device that replaces the default openDAQ root device. When the instance is created, a connection to the device with the given connection string will be established, and the device will be placed at the root of the component tree structure.
-    /// @param connectionString The connection string for the root device of the Instance.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string for the root device of the Instance.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setRootDevice()`.
     pub fn set_root_device_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -610,7 +724,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the custom scheduler of Instance
-    /// @param scheduler The custom scheduler of Instance
+    ///
+    /// # Parameters
+    /// - `scheduler`: The custom scheduler of Instance
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setScheduler()`.
     pub fn set_scheduler(&self, scheduler: &Scheduler) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setScheduler)(self.as_raw() as *mut _, scheduler.as_raw() as *mut _) };
@@ -619,7 +736,10 @@ impl InstanceBuilder {
     }
 
     /// Sets the number of worker threads in the scheduler of the Instance. If Scheduler has been set, configuring of Scheduler worker num has no effect in building Instance.
-    /// @param numWorkers The amount of worker threads in the scheduler of Instance. If @c is 0, then the amount of workers is the maximum number of concurrent threads supported by the implementation.
+    ///
+    /// # Parameters
+    /// - `num_workers`: The amount of worker threads in the scheduler of Instance. If `is` 0, then the amount of workers is the maximum number of concurrent threads supported by the implementation.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setSchedulerWorkerNum()`.
     pub fn set_scheduler_worker_num(&self, num_workers: usize) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setSchedulerWorkerNum)(self.as_raw() as *mut _, num_workers) };
@@ -628,8 +748,11 @@ impl InstanceBuilder {
     }
 
     /// Sets the sink logger level of the default Instance logger. If Logger has been set, configuring of the Logger sink has no effect in building Instance.
-    /// @param sink The sink logger of the default Instance logger
-    /// @param logLevel The sink logger level of the default Instance logger
+    ///
+    /// # Parameters
+    /// - `sink`: The sink logger of the default Instance logger
+    /// - `log_level`: The sink logger level of the default Instance logger
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setSinkLogLevel()`.
     pub fn set_sink_log_level(&self, sink: &LoggerSink, log_level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setSinkLogLevel)(self.as_raw() as *mut _, sink.as_raw() as *mut _, log_level as u32) };
@@ -638,10 +761,10 @@ impl InstanceBuilder {
     }
 
     /// Enables or disables usage of the scheduler's main loop.
-    /// @param useMainLoop Whether to construct the scheduler with main loop support.
-    /// If enabled, the scheduler will be constructed with the main worker, allowing use of the main loop.
-    /// Note that enabling this does not automatically start the main loop. To start it, you must call
-    /// `IScheduler::runMainLoop()` or `IScheduler::runMainLoopIteration()`.
+    ///
+    /// # Parameters
+    /// - `use_main_loop`: Whether to construct the scheduler with main loop support. If enabled, the scheduler will be constructed with the main worker, allowing use of the main loop. Note that enabling this does not automatically start the main loop. To start it, you must call `IScheduler::runMainLoop()` or `IScheduler::runMainLoopIteration()`.
+    ///
     /// Calls the openDAQ C function `daqInstanceBuilder_setUsingSchedulerMainLoop()`.
     pub fn set_using_scheduler_main_loop(&self, use_main_loop: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInstanceBuilder_setUsingSchedulerMainLoop)(self.as_raw() as *mut _, u8::from(use_main_loop)) };
@@ -653,7 +776,10 @@ impl InstanceBuilder {
 
 impl Instance {
     /// Creates and adds streaming and "OpenDAQOPCUA" servers with default configurations.
-    /// @param\[out\] servers List of added created servers.
+    ///
+    /// # Returns
+    /// - `servers`: List of added created servers.
+    ///
     /// Calls the openDAQ C function `daqInstance_addStandardServers()`.
     pub fn add_standard_servers(&self) -> Result<Vec<Server>> {
         let mut __servers: *mut sys::daqList = std::ptr::null_mut();
@@ -663,7 +789,10 @@ impl Instance {
     }
 
     /// Get a dictionary of available server types as \<IString, IServerType\> pairs
-    /// @param\[out\] serverTypes The dictionary of available server types.
+    ///
+    /// # Returns
+    /// - `server_types`: The dictionary of available server types.
+    ///
     /// Calls the openDAQ C function `daqInstance_getAvailableServerTypes()`.
     pub fn available_server_types(&self) -> Result<std::collections::HashMap<String, ServerType>> {
         let mut __server_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -673,7 +802,10 @@ impl Instance {
     }
 
     /// Gets the Module manager.
-    /// @param\[out\] manager The module manager.
+    ///
+    /// # Returns
+    /// - `manager`: The module manager.
+    ///
     /// Calls the openDAQ C function `daqInstance_getModuleManager()`.
     pub fn module_manager(&self) -> Result<Option<ModuleManager>> {
         let mut __manager: *mut sys::daqModuleManager = std::ptr::null_mut();
@@ -683,8 +815,10 @@ impl Instance {
     }
 
     /// Gets the current root device.
-    /// @param\[out\] rootDevice The current root device.
-    /// All Device calls invoked on the Instance are forwarded to the current root device.
+    ///
+    /// # Returns
+    /// - `root_device`: The current root device. All Device calls invoked on the Instance are forwarded to the current root device.
+    ///
     /// Calls the openDAQ C function `daqInstance_getRootDevice()`.
     pub fn root_device(&self) -> Result<Option<Device>> {
         let mut __root_device: *mut sys::daqDevice = std::ptr::null_mut();
@@ -694,9 +828,11 @@ impl Instance {
     }
 
     /// Adds a device with the connection string as root device.
-    /// @param connectionString The connection string containing the address of the device.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
-    /// All Device calls invoked on the Instance are forwarded to the root device. The root device can only be set once.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the device.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used. All Device calls invoked on the Instance are forwarded to the root device. The root device can only be set once.
+    ///
     /// Calls the openDAQ C function `daqInstance_setRootDevice()`.
     pub fn set_root_device(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -706,9 +842,11 @@ impl Instance {
     }
 
     /// Adds a device with the connection string as root device.
-    /// @param connectionString The connection string containing the address of the device.
-    /// @param config A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used.
-    /// All Device calls invoked on the Instance are forwarded to the root device. The root device can only be set once.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string containing the address of the device.
+    /// - `config`: A config object to configure a client device. This object can contain properties like max sample rate, port to use for 3rd party communication, number of channels to generate, or other device specific settings. In case of nullptr, a default configuration is used. All Device calls invoked on the Instance are forwarded to the root device. The root device can only be set once.
+    ///
     /// Calls the openDAQ C function `daqInstance_setRootDevice()`.
     pub fn set_root_device_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;

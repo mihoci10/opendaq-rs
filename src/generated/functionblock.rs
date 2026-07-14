@@ -144,10 +144,13 @@ impl crate::value::FromDaqOwned for Recorder {
 
 impl FunctionBlockType {
     /// Creates a Function block type object, with the id, name, description and optional defaultConfig.
-    /// @param id The unique type ID of the function block.
-    /// @param name The name of the function block. Eg. FFT.
-    /// @param description A short description of the function block and its behaviour.
-    /// @param defaultConfig The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the function block has its own configuration object.
+    ///
+    /// # Parameters
+    /// - `id`: The unique type ID of the function block.
+    /// - `name`: The name of the function block. Eg. FFT.
+    /// - `description`: A short description of the function block and its behaviour.
+    /// - `default_config`: The property object, to be cloned and returned, each time user creates default configuration object. This way each instance of the function block has its own configuration object.
+    ///
     /// Calls the openDAQ C function `daqFunctionBlockType_createFunctionBlockType()`.
     pub fn new(id: &str, name: &str, description: &str, default_config: &PropertyObject) -> Result<FunctionBlockType> {
         let __id = crate::marshal::make_string(id)?;
@@ -163,8 +166,13 @@ impl FunctionBlockType {
 
 impl Recorder {
     /// Checks whether data from connected signals is currently being recorded to the persistent storage medium.
-    /// @param isRecording A pointer to a boolean which is populated with the recording state.
-    /// @retval OPENDAQ_SUCCESS if the recording status was successfully returned.
+    ///
+    /// # Parameters
+    /// - `is_recording`: A pointer to a boolean which is populated with the recording state.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_SUCCESS`: if the recording status was successfully returned.
+    ///
     /// Calls the openDAQ C function `daqRecorder_getIsRecording()`.
     pub fn is_recording(&self) -> Result<bool> {
         let mut __is_recording: u8 = 0;
@@ -174,8 +182,11 @@ impl Recorder {
     }
 
     /// Starts recording data from connected signals to the persistent storage medium.
-    /// @retval OPENDAQ_SUCCESS if the recording successfully started.
-    /// @retval OPENDAQ_ERR_INVALIDSTATE if the recording has already been started and the implementation chooses to treat this scenario as an error.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_SUCCESS`: if the recording successfully started.
+    /// - `OPENDAQ_ERR_INVALIDSTATE`: if the recording has already been started and the implementation chooses to treat this scenario as an error.
+    ///
     /// Calls the openDAQ C function `daqRecorder_startRecording()`.
     pub fn start_recording(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqRecorder_startRecording)(self.as_raw() as *mut _) };
@@ -184,8 +195,11 @@ impl Recorder {
     }
 
     /// Stops recording data from connected signals to the persistent storage medium.
-    /// @retval OPENDAQ_SUCCESS if the recording successfully stopped.
-    /// @retval OPENDAQ_ERR_INVALIDSTATE if the recording is not started and the implementation chooses to treat this scenario as an error.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_SUCCESS`: if the recording successfully stopped.
+    /// - `OPENDAQ_ERR_INVALIDSTATE`: if the recording is not started and the implementation chooses to treat this scenario as an error.
+    ///
     /// Calls the openDAQ C function `daqRecorder_stopRecording()`.
     pub fn stop_recording(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqRecorder_stopRecording)(self.as_raw() as *mut _) };

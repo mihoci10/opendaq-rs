@@ -229,8 +229,10 @@ impl crate::value::FromDaqOwned for ModuleManagerUtils {
 
 impl ContextInternal {
     /// Gets the Module Manager. Moves the strong reference to the manager to the first caller and retains a weak reference internally.
-    /// @param\[out\] manager The module manager.
-    /// Returns a nullptr on subsequent invocations, and if the manager is not assigned.
+    ///
+    /// # Returns
+    /// - `manager`: The module manager. Returns a nullptr on subsequent invocations, and if the manager is not assigned.
+    ///
     /// Calls the openDAQ C function `daqContextInternal_moveModuleManager()`.
     pub fn move_module_manager(&self) -> Result<Option<ModuleManager>> {
         let mut __manager: *mut sys::daqModuleManager = std::ptr::null_mut();
@@ -277,13 +279,13 @@ impl DiscoveryServer {
 
 impl ModuleManagerUtils {
     /// Initiates the modification of IP configuration parameters for a specified network interface associated with a target device.
-    /// @param iface The name of the network interface whose IP configuration parameters need to be updated.
-    /// @param manufacturer The manufacturer's name identifying the device owning the network interface.
-    /// @param serialNumber The serial number of the device owning the network interface.
-    /// @param config A property object containing the configuration parameters to be applied.
-    /// The manufacturer name and serial number are used to uniquely identify the target device. Once the config modification is invoked,
-    /// the new config parameters are advertised via multicast to all devices in the subnet. The target device compares the received
-    /// identification parameters with its own and, if they match, attempts to apply the new configuration parameters for the specified interface.
+    ///
+    /// # Parameters
+    /// - `iface`: The name of the network interface whose IP configuration parameters need to be updated.
+    /// - `manufacturer`: The manufacturer's name identifying the device owning the network interface.
+    /// - `serial_number`: The serial number of the device owning the network interface.
+    /// - `config`: A property object containing the configuration parameters to be applied. The manufacturer name and serial number are used to uniquely identify the target device. Once the config modification is invoked, the new config parameters are advertised via multicast to all devices in the subnet. The target device compares the received identification parameters with its own and, if they match, attempts to apply the new configuration parameters for the specified interface.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_changeIpConfig()`.
     pub fn change_ip_config(&self, iface: &str, manufacturer: &str, serial_number: &str, config: &PropertyObject) -> Result<()> {
         let __iface = crate::marshal::make_string(iface)?;
@@ -295,7 +297,10 @@ impl ModuleManagerUtils {
     }
 
     /// Completes the DeviceInfo's ServerCapabilities of existing device with the information obtained from device discovery.
-    /// @param device The device whose ServerCapabilities should be completed.
+    ///
+    /// # Parameters
+    /// - `device`: The device whose ServerCapabilities should be completed.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_completeDeviceCapabilities()`.
     pub fn complete_device_capabilities(&self, device: &Device) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqModuleManagerUtils_completeDeviceCapabilities)(self.as_raw() as *mut _, device.as_raw() as *mut _) };
@@ -312,11 +317,15 @@ impl ModuleManagerUtils {
     }
 
     /// Creates a device object that can communicate with the device described in the specified connection string. The device object is not automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] device The device object created to communicate with and control the device.
-    /// @param connectionString Describes the connection info of the device to connect to.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param config A configuration object that contains parameters used to configure a device in the form of key-value pairs.
-    /// Iterates through all loaded modules and creates a device with the first module that accepts the provided connection string.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection info of the device to connect to.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `config`: A configuration object that contains parameters used to configure a device in the form of key-value pairs. Iterates through all loaded modules and creates a device with the first module that accepts the provided connection string.
+    ///
+    /// # Returns
+    /// - `device`: The device object created to communicate with and control the device.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createDevice()`.
     pub fn create_device(&self, connection_string: &str, parent: &Component) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -327,11 +336,15 @@ impl ModuleManagerUtils {
     }
 
     /// Creates a device object that can communicate with the device described in the specified connection string. The device object is not automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] device The device object created to communicate with and control the device.
-    /// @param connectionString Describes the connection info of the device to connect to.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param config A configuration object that contains parameters used to configure a device in the form of key-value pairs.
-    /// Iterates through all loaded modules and creates a device with the first module that accepts the provided connection string.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection info of the device to connect to.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `config`: A configuration object that contains parameters used to configure a device in the form of key-value pairs. Iterates through all loaded modules and creates a device with the first module that accepts the provided connection string.
+    ///
+    /// # Returns
+    /// - `device`: The device object created to communicate with and control the device.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createDevice()`.
     pub fn create_device_with(&self, connection_string: &str, parent: &Component, config: Option<&PropertyObject>) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -342,13 +355,17 @@ impl ModuleManagerUtils {
     }
 
     /// Creates multiple device objects in parallel using the specified connection strings. Each device is created concurrently. None of the created device object are automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] devices A dictionary which maps each connection string to the corresponding created device object. If a device creation attempt fails, the value will be `nullptr` for that entry.
-    /// @param connectionArgs A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
-    /// @param parent The parent component/device to which the created devices attach.
-    /// @param errCodes An optional dictionary to populate error codes for failed connections. For each failed connection, the key is the connection string, and the value contains error code.
-    /// @param errorInfos An optional dictionary to populate error info details for failed connections. For each failed connection, the key is the connection string, and the value contains error info object.
-    /// @return OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created, but not all of them;
-    /// OPENDAQ_ERR_GENERALERROR if no devices were created.
+    ///
+    /// # Parameters
+    /// - `connection_args`: A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
+    /// - `parent`: The parent component/device to which the created devices attach.
+    /// - `err_codes`: An optional dictionary to populate error codes for failed connections. For each failed connection, the key is the connection string, and the value contains error code.
+    /// - `error_infos`: An optional dictionary to populate error info details for failed connections. For each failed connection, the key is the connection string, and the value contains error info object.
+    ///
+    /// # Returns
+    /// OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created, but not all of them; OPENDAQ_ERR_GENERALERROR if no devices were created.
+    /// - `devices`: A dictionary which maps each connection string to the corresponding created device object. If a device creation attempt fails, the value will be `nullptr` for that entry.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createDevices()`.
     pub fn create_devices(&self, connection_args: impl Into<Value>, parent: &Component) -> Result<std::collections::HashMap<String, Device>> {
         let __connection_args = crate::value::to_daq(&connection_args.into())?;
@@ -359,13 +376,17 @@ impl ModuleManagerUtils {
     }
 
     /// Creates multiple device objects in parallel using the specified connection strings. Each device is created concurrently. None of the created device object are automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] devices A dictionary which maps each connection string to the corresponding created device object. If a device creation attempt fails, the value will be `nullptr` for that entry.
-    /// @param connectionArgs A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
-    /// @param parent The parent component/device to which the created devices attach.
-    /// @param errCodes An optional dictionary to populate error codes for failed connections. For each failed connection, the key is the connection string, and the value contains error code.
-    /// @param errorInfos An optional dictionary to populate error info details for failed connections. For each failed connection, the key is the connection string, and the value contains error info object.
-    /// @return OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created, but not all of them;
-    /// OPENDAQ_ERR_GENERALERROR if no devices were created.
+    ///
+    /// # Parameters
+    /// - `connection_args`: A dictionary where each key is a connection string identifying the target device (e.g., IPv4/IPv6), and each value is a configuration object that customizes the connection. The configuration may specify parameters such as maximum sample rate, communication port, number of channels, or other device-specific settings. A `nullptr` value indicates that the default configuration should be used.
+    /// - `parent`: The parent component/device to which the created devices attach.
+    /// - `err_codes`: An optional dictionary to populate error codes for failed connections. For each failed connection, the key is the connection string, and the value contains error code.
+    /// - `error_infos`: An optional dictionary to populate error info details for failed connections. For each failed connection, the key is the connection string, and the value contains error info object.
+    ///
+    /// # Returns
+    /// OPENDAQ_PARTIAL_SUCCESS if at least one device was successfully created, but not all of them; OPENDAQ_ERR_GENERALERROR if no devices were created.
+    /// - `devices`: A dictionary which maps each connection string to the corresponding created device object. If a device creation attempt fails, the value will be `nullptr` for that entry.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createDevices()`.
     pub fn create_devices_with(&self, connection_args: impl Into<Value>, parent: &Component, err_codes: impl Into<Value>, error_infos: impl Into<Value>) -> Result<std::collections::HashMap<String, Device>> {
         let __connection_args = crate::value::to_daq(&connection_args.into())?;
@@ -378,16 +399,16 @@ impl ModuleManagerUtils {
     }
 
     /// Creates and returns a function block with the specified id. The function block is not automatically added to the FB list of the caller.
-    /// @param id The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
-    /// @param parent The parent component/device to which the function block attaches.
-    /// @param config Function block configuration. In case of a null value, implementation should use default configuration.
-    /// @param localId Custom local ID for the function block. Overrides the "LocalId" property of the "config" object, if present.
-    /// @param\[out\] functionBlock The created function block.
-    /// Iterates through all loaded modules and creates a function block with the first module that accepts the provided connection string.
-    /// The local ID is equal to the name of the function block type with a "_n" suffix, where "n" is an integer, equal to that of the greatest
-    /// integer suffix amongst the function blocks of the same function block type already added to a given parent. The initial value of "n" is 0.
-    /// A custom local ID can be provided by adding a "LocalId" string property to the `config` property object input parameter, or by providing the
-    /// localId string argument.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
+    /// - `parent`: The parent component/device to which the function block attaches.
+    /// - `config`: Function block configuration. In case of a null value, implementation should use default configuration.
+    /// - `local_id`: Custom local ID for the function block. Overrides the "LocalId" property of the "config" object, if present.
+    ///
+    /// # Returns
+    /// - `function_block`: The created function block. Iterates through all loaded modules and creates a function block with the first module that accepts the provided connection string. The local ID is equal to the name of the function block type with a "_n" suffix, where "n" is an integer, equal to that of the greatest integer suffix amongst the function blocks of the same function block type already added to a given parent. The initial value of "n" is 0. A custom local ID can be provided by adding a "LocalId" string property to the `config` property object input parameter, or by providing the localId string argument.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createFunctionBlock()`.
     pub fn create_function_block(&self, id: &str, parent: &Component) -> Result<Option<FunctionBlock>> {
         let __id = crate::marshal::make_string(id)?;
@@ -398,16 +419,16 @@ impl ModuleManagerUtils {
     }
 
     /// Creates and returns a function block with the specified id. The function block is not automatically added to the FB list of the caller.
-    /// @param id The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
-    /// @param parent The parent component/device to which the function block attaches.
-    /// @param config Function block configuration. In case of a null value, implementation should use default configuration.
-    /// @param localId Custom local ID for the function block. Overrides the "LocalId" property of the "config" object, if present.
-    /// @param\[out\] functionBlock The created function block.
-    /// Iterates through all loaded modules and creates a function block with the first module that accepts the provided connection string.
-    /// The local ID is equal to the name of the function block type with a "_n" suffix, where "n" is an integer, equal to that of the greatest
-    /// integer suffix amongst the function blocks of the same function block type already added to a given parent. The initial value of "n" is 0.
-    /// A custom local ID can be provided by adding a "LocalId" string property to the `config` property object input parameter, or by providing the
-    /// localId string argument.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
+    /// - `parent`: The parent component/device to which the function block attaches.
+    /// - `config`: Function block configuration. In case of a null value, implementation should use default configuration.
+    /// - `local_id`: Custom local ID for the function block. Overrides the "LocalId" property of the "config" object, if present.
+    ///
+    /// # Returns
+    /// - `function_block`: The created function block. Iterates through all loaded modules and creates a function block with the first module that accepts the provided connection string. The local ID is equal to the name of the function block type with a "_n" suffix, where "n" is an integer, equal to that of the greatest integer suffix amongst the function blocks of the same function block type already added to a given parent. The initial value of "n" is 0. A custom local ID can be provided by adding a "LocalId" string property to the `config` property object input parameter, or by providing the localId string argument.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createFunctionBlock()`.
     pub fn create_function_block_with(&self, id: &str, parent: &Component, config: Option<&PropertyObject>, local_id: &str) -> Result<Option<FunctionBlock>> {
         let __id = crate::marshal::make_string(id)?;
@@ -419,13 +440,15 @@ impl ModuleManagerUtils {
     }
 
     /// Creates and returns a server with the provided serverType and configuration.
-    /// @param serverTypeId Type id of the server. Can be obtained from its corresponding Server type object.
-    /// @param rootDevice The root device
-    /// @param serverConfig Config of the server. Can be created from its corresponding Server type object. In case of a null value, it will use the default configuration.
-    /// @param\[out\] server The created server.
-    /// Iterates through all loaded modules and creates a server with the first module that accepts the provided serverTypeId.
-    /// The servers folder of the root device is automatically assigned as parent for created server component.
-    /// The local ID of created server component is equal to the name of the server type.
+    ///
+    /// # Parameters
+    /// - `server_type_id`: Type id of the server. Can be obtained from its corresponding Server type object.
+    /// - `root_device`: The root device
+    /// - `server_config`: Config of the server. Can be created from its corresponding Server type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `server`: The created server. Iterates through all loaded modules and creates a server with the first module that accepts the provided serverTypeId. The servers folder of the root device is automatically assigned as parent for created server component. The local ID of created server component is equal to the name of the server type.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createServer()`.
     pub fn create_server(&self, server_type_id: &str, root_device: &Device) -> Result<Option<Server>> {
         let __server_type_id = crate::marshal::make_string(server_type_id)?;
@@ -436,13 +459,15 @@ impl ModuleManagerUtils {
     }
 
     /// Creates and returns a server with the provided serverType and configuration.
-    /// @param serverTypeId Type id of the server. Can be obtained from its corresponding Server type object.
-    /// @param rootDevice The root device
-    /// @param serverConfig Config of the server. Can be created from its corresponding Server type object. In case of a null value, it will use the default configuration.
-    /// @param\[out\] server The created server.
-    /// Iterates through all loaded modules and creates a server with the first module that accepts the provided serverTypeId.
-    /// The servers folder of the root device is automatically assigned as parent for created server component.
-    /// The local ID of created server component is equal to the name of the server type.
+    ///
+    /// # Parameters
+    /// - `server_type_id`: Type id of the server. Can be obtained from its corresponding Server type object.
+    /// - `root_device`: The root device
+    /// - `server_config`: Config of the server. Can be created from its corresponding Server type object. In case of a null value, it will use the default configuration.
+    ///
+    /// # Returns
+    /// - `server`: The created server. Iterates through all loaded modules and creates a server with the first module that accepts the provided serverTypeId. The servers folder of the root device is automatically assigned as parent for created server component. The local ID of created server component is equal to the name of the server type.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createServer()`.
     pub fn create_server_with(&self, server_type_id: &str, root_device: &Device, server_config: Option<&PropertyObject>) -> Result<Option<Server>> {
         let __server_type_id = crate::marshal::make_string(server_type_id)?;
@@ -453,10 +478,14 @@ impl ModuleManagerUtils {
     }
 
     /// Creates a streaming object using the specified connection string and config object.
-    /// @param\[out\] streaming The created streaming object.
-    /// @param connectionString Describes the connection parameters of the streaming.
-    /// @param config A configuration object that contains parameters used to configure a streaming connection in the form of key-value pairs.
-    /// Iterates through all loaded modules and creates a streaming connection with the first module that accepts the provided connection string.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection parameters of the streaming.
+    /// - `config`: A configuration object that contains parameters used to configure a streaming connection in the form of key-value pairs. Iterates through all loaded modules and creates a streaming connection with the first module that accepts the provided connection string.
+    ///
+    /// # Returns
+    /// - `streaming`: The created streaming object.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createStreaming()`.
     pub fn create_streaming(&self, connection_string: &str) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -467,10 +496,14 @@ impl ModuleManagerUtils {
     }
 
     /// Creates a streaming object using the specified connection string and config object.
-    /// @param\[out\] streaming The created streaming object.
-    /// @param connectionString Describes the connection parameters of the streaming.
-    /// @param config A configuration object that contains parameters used to configure a streaming connection in the form of key-value pairs.
-    /// Iterates through all loaded modules and creates a streaming connection with the first module that accepts the provided connection string.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection parameters of the streaming.
+    /// - `config`: A configuration object that contains parameters used to configure a streaming connection in the form of key-value pairs. Iterates through all loaded modules and creates a streaming connection with the first module that accepts the provided connection string.
+    ///
+    /// # Returns
+    /// - `streaming`: The created streaming object.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_createStreaming()`.
     pub fn create_streaming_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -481,8 +514,10 @@ impl ModuleManagerUtils {
     }
 
     /// Returns a dictionary of known and available device types this module can create.
-    /// @param\[out\] deviceTypes The dictionary of known device types.
-    /// Contains information on devices available in all loaded modules.
+    ///
+    /// # Returns
+    /// - `device_types`: The dictionary of known device types. Contains information on devices available in all loaded modules.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_getAvailableDeviceTypes()`.
     pub fn available_device_types(&self) -> Result<std::collections::HashMap<String, DeviceType>> {
         let mut __device_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -492,8 +527,10 @@ impl ModuleManagerUtils {
     }
 
     /// Returns a list of known devices info. The implementation can start discovery in background and only return the results in this function.
-    /// @param\[out\] availableDevices The list of known devices information.
-    /// Contains information on devices available in all loaded modules.
+    ///
+    /// # Returns
+    /// - `available_devices`: The list of known devices information. Contains information on devices available in all loaded modules.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_getAvailableDevices()`.
     pub fn available_devices(&self) -> Result<Vec<DeviceInfo>> {
         let mut __available_devices: *mut sys::daqList = std::ptr::null_mut();
@@ -503,8 +540,10 @@ impl ModuleManagerUtils {
     }
 
     /// Returns a dictionary of known and available function block types this module can create.
-    /// @param\[out\] functionBlockTypes The dictionary of known function block types.
-    /// Contains information on function blocks available in all loaded modules.
+    ///
+    /// # Returns
+    /// - `function_block_types`: The dictionary of known function block types. Contains information on function blocks available in all loaded modules.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_getAvailableFunctionBlockTypes()`.
     pub fn available_function_block_types(&self) -> Result<std::collections::HashMap<String, FunctionBlockType>> {
         let mut __function_block_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -522,11 +561,14 @@ impl ModuleManagerUtils {
     }
 
     /// Retrieves discovery information for a device identified by manufacturer and serial number.
-    /// @param\[out\] deviceInfo The device information object containing discovery data.
-    /// @param manufacturer The manufacturer's name identifying the device.
-    /// @param serialNumber The serial number of the device.
-    /// The manufacturer name and serial number are used to uniquely identify the target device.
-    /// This method searches through the available devices discovered during the last scan.
+    ///
+    /// # Parameters
+    /// - `manufacturer`: The manufacturer's name identifying the device.
+    /// - `serial_number`: The serial number of the device. The manufacturer name and serial number are used to uniquely identify the target device. This method searches through the available devices discovered during the last scan.
+    ///
+    /// # Returns
+    /// - `device_info`: The device information object containing discovery data.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_getDiscoveryInfo()`.
     pub fn discovery_info(&self, manufacturer: &str, serial_number: &str) -> Result<Option<DeviceInfo>> {
         let __manufacturer = crate::marshal::make_string(manufacturer)?;
@@ -538,14 +580,15 @@ impl ModuleManagerUtils {
     }
 
     /// Attempts to retrieve the current IP configuration parameters for a specified network interface associated with a target device.
-    /// @param iface The name of the network interface whose IP configuration parameters are to be retrieved.
-    /// @param manufacturer The manufacturer's name identifying the device owning the network interface.
-    /// @param serialNumber The serial number of the device owning the network interface.
-    /// @param\[out\] config A property object where the retrieved configuration parameters are stored.
-    /// The manufacturer name and serial number are used to uniquely identify the target device. The method queries the current
-    /// IP configuration parameters of the specified network interface via multicast addressing query to all devices in the subnet.
-    /// The target device compares the received identification parameters with its own and, if they match, attempts to retrieve
-    /// the currently active configuration parameters for the specified interface.
+    ///
+    /// # Parameters
+    /// - `iface`: The name of the network interface whose IP configuration parameters are to be retrieved.
+    /// - `manufacturer`: The manufacturer's name identifying the device owning the network interface.
+    /// - `serial_number`: The serial number of the device owning the network interface.
+    ///
+    /// # Returns
+    /// - `config`: A property object where the retrieved configuration parameters are stored. The manufacturer name and serial number are used to uniquely identify the target device. The method queries the current IP configuration parameters of the specified network interface via multicast addressing query to all devices in the subnet. The target device compares the received identification parameters with its own and, if they match, attempts to retrieve the currently active configuration parameters for the specified interface.
+    ///
     /// Calls the openDAQ C function `daqModuleManagerUtils_requestIpConfig()`.
     pub fn request_ip_config(&self, iface: &str, manufacturer: &str, serial_number: &str) -> Result<Option<PropertyObject>> {
         let __iface = crate::marshal::make_string(iface)?;
@@ -569,10 +612,15 @@ impl Module {
     }
 
     /// Creates a device object that can communicate with the device described in the specified connection string. The device object is not automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] device The device object created to communicate with and control the device.
-    /// @param connectionString Describes the connection info of the device to connect to.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param config A configuration object that contains parameters used to configure a device in the form of key-value pairs.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection info of the device to connect to.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `config`: A configuration object that contains parameters used to configure a device in the form of key-value pairs.
+    ///
+    /// # Returns
+    /// - `device`: The device object created to communicate with and control the device.
+    ///
     /// Calls the openDAQ C function `daqModule_createDevice()`.
     pub fn create_device(&self, connection_string: &str, parent: &Component) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -583,10 +631,15 @@ impl Module {
     }
 
     /// Creates a device object that can communicate with the device described in the specified connection string. The device object is not automatically added as a sub-device of the caller, but only returned by reference.
-    /// @param\[out\] device The device object created to communicate with and control the device.
-    /// @param connectionString Describes the connection info of the device to connect to.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param config A configuration object that contains parameters used to configure a device in the form of key-value pairs.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Describes the connection info of the device to connect to.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `config`: A configuration object that contains parameters used to configure a device in the form of key-value pairs.
+    ///
+    /// # Returns
+    /// - `device`: The device object created to communicate with and control the device.
+    ///
     /// Calls the openDAQ C function `daqModule_createDevice()`.
     pub fn create_device_with(&self, connection_string: &str, parent: &Component, config: Option<&PropertyObject>) -> Result<Option<Device>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -597,11 +650,16 @@ impl Module {
     }
 
     /// Creates and returns a function block with the specified id. The function block is not automatically added to the FB list of the caller.
-    /// @param id The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param localId The local id of the function block.
-    /// @param config Function block configuration. In case of a null value, implementation should use default configuration.
-    /// @param\[out\] functionBlock The created function block.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `local_id`: The local id of the function block.
+    /// - `config`: Function block configuration. In case of a null value, implementation should use default configuration.
+    ///
+    /// # Returns
+    /// - `function_block`: The created function block.
+    ///
     /// Calls the openDAQ C function `daqModule_createFunctionBlock()`.
     pub fn create_function_block(&self, id: &str, parent: &Component, local_id: &str) -> Result<Option<FunctionBlock>> {
         let __id = crate::marshal::make_string(id)?;
@@ -613,11 +671,16 @@ impl Module {
     }
 
     /// Creates and returns a function block with the specified id. The function block is not automatically added to the FB list of the caller.
-    /// @param id The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
-    /// @param parent The parent component/device to which the device attaches.
-    /// @param localId The local id of the function block.
-    /// @param config Function block configuration. In case of a null value, implementation should use default configuration.
-    /// @param\[out\] functionBlock The created function block.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the function block to create. Ids can be retrieved by calling `getAvailableFunctionBlockTypes()`.
+    /// - `parent`: The parent component/device to which the device attaches.
+    /// - `local_id`: The local id of the function block.
+    /// - `config`: Function block configuration. In case of a null value, implementation should use default configuration.
+    ///
+    /// # Returns
+    /// - `function_block`: The created function block.
+    ///
     /// Calls the openDAQ C function `daqModule_createFunctionBlock()`.
     pub fn create_function_block_with(&self, id: &str, parent: &Component, local_id: &str, config: Option<&PropertyObject>) -> Result<Option<FunctionBlock>> {
         let __id = crate::marshal::make_string(id)?;
@@ -629,10 +692,15 @@ impl Module {
     }
 
     /// Creates and returns a server with the specified server type.
-    /// @param serverTypeId The id of the server type to create. ServerType can be retrieved by calling `getAvailableServerTypes()`.
-    /// @param config Server configuration. In case of a null value, implementation should use default configuration.
-    /// @param rootDevice Root device.
-    /// @param\[out\] server The created server.
+    ///
+    /// # Parameters
+    /// - `server_type_id`: The id of the server type to create. ServerType can be retrieved by calling `getAvailableServerTypes()`.
+    /// - `config`: Server configuration. In case of a null value, implementation should use default configuration.
+    /// - `root_device`: Root device.
+    ///
+    /// # Returns
+    /// - `server`: The created server.
+    ///
     /// Calls the openDAQ C function `daqModule_createServer()`.
     pub fn create_server(&self, server_type_id: &str, root_device: &Device) -> Result<Option<Server>> {
         let __server_type_id = crate::marshal::make_string(server_type_id)?;
@@ -643,10 +711,15 @@ impl Module {
     }
 
     /// Creates and returns a server with the specified server type.
-    /// @param serverTypeId The id of the server type to create. ServerType can be retrieved by calling `getAvailableServerTypes()`.
-    /// @param config Server configuration. In case of a null value, implementation should use default configuration.
-    /// @param rootDevice Root device.
-    /// @param\[out\] server The created server.
+    ///
+    /// # Parameters
+    /// - `server_type_id`: The id of the server type to create. ServerType can be retrieved by calling `getAvailableServerTypes()`.
+    /// - `config`: Server configuration. In case of a null value, implementation should use default configuration.
+    /// - `root_device`: Root device.
+    ///
+    /// # Returns
+    /// - `server`: The created server.
+    ///
     /// Calls the openDAQ C function `daqModule_createServer()`.
     pub fn create_server_with(&self, server_type_id: &str, root_device: &Device, config: Option<&PropertyObject>) -> Result<Option<Server>> {
         let __server_type_id = crate::marshal::make_string(server_type_id)?;
@@ -657,9 +730,14 @@ impl Module {
     }
 
     /// Creates and returns a streaming object using the specified connection string and config object.
-    /// @param connectionString Typically a connection string usually has a well known prefix, such as `daq.lt//`.
-    /// @param config A config object that contains parameters used to configure a streaming connection. In case of a null value, implementation should use default configuration.
-    /// @param\[out\] streaming The created streaming object.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Typically a connection string usually has a well known prefix, such as `daq.lt//`.
+    /// - `config`: A config object that contains parameters used to configure a streaming connection. In case of a null value, implementation should use default configuration.
+    ///
+    /// # Returns
+    /// - `streaming`: The created streaming object.
+    ///
     /// Calls the openDAQ C function `daqModule_createStreaming()`.
     pub fn create_streaming(&self, connection_string: &str) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -670,9 +748,14 @@ impl Module {
     }
 
     /// Creates and returns a streaming object using the specified connection string and config object.
-    /// @param connectionString Typically a connection string usually has a well known prefix, such as `daq.lt//`.
-    /// @param config A config object that contains parameters used to configure a streaming connection. In case of a null value, implementation should use default configuration.
-    /// @param\[out\] streaming The created streaming object.
+    ///
+    /// # Parameters
+    /// - `connection_string`: Typically a connection string usually has a well known prefix, such as `daq.lt//`.
+    /// - `config`: A config object that contains parameters used to configure a streaming connection. In case of a null value, implementation should use default configuration.
+    ///
+    /// # Returns
+    /// - `streaming`: The created streaming object.
+    ///
     /// Calls the openDAQ C function `daqModule_createStreaming()`.
     pub fn create_streaming_with(&self, connection_string: &str, config: Option<&PropertyObject>) -> Result<Option<Streaming>> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -683,7 +766,10 @@ impl Module {
     }
 
     /// Returns a dictionary of known and available device types this module can create.
-    /// @param\[out\] deviceTypes The dictionary of known device types.
+    ///
+    /// # Returns
+    /// - `device_types`: The dictionary of known device types.
+    ///
     /// Calls the openDAQ C function `daqModule_getAvailableDeviceTypes()`.
     pub fn available_device_types(&self) -> Result<std::collections::HashMap<String, DeviceType>> {
         let mut __device_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -693,7 +779,10 @@ impl Module {
     }
 
     /// Returns a list of known devices info. The implementation can start discovery in background and only return the results in this function.
-    /// @param\[out\] availableDevices The list of known devices information.
+    ///
+    /// # Returns
+    /// - `available_devices`: The list of known devices information.
+    ///
     /// Calls the openDAQ C function `daqModule_getAvailableDevices()`.
     pub fn available_devices(&self) -> Result<Vec<DeviceInfo>> {
         let mut __available_devices: *mut sys::daqList = std::ptr::null_mut();
@@ -703,7 +792,10 @@ impl Module {
     }
 
     /// Returns a dictionary of known and available function block types this module can create.
-    /// @param\[out\] functionBlockTypes The dictionary of known function block types.
+    ///
+    /// # Returns
+    /// - `function_block_types`: The dictionary of known function block types.
+    ///
     /// Calls the openDAQ C function `daqModule_getAvailableFunctionBlockTypes()`.
     pub fn available_function_block_types(&self) -> Result<std::collections::HashMap<String, FunctionBlockType>> {
         let mut __function_block_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -713,7 +805,10 @@ impl Module {
     }
 
     /// Returns a dictionary of known and available servers types that this module can create.
-    /// @param\[out\] serverTypes The dictionary of known server types.
+    ///
+    /// # Returns
+    /// - `server_types`: The dictionary of known server types.
+    ///
     /// Calls the openDAQ C function `daqModule_getAvailableServerTypes()`.
     pub fn available_server_types(&self) -> Result<std::collections::HashMap<String, ServerType>> {
         let mut __server_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -723,7 +818,10 @@ impl Module {
     }
 
     /// Returns a dictionary of known and available streaming types that this module (client) can create.
-    /// @param\[out\] streamingTypes The dictionary of known streaming types.
+    ///
+    /// # Returns
+    /// - `streaming_types`: The dictionary of known streaming types.
+    ///
     /// Calls the openDAQ C function `daqModule_getAvailableStreamingTypes()`.
     pub fn available_streaming_types(&self) -> Result<std::collections::HashMap<String, StreamingType>> {
         let mut __streaming_types: *mut sys::daqDict = std::ptr::null_mut();
@@ -733,7 +831,10 @@ impl Module {
     }
 
     /// Used to retrieve the license config template.
-    /// @param\[out\] licenseConfig Previously used config.
+    ///
+    /// # Returns
+    /// - `license_config`: Previously used config.
+    ///
     /// Calls the openDAQ C function `daqModule_getLicenseConfig()`.
     pub fn license_config(&self) -> Result<std::collections::HashMap<String, String>> {
         let mut __license_config: *mut sys::daqDict = std::ptr::null_mut();
@@ -743,7 +844,10 @@ impl Module {
     }
 
     /// Retrieves the module information.
-    /// @param\[out\] info The module information.
+    ///
+    /// # Returns
+    /// - `info`: The module information.
+    ///
     /// Calls the openDAQ C function `daqModule_getModuleInfo()`.
     pub fn module_info(&self) -> Result<Option<ModuleInfo>> {
         let mut __info: *mut sys::daqModuleInfo = std::ptr::null_mut();
@@ -753,8 +857,10 @@ impl Module {
     }
 
     /// Check whether the module license is loaded.
-    /// @param\[out\] loaded True, if the module license is loaded.
-    /// Always return True if no license is required by the module.
+    ///
+    /// # Returns
+    /// - `loaded`: True, if the module license is loaded. Always return True if no license is required by the module.
+    ///
     /// Calls the openDAQ C function `daqModule_licenseLoaded()`.
     pub fn license_loaded(&self) -> Result<bool> {
         let mut __loaded: u8 = 0;
@@ -764,8 +870,13 @@ impl Module {
     }
 
     /// Used for loading a license, when the module requires one. Licenses can specify the degree to which the module is unlocked to the user (i.e. which and/or how many concurrent function blocks from this modules are accessible with the license).
-    /// @param\[out\] succeeded License was accepted.
-    /// @param licenseConfig Any information relevant to load the license (i.e. a path to the license file).
+    ///
+    /// # Parameters
+    /// - `license_config`: Any information relevant to load the license (i.e. a path to the license file).
+    ///
+    /// # Returns
+    /// - `succeeded`: License was accepted.
+    ///
     /// Calls the openDAQ C function `daqModule_loadLicense()`.
     pub fn load_license(&self, license_config: impl Into<Value>) -> Result<bool> {
         let __license_config = crate::value::to_daq(&license_config.into())?;

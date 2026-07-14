@@ -1272,6 +1272,7 @@ impl Allocator {
 
 impl ConnectionInternal {
     /// Enqueues an event packet with the last descriptor at the front of the queue.
+    ///
     /// Calls the openDAQ C function `daqConnectionInternal_enqueueLastDescriptor()`.
     pub fn enqueue_last_descriptor(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqConnectionInternal_enqueueLastDescriptor)(self.as_raw() as *mut _) };
@@ -1291,8 +1292,13 @@ impl Connection {
     }
 
     /// Removes the packet at the front of the queue and returns it.
-    /// @param\[out\] packet The removed packet or @c nullptr if the connection has no packets.
-    /// @retval OPENDAQ_NO_MORE_ITEMS When the connection does not hold any packets.
+    ///
+    /// # Returns
+    /// - `packet`: The removed packet or `nullptr` if the connection has no packets.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_NO_MORE_ITEMS`: When the connection does not hold any packets.
+    ///
     /// Calls the openDAQ C function `daqConnection_dequeue()`.
     pub fn dequeue(&self) -> Result<Option<Packet>> {
         let mut __packet: *mut sys::daqPacket = std::ptr::null_mut();
@@ -1302,8 +1308,10 @@ impl Connection {
     }
 
     /// Removes all packets from the queue.
-    /// @param\[out\] packets The removed packets.
-    /// Removing all packets can be more efficient than dequeuing packet by packet in heavily loaded systems.
+    ///
+    /// # Returns
+    /// - `packets`: The removed packets. Removing all packets can be more efficient than dequeuing packet by packet in heavily loaded systems.
+    ///
     /// Calls the openDAQ C function `daqConnection_dequeueAll()`.
     pub fn dequeue_all(&self) -> Result<Vec<Packet>> {
         let mut __packets: *mut sys::daqList = std::ptr::null_mut();
@@ -1313,7 +1321,10 @@ impl Connection {
     }
 
     /// Places a packet at the back of the queue.
-    /// @param packet The packet to be enqueued.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be enqueued.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueue()`.
     pub fn enqueue(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqConnection_enqueue)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -1322,9 +1333,10 @@ impl Connection {
     }
 
     /// Places a packet at the back of the queue. The reference of the packet is stolen.
-    /// @param packet The packet to be enqueued.
-    /// After calling the method, the packet should not be touched again. The ownership of the packet
-    /// is taken by underlying connections and it could be destroyed before the function returns.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be enqueued. After calling the method, the packet should not be touched again. The ownership of the packet is taken by underlying connections and it could be destroyed before the function returns.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueueAndStealRef()`.
     pub fn enqueue_and_steal_ref(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqConnection_enqueueAndStealRef)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -1333,7 +1345,10 @@ impl Connection {
     }
 
     /// Places multiple packets at the back of the queue.
-    /// @param packets The packets to be enqueued.
+    ///
+    /// # Parameters
+    /// - `packets`: The packets to be enqueued.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueueMultiple()`.
     pub fn enqueue_multiple(&self, packets: &[Packet]) -> Result<()> {
         let __packets = crate::marshal::list_from_interfaces(packets)?;
@@ -1343,9 +1358,10 @@ impl Connection {
     }
 
     /// Places multiple packets at the back of the queue. The references of the packets are stolen.
-    /// @param packets The packets to be enqueued.
-    /// After calling the method, the packets should not be touched again. The ownership of the packets
-    /// is taken by underlying connections and it could be destroyed before the function returns.
+    ///
+    /// # Parameters
+    /// - `packets`: The packets to be enqueued. After calling the method, the packets should not be touched again. The ownership of the packets is taken by underlying connections and it could be destroyed before the function returns.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueueMultipleAndStealRef()`.
     pub fn enqueue_multiple_and_steal_ref(&self, packets: &[Packet]) -> Result<()> {
         let __packets = crate::marshal::list_from_interfaces(packets)?;
@@ -1355,8 +1371,10 @@ impl Connection {
     }
 
     /// Places a packet at the back of the queue.
-    /// @param packet The packet to be enqueued.
-    /// The connection notifies the listener on the same thread that this method was called.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be enqueued. The connection notifies the listener on the same thread that this method was called.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueueOnThisThread()`.
     pub fn enqueue_on_this_thread(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqConnection_enqueueOnThisThread)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -1365,8 +1383,10 @@ impl Connection {
     }
 
     /// Places a packet at the back of the queue.
-    /// @param packet The packet to be enqueued.
-    /// The connection schedules the `onPacketReceived` notification.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be enqueued. The connection schedules the `onPacketReceived` notification.
+    ///
     /// Calls the openDAQ C function `daqConnection_enqueueWithScheduler()`.
     pub fn enqueue_with_scheduler(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqConnection_enqueueWithScheduler)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -1375,7 +1395,10 @@ impl Connection {
     }
 
     /// Gets the number of samples available in the queued packets. The returned value ignores any Sample-Descriptor changes.
-    /// @param\[out\] samples The total amount of samples currently available in the stored packets.
+    ///
+    /// # Returns
+    /// - `samples`: The total amount of samples currently available in the stored packets.
+    ///
     /// Calls the openDAQ C function `daqConnection_getAvailableSamples()`.
     pub fn available_samples(&self) -> Result<usize> {
         let mut __samples: usize = Default::default();
@@ -1385,7 +1408,10 @@ impl Connection {
     }
 
     /// Gets the Input port to which packets are being sent.
-    /// @param\[out\] inputPort The input port.
+    ///
+    /// # Returns
+    /// - `input_port`: The input port.
+    ///
     /// Calls the openDAQ C function `daqConnection_getInputPort()`.
     pub fn input_port(&self) -> Result<Option<InputPort>> {
         let mut __input_port: *mut sys::daqInputPort = std::ptr::null_mut();
@@ -1395,7 +1421,10 @@ impl Connection {
     }
 
     /// Gets the number of queued packets.
-    /// @param\[out\] packetCount The number of queued packets.
+    ///
+    /// # Returns
+    /// - `packet_count`: The number of queued packets.
+    ///
     /// Calls the openDAQ C function `daqConnection_getPacketCount()`.
     pub fn packet_count(&self) -> Result<usize> {
         let mut __packet_count: usize = Default::default();
@@ -1405,7 +1434,10 @@ impl Connection {
     }
 
     /// Gets the number of same-type samples available in the queued packets. The returned value is up-to the next Sample-Descriptor-Changed packet if any.
-    /// @param\[out\] samples The total amount of same-type samples currently available in the stored packets.
+    ///
+    /// # Returns
+    /// - `samples`: The total amount of same-type samples currently available in the stored packets.
+    ///
     /// Calls the openDAQ C function `daqConnection_getSamplesUntilNextDescriptor()`.
     pub fn samples_until_next_descriptor(&self) -> Result<usize> {
         let mut __samples: usize = Default::default();
@@ -1415,7 +1447,10 @@ impl Connection {
     }
 
     /// Gets the number of samples available in the queued packets until the next event packet. The returned value is up-to the next Event packet if any.
-    /// @param\[out\] samples The total amount of samples currently available in the stored packets until the next event packet.
+    ///
+    /// # Returns
+    /// - `samples`: The total amount of samples currently available in the stored packets until the next event packet.
+    ///
     /// Calls the openDAQ C function `daqConnection_getSamplesUntilNextEventPacket()`.
     pub fn samples_until_next_event_packet(&self) -> Result<usize> {
         let mut __samples: usize = Default::default();
@@ -1425,7 +1460,10 @@ impl Connection {
     }
 
     /// Gets the number of samples available in the queued packets until the next gap packet. The returned value is up-to the next Gap packet if any.
-    /// @param\[out\] samples The total amount of samples currently available in the stored packets until the next gap packet.
+    ///
+    /// # Returns
+    /// - `samples`: The total amount of samples currently available in the stored packets until the next gap packet.
+    ///
     /// Calls the openDAQ C function `daqConnection_getSamplesUntilNextGapPacket()`.
     pub fn samples_until_next_gap_packet(&self) -> Result<usize> {
         let mut __samples: usize = Default::default();
@@ -1435,7 +1473,10 @@ impl Connection {
     }
 
     /// Gets the Signal that is sending packets through the Connection.
-    /// @param\[out\] signal The Signal.
+    ///
+    /// # Returns
+    /// - `signal`: The Signal.
+    ///
     /// Calls the openDAQ C function `daqConnection_getSignal()`.
     pub fn signal(&self) -> Result<Option<Signal>> {
         let mut __signal: *mut sys::daqSignal = std::ptr::null_mut();
@@ -1445,7 +1486,10 @@ impl Connection {
     }
 
     /// Queries if the connection has an event packet.
-    /// @param\[out\] hasEventPacket True if the connection has an event packet.
+    ///
+    /// # Returns
+    /// - `has_event_packet`: True if the connection has an event packet.
+    ///
     /// Calls the openDAQ C function `daqConnection_hasEventPacket()`.
     pub fn has_event_packet(&self) -> Result<bool> {
         let mut __has_event_packet: u8 = 0;
@@ -1455,7 +1499,10 @@ impl Connection {
     }
 
     /// Queries if the connection has a gap packet.
-    /// @param\[out\] hasGapPacket True if the connection has a gap packet.
+    ///
+    /// # Returns
+    /// - `has_gap_packet`: True if the connection has a gap packet.
+    ///
     /// Calls the openDAQ C function `daqConnection_hasGapPacket()`.
     pub fn has_gap_packet(&self) -> Result<bool> {
         let mut __has_gap_packet: u8 = 0;
@@ -1465,9 +1512,10 @@ impl Connection {
     }
 
     /// Returns true if the type of connection is remote.
-    /// @param\[out\] remote True if connection is remote.
-    /// Remote connections do not pass any packets. They represent the connection between input ports and signals
-    /// on remote devices.
+    ///
+    /// # Returns
+    /// - `remote`: True if connection is remote. Remote connections do not pass any packets. They represent the connection between input ports and signals on remote devices.
+    ///
     /// Calls the openDAQ C function `daqConnection_isRemote()`.
     pub fn is_remote(&self) -> Result<bool> {
         let mut __remote: u8 = 0;
@@ -1477,8 +1525,13 @@ impl Connection {
     }
 
     /// Returns the packet at the front of the queue without removing it.
-    /// @param\[out\] packet The packet at the front of the queue or @c nullptr if the connection has no packets.
-    /// @retval OPENDAQ_NO_MORE_ITEMS When the connection does not hold any packets.
+    ///
+    /// # Returns
+    /// - `packet`: The packet at the front of the queue or `nullptr` if the connection has no packets.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_NO_MORE_ITEMS`: When the connection does not hold any packets.
+    ///
     /// Calls the openDAQ C function `daqConnection_peek()`.
     pub fn peek(&self) -> Result<Option<Packet>> {
         let mut __packet: *mut sys::daqPacket = std::ptr::null_mut();
@@ -1491,7 +1544,10 @@ impl Connection {
 
 impl DataDescriptorBuilder {
     /// Builds and returns a Data descriptor object using the currently set values of the Builder.
-    /// @param\[out\] dataDescriptor The built Data descriptor.
+    ///
+    /// # Returns
+    /// - `data_descriptor`: The built Data descriptor.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_build()`.
     pub fn build(&self) -> Result<Option<DataDescriptor>> {
         let mut __data_descriptor: *mut sys::daqDataDescriptor = std::ptr::null_mut();
@@ -1501,6 +1557,7 @@ impl DataDescriptorBuilder {
     }
 
     /// Data descriptor builder factory that creates a builder object with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_createDataDescriptorBuilder()`.
     pub fn new() -> Result<DataDescriptorBuilder> {
         let mut __obj: *mut sys::daqDataDescriptorBuilder = std::ptr::null_mut();
@@ -1510,7 +1567,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Data descriptor copy factory that creates a Data descriptor builder object from a different Data descriptor, copying its parameters.
-    /// @param descriptorToCopy The Data descriptor of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `descriptor_to_copy`: The Data descriptor of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_createDataDescriptorBuilderFromExisting()`.
     pub fn from_existing(descriptor_to_copy: &DataDescriptor) -> Result<DataDescriptorBuilder> {
         let mut __obj: *mut sys::daqDataDescriptorBuilder = std::ptr::null_mut();
@@ -1520,7 +1580,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the list of the descriptor's dimension's.
-    /// @param\[out\] dimensions The list of dimensions.
+    ///
+    /// # Returns
+    /// - `dimensions`: The list of dimensions.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getDimensions()`.
     pub fn dimensions(&self) -> Result<Vec<Dimension>> {
         let mut __dimensions: *mut sys::daqList = std::ptr::null_mut();
@@ -1530,7 +1593,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets any extra metadata defined by the data descriptor.
-    /// @param\[out\] metadata Additional metadata of the descriptor as a dictionary.
+    ///
+    /// # Returns
+    /// - `metadata`: Additional metadata of the descriptor as a dictionary.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getMetadata()`.
     pub fn metadata(&self) -> Result<std::collections::HashMap<String, String>> {
         let mut __metadata: *mut sys::daqDict = std::ptr::null_mut();
@@ -1540,7 +1606,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets a descriptive name for the signal's value.
-    /// @param\[out\] name The name of the signal value.
+    ///
+    /// # Returns
+    /// - `name`: The name of the signal value.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -1550,7 +1619,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the absolute origin of a signal value component.
-    /// @param\[out\] origin The absolute origin.
+    ///
+    /// # Returns
+    /// - `origin`: The absolute origin.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getOrigin()`.
     pub fn origin(&self) -> Result<String> {
         let mut __origin: *mut sys::daqString = std::ptr::null_mut();
@@ -1560,7 +1632,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the scaling rule that needs to be applied to explicit/implicit data by readers.
-    /// @param\[out\] scaling The scaling rule.
+    ///
+    /// # Returns
+    /// - `scaling`: The scaling rule.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getPostScaling()`.
     pub fn post_scaling(&self) -> Result<Option<Scaling>> {
         let mut __scaling: *mut sys::daqScaling = std::ptr::null_mut();
@@ -1570,8 +1645,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the Reference Domain Info.
-    /// @param\[out\] referenceDomainInfo The Reference Domain Info.
-    /// If set, gives additional information about the reference domain.
+    ///
+    /// # Returns
+    /// - `reference_domain_info`: The Reference Domain Info. If set, gives additional information about the reference domain.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getReferenceDomainInfo()`.
     pub fn reference_domain_info(&self) -> Result<Option<ReferenceDomainInfo>> {
         let mut __reference_domain_info: *mut sys::daqReferenceDomainInfo = std::ptr::null_mut();
@@ -1581,7 +1658,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the value Data rule.
-    /// @param\[out\] rule The value Data rule.
+    ///
+    /// # Returns
+    /// - `rule`: The value Data rule.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getRule()`.
     pub fn rule(&self) -> Result<Option<DataRule>> {
         let mut __rule: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -1591,7 +1671,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the descriptor's sample type.
-    /// @param\[out\] sampleType The descriptor's sample type.
+    ///
+    /// # Returns
+    /// - `sample_type`: The descriptor's sample type.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getSampleType()`.
     pub fn sample_type(&self) -> Result<SampleType> {
         let mut __sample_type: u32 = 0;
@@ -1601,7 +1684,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the fields of the struct, forming a recursive value descriptor definition.
-    /// @param\[out\] structFields The list of data descriptors forming the struct fields.
+    ///
+    /// # Returns
+    /// - `struct_fields`: The list of data descriptors forming the struct fields.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getStructFields()`.
     pub fn struct_fields(&self) -> Result<Vec<DataDescriptor>> {
         let mut __struct_fields: *mut sys::daqList = std::ptr::null_mut();
@@ -1611,7 +1697,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the Resolution which scales the an explicit or implicit value to the physical unit defined in `unit`.
-    /// @param\[out\] tickResolution The Resolution.
+    ///
+    /// # Returns
+    /// - `tick_resolution`: The Resolution.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getTickResolution()`.
     pub fn tick_resolution(&self) -> Result<Option<Ratio>> {
         let mut __tick_resolution: *mut sys::daqRatio = std::ptr::null_mut();
@@ -1621,7 +1710,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the unit of the data in a signal's packets.
-    /// @param\[out\] unit The unit specified by the descriptor.
+    ///
+    /// # Returns
+    /// - `unit`: The unit specified by the descriptor.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -1631,7 +1723,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Gets the value range of the data in a signal's packets defining the lowest and highest expected values.
-    /// @param\[out\] range The value range the signal's data.
+    ///
+    /// # Returns
+    /// - `range`: The value range the signal's data.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_getValueRange()`.
     pub fn value_range(&self) -> Result<Option<Range>> {
         let mut __range: *mut sys::daqRange = std::ptr::null_mut();
@@ -1641,8 +1736,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the list of the descriptor's dimension's.
-    /// @param dimensions The list of dimensions.
-    /// The number of dimensions defines the rank of the signal's data (eg. Vector, Matrix).
+    ///
+    /// # Parameters
+    /// - `dimensions`: The list of dimensions. The number of dimensions defines the rank of the signal's data (eg. Vector, Matrix).
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setDimensions()`.
     pub fn set_dimensions(&self, dimensions: &[Dimension]) -> Result<()> {
         let __dimensions = crate::marshal::list_from_interfaces(dimensions)?;
@@ -1652,8 +1749,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets any extra metadata defined by the data descriptor.
-    /// @param metadata Additional metadata of the descriptor as a dictionary.
-    /// All objects in the metadata dictionary must be serializable.
+    ///
+    /// # Parameters
+    /// - `metadata`: Additional metadata of the descriptor as a dictionary. All objects in the metadata dictionary must be serializable.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setMetadata()`.
     pub fn set_metadata(&self, metadata: impl Into<Value>) -> Result<()> {
         let __metadata = crate::value::to_daq(&metadata.into())?;
@@ -1663,8 +1762,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets a descriptive name for the signal's value.
-    /// @param name The name of the signal value.
-    /// When, for example, describing the amplitude values of spectrum data, the name would be `Amplitude`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the signal value. When, for example, describing the amplitude values of spectrum data, the name would be `Amplitude`.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1674,11 +1775,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the absolute origin of a signal value component.
-    /// @param origin The absolute origin.
-    /// An origin can be an arbitrary string that determines the starting point of the signal data.
-    /// All explicit or implicit values are multiplied by the resolution and added to the origin to obtain
-    /// absolute data instead of relative.
-    /// Most commonly a time epoch is used, in which case it should be formatted according to the ISO 8601 standard.
+    ///
+    /// # Parameters
+    /// - `origin`: The absolute origin. An origin can be an arbitrary string that determines the starting point of the signal data. All explicit or implicit values are multiplied by the resolution and added to the origin to obtain absolute data instead of relative. Most commonly a time epoch is used, in which case it should be formatted according to the ISO 8601 standard.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setOrigin()`.
     pub fn set_origin(&self, origin: &str) -> Result<()> {
         let __origin = crate::marshal::make_string(origin)?;
@@ -1688,9 +1788,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the scaling rule that needs to be applied to explicit/implicit data by readers.
-    /// @param scaling The scaling rule.
-    /// The OutputDataType of the rule matches the value descriptor's sample type. The InputDataType defines the sample type
-    /// of either the explicit data in packet buffers, or the packet's implicit value's sample type.
+    ///
+    /// # Parameters
+    /// - `scaling`: The scaling rule. The OutputDataType of the rule matches the value descriptor's sample type. The InputDataType defines the sample type of either the explicit data in packet buffers, or the packet's implicit value's sample type.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setPostScaling()`.
     pub fn set_post_scaling(&self, scaling: &Scaling) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setPostScaling)(self.as_raw() as *mut _, scaling.as_raw() as *mut _) };
@@ -1699,8 +1800,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the Reference Domain Info.
-    /// @param referenceDomainInfo The Reference Domain Info.
-    /// If set, gives additional information about the reference domain.
+    ///
+    /// # Parameters
+    /// - `reference_domain_info`: The Reference Domain Info. If set, gives additional information about the reference domain.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setReferenceDomainInfo()`.
     pub fn set_reference_domain_info(&self, reference_domain_info: &ReferenceDomainInfo) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setReferenceDomainInfo)(self.as_raw() as *mut _, reference_domain_info.as_raw() as *mut _) };
@@ -1709,9 +1812,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the value Data rule.
-    /// @param rule The value Data rule.
-    /// If explicit, the values will be contained in the packet buffer. Otherwise they are calculated
-    /// using the packet parameter as the input into the rule.
+    ///
+    /// # Parameters
+    /// - `rule`: The value Data rule. If explicit, the values will be contained in the packet buffer. Otherwise they are calculated using the packet parameter as the input into the rule.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setRule()`.
     pub fn set_rule(&self, rule: &DataRule) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setRule)(self.as_raw() as *mut _, rule.as_raw() as *mut _) };
@@ -1720,7 +1824,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the descriptor's sample type.
-    /// @param sampleType The descriptor's sample type.
+    ///
+    /// # Parameters
+    /// - `sample_type`: The descriptor's sample type.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setSampleType()`.
     pub fn set_sample_type(&self, sample_type: SampleType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setSampleType)(self.as_raw() as *mut _, sample_type as u32) };
@@ -1729,9 +1836,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the fields of the struct, forming a recursive value descriptor definition.
-    /// @param structFields The list of data descriptors forming the struct fields.
-    /// Contains a list of value descriptors, defining the data layout: the data described by the first DataDescriptor
-    /// of the list is at the start, followed by the data described by the second and so on.
+    ///
+    /// # Parameters
+    /// - `struct_fields`: The list of data descriptors forming the struct fields. Contains a list of value descriptors, defining the data layout: the data described by the first DataDescriptor of the list is at the start, followed by the data described by the second and so on.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setStructFields()`.
     pub fn set_struct_fields(&self, struct_fields: &[DataDescriptor]) -> Result<()> {
         let __struct_fields = crate::marshal::list_from_interfaces(struct_fields)?;
@@ -1741,7 +1849,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the Resolution which scales the an explicit or implicit value to the physical unit defined in `unit`.
-    /// @param tickResolution The Resolution.
+    ///
+    /// # Parameters
+    /// - `tick_resolution`: The Resolution.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setTickResolution()`.
     pub fn set_tick_resolution(&self, tick_resolution: Ratio) -> Result<()> {
         let __tick_resolution = crate::value::ratio_to_ref(tick_resolution)?;
@@ -1751,7 +1862,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the unit of the data in a signal's packets.
-    /// @param unit The unit specified by the descriptor.
+    ///
+    /// # Parameters
+    /// - `unit`: The unit specified by the descriptor.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setUnit()`.
     pub fn set_unit(&self, unit: &Unit) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setUnit)(self.as_raw() as *mut _, unit.as_raw() as *mut _) };
@@ -1760,8 +1874,10 @@ impl DataDescriptorBuilder {
     }
 
     /// Sets the value range of the data in a signal's packets defining the lowest and highest expected values.
-    /// @param range The value range the signal's data.
-    /// The range is not enforced by openDAQ.
+    ///
+    /// # Parameters
+    /// - `range`: The value range the signal's data. The range is not enforced by openDAQ.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptorBuilder_setValueRange()`.
     pub fn set_value_range(&self, range: &Range) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataDescriptorBuilder_setValueRange)(self.as_raw() as *mut _, range.as_raw() as *mut _) };
@@ -1773,7 +1889,10 @@ impl DataDescriptorBuilder {
 
 impl DataDescriptor {
     /// Creates a Data Descriptor using Builder
-    /// @param builder Data Descriptor Builder
+    ///
+    /// # Parameters
+    /// - `builder`: Data Descriptor Builder
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_createDataDescriptorFromBuilder()`.
     pub fn from_builder(builder: &DataDescriptorBuilder) -> Result<DataDescriptor> {
         let mut __obj: *mut sys::daqDataDescriptor = std::ptr::null_mut();
@@ -1783,8 +1902,10 @@ impl DataDescriptor {
     }
 
     /// Gets the list of the descriptor's dimension's.
-    /// @param\[out\] dimensions The list of dimensions.
-    /// The number of dimensions defines the rank of the signal's data (eg. Vector, Matrix).
+    ///
+    /// # Returns
+    /// - `dimensions`: The list of dimensions. The number of dimensions defines the rank of the signal's data (eg. Vector, Matrix).
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getDimensions()`.
     pub fn dimensions(&self) -> Result<Vec<Dimension>> {
         let mut __dimensions: *mut sys::daqList = std::ptr::null_mut();
@@ -1794,8 +1915,10 @@ impl DataDescriptor {
     }
 
     /// Gets any extra metadata defined by the data descriptor.
-    /// @param\[out\] metadata Additional metadata of the descriptor as a dictionary.
-    /// All objects in the metadata dictionary must be key value pairs of \<String, String\>.
+    ///
+    /// # Returns
+    /// - `metadata`: Additional metadata of the descriptor as a dictionary. All objects in the metadata dictionary must be key value pairs of \<String, String\>.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getMetadata()`.
     pub fn metadata(&self) -> Result<std::collections::HashMap<String, String>> {
         let mut __metadata: *mut sys::daqDict = std::ptr::null_mut();
@@ -1805,8 +1928,10 @@ impl DataDescriptor {
     }
 
     /// Gets a descriptive name of the signal value.
-    /// @param\[out\] name The name of the signal value.
-    /// When, for example, describing the amplitude values of spectrum data, the name would be `Amplitude`.
+    ///
+    /// # Returns
+    /// - `name`: The name of the signal value. When, for example, describing the amplitude values of spectrum data, the name would be `Amplitude`.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -1816,11 +1941,10 @@ impl DataDescriptor {
     }
 
     /// Gets the absolute origin of a signal value component.
-    /// @param\[out\] origin The absolute origin.
-    /// An origin can be an arbitrary string that determines the starting point of the signal data.
-    /// All explicit or implicit values are multiplied by the resolution and added to the origin to obtain
-    /// absolute data instead of relative.
-    /// Most commonly a time reference is used, in which case it should be formatted according to the ISO 8601 standard.
+    ///
+    /// # Returns
+    /// - `origin`: The absolute origin. An origin can be an arbitrary string that determines the starting point of the signal data. All explicit or implicit values are multiplied by the resolution and added to the origin to obtain absolute data instead of relative. Most commonly a time reference is used, in which case it should be formatted according to the ISO 8601 standard.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getOrigin()`.
     pub fn origin(&self) -> Result<String> {
         let mut __origin: *mut sys::daqString = std::ptr::null_mut();
@@ -1838,10 +1962,10 @@ impl DataDescriptor {
     }
 
     /// Gets the actual sample size in buffer of one sample in bytes.
-    /// @param\[out\] sampleSize The actual size of one sample in buffer in bytes.
-    /// The actual size of one sample is calculated on constructor of the data descriptor object.
-    /// Actual sample size is the sample size that is used in buffer. If the data descriptor includes
-    /// implicitly generated samples, the actual sample size is less than sample size.
+    ///
+    /// # Returns
+    /// - `sample_size`: The actual size of one sample in buffer in bytes. The actual size of one sample is calculated on constructor of the data descriptor object. Actual sample size is the sample size that is used in buffer. If the data descriptor includes implicitly generated samples, the actual sample size is less than sample size.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getRawSampleSize()`.
     pub fn raw_sample_size(&self) -> Result<usize> {
         let mut __raw_sample_size: usize = Default::default();
@@ -1851,8 +1975,10 @@ impl DataDescriptor {
     }
 
     /// Gets the Reference Domain Info.
-    /// @param\[out\] referenceDomainInfo The Reference Domain Info.
-    /// If set, gives additional information about the reference domain.
+    ///
+    /// # Returns
+    /// - `reference_domain_info`: The Reference Domain Info. If set, gives additional information about the reference domain.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getReferenceDomainInfo()`.
     pub fn reference_domain_info(&self) -> Result<Option<ReferenceDomainInfo>> {
         let mut __reference_domain_info: *mut sys::daqReferenceDomainInfo = std::ptr::null_mut();
@@ -1862,9 +1988,10 @@ impl DataDescriptor {
     }
 
     /// Gets the value Data rule.
-    /// @param\[out\] rule The value Data rule.
-    /// If explicit, the values will be contained in the packet buffer. Otherwise they are calculated
-    /// using the offset packet parameter as the input into the rule.
+    ///
+    /// # Returns
+    /// - `rule`: The value Data rule. If explicit, the values will be contained in the packet buffer. Otherwise they are calculated using the offset packet parameter as the input into the rule.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getRule()`.
     pub fn rule(&self) -> Result<Option<DataRule>> {
         let mut __rule: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -1874,8 +2001,10 @@ impl DataDescriptor {
     }
 
     /// Gets the size of one sample in bytes.
-    /// @param\[out\] sampleSize The size of one sample in bytes.
-    /// The size of one sample is calculated on constructor of the data descriptor object.
+    ///
+    /// # Returns
+    /// - `sample_size`: The size of one sample in bytes. The size of one sample is calculated on constructor of the data descriptor object.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getSampleSize()`.
     pub fn sample_size(&self) -> Result<usize> {
         let mut __sample_size: usize = Default::default();
@@ -1885,7 +2014,10 @@ impl DataDescriptor {
     }
 
     /// Gets the descriptor's sample type.
-    /// @param\[out\] sampleType The descriptor's sample type.
+    ///
+    /// # Returns
+    /// - `sample_type`: The descriptor's sample type.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getSampleType()`.
     pub fn sample_type(&self) -> Result<SampleType> {
         let mut __sample_type: u32 = 0;
@@ -1895,9 +2027,10 @@ impl DataDescriptor {
     }
 
     /// Gets the fields of the struct, forming a recursive value descriptor definition.
-    /// @param\[out\] structFields The list of data descriptors forming the struct fields.
-    /// Contains a list of value descriptors, defining the data layout: the data described by the first DataDescriptor
-    /// of the list is at the start, followed by the data described by the second and so on.
+    ///
+    /// # Returns
+    /// - `struct_fields`: The list of data descriptors forming the struct fields. Contains a list of value descriptors, defining the data layout: the data described by the first DataDescriptor of the list is at the start, followed by the data described by the second and so on.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getStructFields()`.
     pub fn struct_fields(&self) -> Result<Vec<DataDescriptor>> {
         let mut __struct_fields: *mut sys::daqList = std::ptr::null_mut();
@@ -1907,7 +2040,10 @@ impl DataDescriptor {
     }
 
     /// Gets the Resolution which scales the explicit or implicit value to the physical unit defined in `unit`. It is defined as domain (usually time) between two consecutive ticks.
-    /// @param\[out\] tickResolution The Resolution.
+    ///
+    /// # Returns
+    /// - `tick_resolution`: The Resolution.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getTickResolution()`.
     pub fn tick_resolution(&self) -> Result<Option<Ratio>> {
         let mut __tick_resolution: *mut sys::daqRatio = std::ptr::null_mut();
@@ -1917,7 +2053,10 @@ impl DataDescriptor {
     }
 
     /// Gets the unit of the data in a signal's packets.
-    /// @param\[out\] unit The unit specified by the descriptor.
+    ///
+    /// # Returns
+    /// - `unit`: The unit specified by the descriptor.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -1927,8 +2066,10 @@ impl DataDescriptor {
     }
 
     /// Gets the value range of the data in a signal's packets defining the lowest and highest expected values.
-    /// @param\[out\] range The value range the signal's data.
-    /// The range is not enforced by openDAQ.
+    ///
+    /// # Returns
+    /// - `range`: The value range the signal's data. The range is not enforced by openDAQ.
+    ///
     /// Calls the openDAQ C function `daqDataDescriptor_getValueRange()`.
     pub fn value_range(&self) -> Result<Option<Range>> {
         let mut __range: *mut sys::daqRange = std::ptr::null_mut();
@@ -1941,9 +2082,12 @@ impl DataDescriptor {
 
 impl DataPacket {
     /// Creates a Data packet with a given descriptor, sample count, memory size of each sample, and an optional packet offset.
-    /// @param descriptor The descriptor of the signal sending the data.
-    /// @param sampleCount The number of samples in the packet.
-    /// @param offset Optional packet offset parameter, used to calculate the data of the packet if the Data rule of the Signal descriptor is not explicit.
+    ///
+    /// # Parameters
+    /// - `descriptor`: The descriptor of the signal sending the data.
+    /// - `sample_count`: The number of samples in the packet.
+    /// - `offset`: Optional packet offset parameter, used to calculate the data of the packet if the Data rule of the Signal descriptor is not explicit.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_createDataPacket()`.
     pub fn new(descriptor: &DataDescriptor, sample_count: usize, offset: impl Into<Value>) -> Result<DataPacket> {
         let __offset = crate::value::to_daq_number(&offset.into())?;
@@ -1954,10 +2098,13 @@ impl DataPacket {
     }
 
     /// Creates a Data packet with a given descriptor, sample count, memory size of each sample, and an optional implicit value.
-    /// @param domainPacket The Data packet carrying domain data.
-    /// @param descriptor The descriptor of the signal sending the data.
-    /// @param sampleCount The number of samples in the packet.
-    /// @param offset Optional packet offset parameter, used to calculate the data of the packet if the Data rule of the Signal descriptor is not explicit.
+    ///
+    /// # Parameters
+    /// - `domain_packet`: The Data packet carrying domain data.
+    /// - `descriptor`: The descriptor of the signal sending the data.
+    /// - `sample_count`: The number of samples in the packet.
+    /// - `offset`: Optional packet offset parameter, used to calculate the data of the packet if the Data rule of the Signal descriptor is not explicit.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_createDataPacketWithDomain()`.
     pub fn with_domain(domain_packet: &DataPacket, descriptor: &DataDescriptor, sample_count: usize, offset: impl Into<Value>) -> Result<DataPacket> {
         let __offset = crate::value::to_daq_number(&offset.into())?;
@@ -1968,7 +2115,10 @@ impl DataPacket {
     }
 
     /// Gets the signal descriptor of the signal that sent the packet at the time of sending.
-    /// @param\[out\] descriptor The signal descriptor.
+    ///
+    /// # Returns
+    /// - `descriptor`: The signal descriptor.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getDataDescriptor()`.
     pub fn data_descriptor(&self) -> Result<Option<DataDescriptor>> {
         let mut __descriptor: *mut sys::daqDataDescriptor = std::ptr::null_mut();
@@ -1978,7 +2128,10 @@ impl DataPacket {
     }
 
     /// Gets size of data buffer in bytes.
-    /// @param\[out\] dataSize the size of data buffer in bytes.
+    ///
+    /// # Returns
+    /// - `data_size`: the size of data buffer in bytes.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getDataSize()`.
     pub fn data_size(&self) -> Result<usize> {
         let mut __data_size: usize = Default::default();
@@ -1988,7 +2141,10 @@ impl DataPacket {
     }
 
     /// Gets the associated domain Data packet.
-    /// @param\[out\] packet The domain data packet.
+    ///
+    /// # Returns
+    /// - `packet`: The domain data packet.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getDomainPacket()`.
     pub fn domain_packet(&self) -> Result<Option<DataPacket>> {
         let mut __packet: *mut sys::daqDataPacket = std::ptr::null_mut();
@@ -1998,15 +2154,13 @@ impl DataPacket {
     }
 
     /// Gets the data packet last value.
-    /// @param\[out\] value The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
-    /// @param typeManager Optional ITypeManager value can be provided to enable getLastValue for IStruct.
-    /// If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64,
-    /// to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64,
-    /// to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly
-    /// one dimension.
-    /// For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is
-    /// determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value
-    /// from the packet data and returns it as an IString object.
+    ///
+    /// # Parameters
+    /// - `type_manager`: Optional ITypeManager value can be provided to enable getLastValue for IStruct. If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64, to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly one dimension. For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value from the packet data and returns it as an IString object.
+    ///
+    /// # Returns
+    /// - `value`: The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getLastValue()`.
     pub fn last_value(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -2016,15 +2170,13 @@ impl DataPacket {
     }
 
     /// Gets the data packet last value.
-    /// @param\[out\] value The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
-    /// @param typeManager Optional ITypeManager value can be provided to enable getLastValue for IStruct.
-    /// If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64,
-    /// to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64,
-    /// to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly
-    /// one dimension.
-    /// For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is
-    /// determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value
-    /// from the packet data and returns it as an IString object.
+    ///
+    /// # Parameters
+    /// - `type_manager`: Optional ITypeManager value can be provided to enable getLastValue for IStruct. If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64, to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly one dimension. For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value from the packet data and returns it as an IString object.
+    ///
+    /// # Returns
+    /// - `value`: The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getLastValue()`.
     pub fn last_value_with(&self, type_manager: Option<&TypeManager>) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -2034,7 +2186,10 @@ impl DataPacket {
     }
 
     /// Gets current packet offset. This offset is later applied to the data rule used by a signal to calculate actual data value. This value is usually a time or other domain value. Packet offset is particularly useful when one wants to transfer a gap in otherwise equidistant samples. If we have a linear data rule, defined by equation f(x) = k*x + n, then the data value will be calculated by the equation g(x) = offset + f(x).
-    /// @param\[out\] offset The packet offset
+    ///
+    /// # Returns
+    /// - `offset`: The packet offset
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getOffset()`.
     pub fn offset(&self) -> Result<Option<f64>> {
         let mut __offset: *mut sys::daqNumber = std::ptr::null_mut();
@@ -2044,8 +2199,10 @@ impl DataPacket {
     }
 
     /// Gets the unique packet id.
-    /// @param\[out\] packetId The packet unique id.
-    /// The packet id is automatically created on packet construction.
+    ///
+    /// # Returns
+    /// - `packet_id`: The packet unique id. The packet id is automatically created on packet construction.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getPacketId()`.
     pub fn packet_id(&self) -> Result<i64> {
         let mut __packet_id: i64 = Default::default();
@@ -2055,8 +2212,10 @@ impl DataPacket {
     }
 
     /// Gets size of raw data buffer in bytes.
-    /// @param\[out\] dataSize the size of raw data buffer in bytes.
-    /// Raw data size is 0 if signal's data rule is implicit.
+    ///
+    /// # Returns
+    /// - `data_size`: the size of raw data buffer in bytes. Raw data size is 0 if signal's data rule is implicit.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getRawDataSize()`.
     pub fn raw_data_size(&self) -> Result<usize> {
         let mut __raw_data_size: usize = Default::default();
@@ -2066,7 +2225,10 @@ impl DataPacket {
     }
 
     /// Gets the number of samples in the packet.
-    /// @param\[out\] sampleCount the number of samples.
+    ///
+    /// # Returns
+    /// - `sample_count`: the number of samples.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getSampleCount()`.
     pub fn sample_count(&self) -> Result<usize> {
         let mut __sample_count: usize = Default::default();
@@ -2076,16 +2238,14 @@ impl DataPacket {
     }
 
     /// Gets the data packet value at the specified index.
-    /// @param\[out\] value The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
-    /// @param index Index of the sample to obtain.
-    /// @param typeManager Optional ITypeManager value can be provided to enable getLastValue for IStruct.
-    /// If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64,
-    /// to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or
-    /// ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if
-    /// there is exactly one dimension.
-    /// For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is
-    /// determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value
-    /// from the packet data and returns it as an IString object.
+    ///
+    /// # Parameters
+    /// - `index`: Index of the sample to obtain.
+    /// - `type_manager`: Optional ITypeManager value can be provided to enable getLastValue for IStruct. If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64, to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly one dimension. For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value from the packet data and returns it as an IString object.
+    ///
+    /// # Returns
+    /// - `value`: The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getValueByIndex()`.
     pub fn value_by_index(&self, index: usize) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -2095,16 +2255,14 @@ impl DataPacket {
     }
 
     /// Gets the data packet value at the specified index.
-    /// @param\[out\] value The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
-    /// @param index Index of the sample to obtain.
-    /// @param typeManager Optional ITypeManager value can be provided to enable getLastValue for IStruct.
-    /// If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64,
-    /// to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or
-    /// ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if
-    /// there is exactly one dimension.
-    /// For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is
-    /// determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value
-    /// from the packet data and returns it as an IString object.
+    ///
+    /// # Parameters
+    /// - `index`: Index of the sample to obtain.
+    /// - `type_manager`: Optional ITypeManager value can be provided to enable getLastValue for IStruct. If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64, to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly one dimension. For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value from the packet data and returns it as an IString object.
+    ///
+    /// # Returns
+    /// - `value`: The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
+    ///
     /// Calls the openDAQ C function `daqDataPacket_getValueByIndex()`.
     pub fn value_by_index_with(&self, index: usize, type_manager: Option<&TypeManager>) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -2117,8 +2275,11 @@ impl DataPacket {
 
 impl DataRuleBuilder {
     /// Adds a string-object pair parameter to the Dictionary of Data rule parameters.
-    /// @param name The string-type name of the parameter.
-    /// @param parameter The object-type parameter.
+    ///
+    /// # Parameters
+    /// - `name`: The string-type name of the parameter.
+    /// - `parameter`: The object-type parameter.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_addParameter()`.
     pub fn add_parameter(&self, name: &str, parameter: impl Into<Value>) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2129,7 +2290,10 @@ impl DataRuleBuilder {
     }
 
     /// Builds and returns a Data rule object using the currently set values of the Builder.
-    /// @param\[out\] dataRule The built Data rule.
+    ///
+    /// # Returns
+    /// - `data_rule`: The built Data rule.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_build()`.
     pub fn build(&self) -> Result<Option<DataRule>> {
         let mut __data_rule: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -2139,6 +2303,7 @@ impl DataRuleBuilder {
     }
 
     /// Creates a Data rule builder with no parameters.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_createDataRuleBuilder()`.
     pub fn new() -> Result<DataRuleBuilder> {
         let mut __obj: *mut sys::daqDataRuleBuilder = std::ptr::null_mut();
@@ -2148,7 +2313,10 @@ impl DataRuleBuilder {
     }
 
     /// Data rule copy factory that creates a configurable Data rule builder object from a possibly non-configurable Data rule.
-    /// @param ruleToCopy The rule of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `rule_to_copy`: The rule of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_createDataRuleBuilderFromExisting()`.
     pub fn from_existing(rule_to_copy: &DataRule) -> Result<DataRuleBuilder> {
         let mut __obj: *mut sys::daqDataRuleBuilder = std::ptr::null_mut();
@@ -2158,7 +2326,10 @@ impl DataRuleBuilder {
     }
 
     /// Gets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param\[out\] parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Returns
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -2168,7 +2339,10 @@ impl DataRuleBuilder {
     }
 
     /// Gets the type of the data rule.
-    /// @param\[out\] type The type of the data rule.
+    ///
+    /// # Returns
+    /// - `type`: The type of the data rule.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_getType()`.
     pub fn type_(&self) -> Result<DataRuleType> {
         let mut __type_: u32 = 0;
@@ -2178,6 +2352,7 @@ impl DataRuleBuilder {
     }
 
     /// Removes the parameter with the given name from the Dictionary of Data rule parameters.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_removeParameter()`.
     pub fn remove_parameter(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2187,7 +2362,10 @@ impl DataRuleBuilder {
     }
 
     /// Sets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Parameters
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_setParameters()`.
     pub fn set_parameters(&self, parameters: impl Into<Value>) -> Result<()> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -2197,7 +2375,10 @@ impl DataRuleBuilder {
     }
 
     /// Sets the type of the data rule.
-    /// @param type The type of the data rule.
+    ///
+    /// # Parameters
+    /// - `type`: The type of the data rule.
+    ///
     /// Calls the openDAQ C function `daqDataRuleBuilder_setType()`.
     pub fn set_type(&self, type_: DataRuleType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDataRuleBuilder_setType)(self.as_raw() as *mut _, type_ as u32) };
@@ -2209,6 +2390,7 @@ impl DataRuleBuilder {
 
 impl DataRule {
     /// Creates a DataRule with a Constant rule type configuration.
+    ///
     /// Calls the openDAQ C function `daqDataRule_createConstantDataRule()`.
     pub fn constant() -> Result<DataRule> {
         let mut __obj: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -2218,8 +2400,11 @@ impl DataRule {
     }
 
     /// Creates a DataRule with an Explicit rule type configuration and parameters.
-    /// @param ruleType .
-    /// @param parameters .
+    ///
+    /// # Parameters
+    /// - `rule_type`: .
+    /// - `parameters`: .
+    ///
     /// Calls the openDAQ C function `daqDataRule_createDataRule()`.
     pub fn new(rule_type: DataRuleType, parameters: impl Into<Value>) -> Result<DataRule> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -2230,7 +2415,10 @@ impl DataRule {
     }
 
     /// Creates a DataRulePtr from Builder.
-    /// @param builder DataRule Builder
+    ///
+    /// # Parameters
+    /// - `builder`: DataRule Builder
+    ///
     /// Calls the openDAQ C function `daqDataRule_createDataRuleFromBuilder()`.
     pub fn from_builder(builder: &DataRuleBuilder) -> Result<DataRule> {
         let mut __obj: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -2240,6 +2428,7 @@ impl DataRule {
     }
 
     /// Creates a DataRule with an Explicit rule type configuration and no parameters.
+    ///
     /// Calls the openDAQ C function `daqDataRule_createExplicitDataRule()`.
     pub fn explicit() -> Result<DataRule> {
         let mut __obj: *mut sys::daqDataRule = std::ptr::null_mut();
@@ -2249,10 +2438,11 @@ impl DataRule {
     }
 
     /// Creates a DataRule with an Explicit rule type configuration two optional parameters.
-    /// @param minExpectedDelta The lowest expected distance between two samples.
-    /// @param maxExpectedDelta The highest expected distance between two samples.
-    /// Most often used for domain signals to specify estimates on how close together/far apart two
-    /// subsequent samples might be.
+    ///
+    /// # Parameters
+    /// - `min_expected_delta`: The lowest expected distance between two samples.
+    /// - `max_expected_delta`: The highest expected distance between two samples. Most often used for domain signals to specify estimates on how close together/far apart two subsequent samples might be.
+    ///
     /// Calls the openDAQ C function `daqDataRule_createExplicitDomainDataRule()`.
     pub fn explicit_domain(min_expected_delta: impl Into<Value>, max_expected_delta: impl Into<Value>) -> Result<DataRule> {
         let __min_expected_delta = crate::value::to_daq_number(&min_expected_delta.into())?;
@@ -2264,10 +2454,11 @@ impl DataRule {
     }
 
     /// Creates a DataRule with a Linear rule type configuration.
-    /// @param delta Coefficient by which the input data is to be multiplied.
-    /// @param start Constant that is added to the \<em\>scale * value\</em\> multiplication result.
-    /// The scale and offset are stored within the `parameters` member of the Rule object
-    /// with the scale being at the first position of the list, and the offset at the second.
+    ///
+    /// # Parameters
+    /// - `delta`: Coefficient by which the input data is to be multiplied.
+    /// - `start`: Constant that is added to the \<em\>scale * value\</em\> multiplication result. The scale and offset are stored within the `parameters` member of the Rule object with the scale being at the first position of the list, and the offset at the second.
+    ///
     /// Calls the openDAQ C function `daqDataRule_createLinearDataRule()`.
     pub fn linear(delta: impl Into<Value>, start: impl Into<Value>) -> Result<DataRule> {
         let __delta = crate::value::to_daq_number(&delta.into())?;
@@ -2279,7 +2470,10 @@ impl DataRule {
     }
 
     /// Gets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param\[out\] parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Returns
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDataRule_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -2289,7 +2483,10 @@ impl DataRule {
     }
 
     /// Gets the type of the data rule.
-    /// @param\[out\] type The type of the data rule.
+    ///
+    /// # Returns
+    /// - `type`: The type of the data rule.
+    ///
     /// Calls the openDAQ C function `daqDataRule_getType()`.
     pub fn type_(&self) -> Result<DataRuleType> {
         let mut __type_: u32 = 0;
@@ -2302,7 +2499,10 @@ impl DataRule {
 
 impl DimensionBuilder {
     /// Builds and returns a Dimension object using the currently set values of the Builder.
-    /// @param\[out\] dimension The built Dimension.
+    ///
+    /// # Returns
+    /// - `dimension`: The built Dimension.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_build()`.
     pub fn build(&self) -> Result<Option<Dimension>> {
         let mut __dimension: *mut sys::daqDimension = std::ptr::null_mut();
@@ -2312,6 +2512,7 @@ impl DimensionBuilder {
     }
 
     /// Creates a Dimension builder object with no configuration parameters.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_createDimensionBuilder()`.
     pub fn new() -> Result<DimensionBuilder> {
         let mut __obj: *mut sys::daqDimensionBuilder = std::ptr::null_mut();
@@ -2321,7 +2522,10 @@ impl DimensionBuilder {
     }
 
     /// Creates a builder copy of the dimension object passed as parameter.
-    /// @param dimensionToCopy The dimension object to be copied.
+    ///
+    /// # Parameters
+    /// - `dimension_to_copy`: The dimension object to be copied.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_createDimensionBuilderFromExisting()`.
     pub fn from_existing(dimension_to_copy: &Dimension) -> Result<DimensionBuilder> {
         let mut __obj: *mut sys::daqDimensionBuilder = std::ptr::null_mut();
@@ -2331,7 +2535,10 @@ impl DimensionBuilder {
     }
 
     /// Gets the name of the dimension.
-    /// @param\[out\] name The name of the dimension.
+    ///
+    /// # Returns
+    /// - `name`: The name of the dimension.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -2341,7 +2548,10 @@ impl DimensionBuilder {
     }
 
     /// Gets the rule that defines the labels and size of the dimension.
-    /// @param\[out\] rule The dimension rule.
+    ///
+    /// # Returns
+    /// - `rule`: The dimension rule.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_getRule()`.
     pub fn rule(&self) -> Result<Option<DimensionRule>> {
         let mut __rule: *mut sys::daqDimensionRule = std::ptr::null_mut();
@@ -2351,7 +2561,10 @@ impl DimensionBuilder {
     }
 
     /// Gets the unit of the dimension's labels.
-    /// @param\[out\] unit The unit of the dimension.
+    ///
+    /// # Returns
+    /// - `unit`: The unit of the dimension.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -2361,8 +2574,10 @@ impl DimensionBuilder {
     }
 
     /// Sets the name of the dimension.
-    /// @param name The name of the dimension.
-    /// The name that best describes the dimension, in example "Frequency" for spectrum data.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the dimension. The name that best describes the dimension, in example "Frequency" for spectrum data.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2372,10 +2587,13 @@ impl DimensionBuilder {
     }
 
     /// Sets the rule that defines the labels and size of the dimension.
-    /// @param rule The dimension rule.
-    /// @retval OPENDAQ_ERR_FROZEN if the dimension object is frozen.
-    /// The rule takes as input the index of data value in a sample and produces a label associated
-    /// with that index.
+    ///
+    /// # Parameters
+    /// - `rule`: The dimension rule.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_FROZEN`: if the dimension object is frozen. The rule takes as input the index of data value in a sample and produces a label associated with that index.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_setRule()`.
     pub fn set_rule(&self, rule: &DimensionRule) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDimensionBuilder_setRule)(self.as_raw() as *mut _, rule.as_raw() as *mut _) };
@@ -2384,7 +2602,10 @@ impl DimensionBuilder {
     }
 
     /// Sets the unit of the dimension's labels.
-    /// @param unit The unit of the dimension.
+    ///
+    /// # Parameters
+    /// - `unit`: The unit of the dimension.
+    ///
     /// Calls the openDAQ C function `daqDimensionBuilder_setUnit()`.
     pub fn set_unit(&self, unit: &Unit) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDimensionBuilder_setUnit)(self.as_raw() as *mut _, unit.as_raw() as *mut _) };
@@ -2396,8 +2617,11 @@ impl DimensionBuilder {
 
 impl DimensionRuleBuilder {
     /// Adds a string-object pair parameter to the Dictionary of Dimension rule parameters.
-    /// @param name The string-type name of the parameter.
-    /// @param parameter The object-type parameter.
+    ///
+    /// # Parameters
+    /// - `name`: The string-type name of the parameter.
+    /// - `parameter`: The object-type parameter.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_addParameter()`.
     pub fn add_parameter(&self, name: &str, parameter: impl Into<Value>) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2408,7 +2632,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Builds and returns a Dimension rule object using the currently set values of the Builder.
-    /// @param\[out\] dataRule The built Dimension rule.
+    ///
+    /// # Returns
+    /// - `data_rule`: The built Dimension rule.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_build()`.
     pub fn build(&self) -> Result<Option<DimensionRule>> {
         let mut __dimension_rule: *mut sys::daqDimensionRule = std::ptr::null_mut();
@@ -2418,6 +2645,7 @@ impl DimensionRuleBuilder {
     }
 
     /// Creates a DataRuleConfig with no parameters.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_createDimensionRuleBuilder()`.
     pub fn new() -> Result<DimensionRuleBuilder> {
         let mut __obj: *mut sys::daqDimensionRuleBuilder = std::ptr::null_mut();
@@ -2427,7 +2655,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Dimension rule copy factory that creates a builder Rule object from a possibly non-configurable Rule.
-    /// @param ruleToCopy The rule of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `rule_to_copy`: The rule of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_createDimensionRuleBuilderFromExisting()`.
     pub fn from_existing(rule_to_copy: &DimensionRule) -> Result<DimensionRuleBuilder> {
         let mut __obj: *mut sys::daqDimensionRuleBuilder = std::ptr::null_mut();
@@ -2437,7 +2668,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Gets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param\[out\] parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Returns
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -2447,7 +2681,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Gets the type of the dimension rule.
-    /// @param\[out\] type The type of the dimension rule.
+    ///
+    /// # Returns
+    /// - `type`: The type of the dimension rule.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_getType()`.
     pub fn type_(&self) -> Result<DimensionRuleType> {
         let mut __type_: u32 = 0;
@@ -2457,6 +2694,7 @@ impl DimensionRuleBuilder {
     }
 
     /// Removes the parameter with the given name from the Dictionary of Dimension rule parameters.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_removeParameter()`.
     pub fn remove_parameter(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2466,7 +2704,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Sets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Parameters
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_setParameters()`.
     pub fn set_parameters(&self, parameters: impl Into<Value>) -> Result<()> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -2476,11 +2717,10 @@ impl DimensionRuleBuilder {
     }
 
     /// Sets the type of the dimension rule. Rule parameters must be configured to match the requirements of the rule type.
-    /// @param type The type of the dimension rule.
-    /// The required rule parameters are as follows:
-    /// - Linear: `delta`, `start`, and `size` number parameters. Calculated as: \<em\>index * delta + start\</em\> for `size` number of elements.
-    /// - Logarithmic: `delta`, `start`, `base`, and `size` number parameters. Calculated as: \<em\>base ^ (index * delta + start)\</em\> for `size` number of elements.
-    /// - List: `list` parameter. The list contains all dimension labels.
+    ///
+    /// # Parameters
+    /// - `type`: The type of the dimension rule. The required rule parameters are as follows: - Linear: `delta`, `start`, and `size` number parameters. Calculated as: \<em\>index * delta + start\</em\> for `size` number of elements. - Logarithmic: `delta`, `start`, `base`, and `size` number parameters. Calculated as: \<em\>base ^ (index * delta + start)\</em\> for `size` number of elements. - List: `list` parameter. The list contains all dimension labels.
+    ///
     /// Calls the openDAQ C function `daqDimensionRuleBuilder_setType()`.
     pub fn set_type(&self, type_: DimensionRuleType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDimensionRuleBuilder_setType)(self.as_raw() as *mut _, type_ as u32) };
@@ -2492,8 +2732,11 @@ impl DimensionRuleBuilder {
 
 impl DimensionRule {
     /// Creates a Rule with a given type and parameters.
-    /// @param type The type of the Dimension rule
-    /// @param parameters Tha parameters of the Dimension rule
+    ///
+    /// # Parameters
+    /// - `type`: The type of the Dimension rule
+    /// - `parameters`: Tha parameters of the Dimension rule
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_createDimensionRule()`.
     pub fn new(type_: DimensionRuleType, parameters: impl Into<Value>) -> Result<DimensionRule> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -2504,7 +2747,10 @@ impl DimensionRule {
     }
 
     /// Creates a DimensionRule using Builder
-    /// @param builder DimensionRule Builder
+    ///
+    /// # Parameters
+    /// - `builder`: DimensionRule Builder
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_createDimensionRuleFromBuilder()`.
     pub fn from_builder(builder: &DimensionRuleBuilder) -> Result<DimensionRule> {
         let mut __obj: *mut sys::daqDimensionRule = std::ptr::null_mut();
@@ -2514,11 +2760,12 @@ impl DimensionRule {
     }
 
     /// Creates a Rule with a Linear rule type configuration.
-    /// @param delta Coefficient by which the input data is to be multiplied.
-    /// @param start Constant that is added to the \<em\>scale * value\</em\> multiplication result.
-    /// @param size The size of the dimension described by the rule
-    /// The scale and offset are stored within the `parameters` member of the Rule object
-    /// with the scale being at the first position of the list, and the offset at the second.
+    ///
+    /// # Parameters
+    /// - `delta`: Coefficient by which the input data is to be multiplied.
+    /// - `start`: Constant that is added to the \<em\>scale * value\</em\> multiplication result.
+    /// - `size`: The size of the dimension described by the rule The scale and offset are stored within the `parameters` member of the Rule object with the scale being at the first position of the list, and the offset at the second.
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_createLinearDimensionRule()`.
     pub fn linear(delta: impl Into<Value>, start: impl Into<Value>, size: usize) -> Result<DimensionRule> {
         let __delta = crate::value::to_daq_number(&delta.into())?;
@@ -2530,8 +2777,10 @@ impl DimensionRule {
     }
 
     /// Creates a Rule with a List rule type configuration.
-    /// @param list The list of dimension labels.
-    /// The list is stored within the `parameters` member of the Rule object.
+    ///
+    /// # Parameters
+    /// - `list`: The list of dimension labels. The list is stored within the `parameters` member of the Rule object.
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_createListDimensionRule()`.
     pub fn list(list: impl Into<Value>) -> Result<DimensionRule> {
         let __list = crate::value::to_daq(&list.into())?;
@@ -2542,10 +2791,13 @@ impl DimensionRule {
     }
 
     /// Creates a Rule with a Logarithmic rule type configuration.
-    /// @param delta Coefficient by which the input data is to be multiplied.
-    /// @param start Constant that is added to the \<em\>scale * value\</em\> multiplication result.
-    /// @param base The base of the logarithm.
-    /// @param size The size of the dimension described by the rule.
+    ///
+    /// # Parameters
+    /// - `delta`: Coefficient by which the input data is to be multiplied.
+    /// - `start`: Constant that is added to the \<em\>scale * value\</em\> multiplication result.
+    /// - `base`: The base of the logarithm.
+    /// - `size`: The size of the dimension described by the rule.
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_createLogarithmicDimensionRule()`.
     pub fn logarithmic(delta: impl Into<Value>, start: impl Into<Value>, base: impl Into<Value>, size: usize) -> Result<DimensionRule> {
         let __delta = crate::value::to_daq_number(&delta.into())?;
@@ -2558,7 +2810,10 @@ impl DimensionRule {
     }
 
     /// Gets a dictionary of string-object key-value pairs representing the parameters used to evaluate the rule.
-    /// @param\[out\] parameters The dictionary containing the rule parameter members.
+    ///
+    /// # Returns
+    /// - `parameters`: The dictionary containing the rule parameter members.
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -2568,7 +2823,10 @@ impl DimensionRule {
     }
 
     /// Gets the type of the dimension rule.
-    /// @param\[out\] type The type of the dimension rule.
+    ///
+    /// # Returns
+    /// - `type`: The type of the dimension rule.
+    ///
     /// Calls the openDAQ C function `daqDimensionRule_getType()`.
     pub fn type_(&self) -> Result<DimensionRuleType> {
         let mut __type_: u32 = 0;
@@ -2581,9 +2839,12 @@ impl DimensionRule {
 
 impl Dimension {
     /// Creates a dimension object of which labels and size are defined via rule.
-    /// @param rule The rule via which labels are defined.
-    /// @param unit The unit of the dimension's labels.
-    /// @param name The name the dimension.
+    ///
+    /// # Parameters
+    /// - `rule`: The rule via which labels are defined.
+    /// - `unit`: The unit of the dimension's labels.
+    /// - `name`: The name the dimension.
+    ///
     /// Calls the openDAQ C function `daqDimension_createDimension()`.
     pub fn new(rule: &DimensionRule, unit: &Unit, name: &str) -> Result<Dimension> {
         let __name = crate::marshal::make_string(name)?;
@@ -2594,7 +2855,10 @@ impl Dimension {
     }
 
     /// Creates a Dimension using Builder
-    /// @param builder Dimension Builder
+    ///
+    /// # Parameters
+    /// - `builder`: Dimension Builder
+    ///
     /// Calls the openDAQ C function `daqDimension_createDimensionFromBuilder()`.
     pub fn from_builder(builder: &DimensionBuilder) -> Result<Dimension> {
         let mut __obj: *mut sys::daqDimension = std::ptr::null_mut();
@@ -2604,9 +2868,10 @@ impl Dimension {
     }
 
     /// Gets a list of labels that defines the dimension.
-    /// @param\[out\] labels The list of labels.
-    /// The list is obtained from the dimension rule parameters by parsing and evaluating the parameters
-    /// in conjunction with the rule type.
+    ///
+    /// # Returns
+    /// - `labels`: The list of labels. The list is obtained from the dimension rule parameters by parsing and evaluating the parameters in conjunction with the rule type.
+    ///
     /// Calls the openDAQ C function `daqDimension_getLabels()`.
     pub fn labels(&self) -> Result<Vec<Value>> {
         let mut __labels: *mut sys::daqList = std::ptr::null_mut();
@@ -2616,8 +2881,10 @@ impl Dimension {
     }
 
     /// Gets the name of the dimension.
-    /// @param\[out\] name The name of the dimension.
-    /// The name that best describes the dimension, in example "Frequency" for spectrum data.
+    ///
+    /// # Returns
+    /// - `name`: The name of the dimension. The name that best describes the dimension, in example "Frequency" for spectrum data.
+    ///
     /// Calls the openDAQ C function `daqDimension_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -2627,9 +2894,10 @@ impl Dimension {
     }
 
     /// Gets the rule that defines the labels and size of the dimension.
-    /// @param\[out\] rule The dimension rule.
-    /// The rule takes as input the index of data value in a sample and produces a label associated
-    /// with that index.
+    ///
+    /// # Returns
+    /// - `rule`: The dimension rule. The rule takes as input the index of data value in a sample and produces a label associated with that index.
+    ///
     /// Calls the openDAQ C function `daqDimension_getRule()`.
     pub fn rule(&self) -> Result<Option<DimensionRule>> {
         let mut __rule: *mut sys::daqDimensionRule = std::ptr::null_mut();
@@ -2639,9 +2907,10 @@ impl Dimension {
     }
 
     /// Gets the size of the dimension.
-    /// @param\[out\] size The size of the dimension.
-    /// The size is obtained from the dimension rule parameters - either from the `size` parameter, or the
-    /// count of elements in the `list` parameter.
+    ///
+    /// # Returns
+    /// - `size`: The size of the dimension. The size is obtained from the dimension rule parameters - either from the `size` parameter, or the count of elements in the `list` parameter.
+    ///
     /// Calls the openDAQ C function `daqDimension_getSize()`.
     pub fn size(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -2651,7 +2920,10 @@ impl Dimension {
     }
 
     /// Gets the unit of the dimension's labels.
-    /// @param\[out\] unit The unit of the dimension.
+    ///
+    /// # Returns
+    /// - `unit`: The unit of the dimension.
+    ///
     /// Calls the openDAQ C function `daqDimension_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -2664,9 +2936,10 @@ impl Dimension {
 
 impl InputPortPrivate {
     /// Connects the signal to the input port, forming a Connection.
-    /// @param signal The signal to be connected to the input port.
-    /// On connect, an event packet is enqueued in the connection. This method schedules the
-    /// `onPacketReceived` notification instead of invoking it on the same thread.
+    ///
+    /// # Parameters
+    /// - `signal`: The signal to be connected to the input port. On connect, an event packet is enqueued in the connection. This method schedules the `onPacketReceived` notification instead of invoking it on the same thread.
+    ///
     /// Calls the openDAQ C function `daqInputPortPrivate_connectSignalSchedulerNotification()`.
     pub fn connect_signal_scheduler_notification(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortPrivate_connectSignalSchedulerNotification)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -2675,6 +2948,7 @@ impl InputPortPrivate {
     }
 
     /// Disconnects the signal without notification to the signal.
+    ///
     /// Calls the openDAQ C function `daqInputPortPrivate_disconnectWithoutSignalNotification()`.
     pub fn disconnect_without_signal_notification(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqInputPortPrivate_disconnectWithoutSignalNotification)(self.as_raw() as *mut _) };
@@ -2686,6 +2960,7 @@ impl InputPortPrivate {
 
 impl PacketDestructCallback {
     /// Called when packet is destroyed.
+    ///
     /// Calls the openDAQ C function `daqPacketDestructCallback_onPacketDestroyed()`.
     pub fn on_packet_destroyed(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPacketDestructCallback_onPacketDestroyed)(self.as_raw() as *mut _) };
@@ -2697,9 +2972,14 @@ impl PacketDestructCallback {
 
 impl Range {
     /// Creates a range object with specified low and high boundary values.
-    /// @param lowValue The lower boundary of the range.
-    /// @param highValue The upper boundary of the range.
-    /// @retval OPENDAQ_ERR_RANGE_BOUNDARIES_INVALID if lowValue \> highValue.
+    ///
+    /// # Parameters
+    /// - `low_value`: The lower boundary of the range.
+    /// - `high_value`: The upper boundary of the range.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_RANGE_BOUNDARIES_INVALID`: if lowValue \> highValue.
+    ///
     /// Calls the openDAQ C function `daqRange_createRange()`.
     pub fn new(low_value: impl Into<Value>, high_value: impl Into<Value>) -> Result<Range> {
         let __low_value = crate::value::to_daq_number(&low_value.into())?;
@@ -2711,6 +2991,7 @@ impl Range {
     }
 
     /// Gets the upper boundary value of the range.
+    ///
     /// Calls the openDAQ C function `daqRange_getHighValue()`.
     pub fn high_value(&self) -> Result<Option<f64>> {
         let mut __value: *mut sys::daqNumber = std::ptr::null_mut();
@@ -2720,6 +3001,7 @@ impl Range {
     }
 
     /// Gets the lower boundary value of the range.
+    ///
     /// Calls the openDAQ C function `daqRange_getLowValue()`.
     pub fn low_value(&self) -> Result<Option<f64>> {
         let mut __value: *mut sys::daqNumber = std::ptr::null_mut();
@@ -2732,7 +3014,10 @@ impl Range {
 
 impl ReferenceDomainInfoBuilder {
     /// Builds and returns a Reference Domain Info object using the currently set values of the Builder.
-    /// @param\[out\] referenceDomainInfo The built Reference Domain Info.
+    ///
+    /// # Returns
+    /// - `reference_domain_info`: The built Reference Domain Info.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_build()`.
     pub fn build(&self) -> Result<Option<ReferenceDomainInfo>> {
         let mut __reference_domain_info: *mut sys::daqReferenceDomainInfo = std::ptr::null_mut();
@@ -2742,6 +3027,7 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Reference Domain Info builder factory that creates a builder object with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_createReferenceDomainInfoBuilder()`.
     pub fn new() -> Result<ReferenceDomainInfoBuilder> {
         let mut __obj: *mut sys::daqReferenceDomainInfoBuilder = std::ptr::null_mut();
@@ -2751,7 +3037,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Reference Domain Info copy factory that creates a Reference Domain Info builder object from a different Reference Domain Info, copying its parameters.
-    /// @param referenceDomainInfoToCopy The Reference Domain Info of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `reference_domain_info_to_copy`: The Reference Domain Info of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_createReferenceDomainInfoBuilderFromExisting()`.
     pub fn from_existing(reference_domain_info_to_copy: &ReferenceDomainInfo) -> Result<ReferenceDomainInfoBuilder> {
         let mut __obj: *mut sys::daqReferenceDomainInfoBuilder = std::ptr::null_mut();
@@ -2761,13 +3050,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Gets the Reference Domain ID.
-    /// @param\[out\] referenceDomainId The Reference Domain ID.
-    /// If set, gives the common identifier of one domain group.
-    /// Signals with the same Reference Domain ID share a common synchronization source
-    /// (all the signals in a group either come from the same device
-    /// or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.).
-    /// Those signals can always be read together, implying that a Multi Reader
-    /// can be used to read the signals if their sampling rates are compatible.
+    ///
+    /// # Returns
+    /// - `reference_domain_id`: The Reference Domain ID. If set, gives the common identifier of one domain group. Signals with the same Reference Domain ID share a common synchronization source (all the signals in a group either come from the same device or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.). Those signals can always be read together, implying that a Multi Reader can be used to read the signals if their sampling rates are compatible.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_getReferenceDomainId()`.
     pub fn reference_domain_id(&self) -> Result<String> {
         let mut __reference_domain_id: *mut sys::daqString = std::ptr::null_mut();
@@ -2777,15 +3063,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Gets the Reference Domain Offset.
-    /// @param\[out\] referenceDomainOffset The Reference Domain Offset.
-    /// If set, denotes the offset in ticks that must be added to the domain values of the signal
-    /// for them to be equal to that of the sync source. The sync source will always have an offset of 0.
-    /// This offset is changed only if the sync source changes and should be kept at 0 otherwise,
-    /// allowing clients to differentiate between data loss and resync events.
-    /// Any device can choose to always keep the offset at 0, representing changes in the offset in
-    /// the domain packet values instead. This implementation prevents clients from differentiating
-    /// between errors (data loss) and resync events. Additionally, if the offset is not configured,
-    /// clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
+    /// # Returns
+    /// - `reference_domain_offset`: The Reference Domain Offset. If set, denotes the offset in ticks that must be added to the domain values of the signal for them to be equal to that of the sync source. The sync source will always have an offset of 0. This offset is changed only if the sync source changes and should be kept at 0 otherwise, allowing clients to differentiate between data loss and resync events. Any device can choose to always keep the offset at 0, representing changes in the offset in the domain packet values instead. This implementation prevents clients from differentiating between errors (data loss) and resync events. Additionally, if the offset is not configured, clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_getReferenceDomainOffset()`.
     pub fn reference_domain_offset(&self) -> Result<Option<i64>> {
         let mut __reference_domain_offset: *mut sys::daqInteger = std::ptr::null_mut();
@@ -2795,13 +3076,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Gets the value that indicates the Reference Time Source.
-    /// @param\[out\] referenceTimeProtocol The value that indicates the Reference Time Source.
-    /// If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according
-    /// to the chosen time standard. The possible values are Gps, Tai, and Utc.
-    /// This field is used to determine if two signals with different Domain IDs can be read
-    /// together. Signals that have configured a Reference Time Source are trusted to have absolute
-    /// time stamps that correlate to the chosen time standard (eg. two separate PTP networks,
-    /// both driven through GPS can be read together, as their absolute time is the same).
+    ///
+    /// # Returns
+    /// - `reference_time_protocol`: The value that indicates the Reference Time Source. If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according to the chosen time standard. The possible values are Gps, Tai, and Utc. This field is used to determine if two signals with different Domain IDs can be read together. Signals that have configured a Reference Time Source are trusted to have absolute time stamps that correlate to the chosen time standard (eg. two separate PTP networks, both driven through GPS can be read together, as their absolute time is the same).
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_getReferenceTimeProtocol()`.
     pub fn reference_time_protocol(&self) -> Result<TimeProtocol> {
         let mut __reference_time_protocol: u32 = 0;
@@ -2811,8 +3089,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Gets the value that indicates if offset is used.
-    /// @param\[out\] usesOffset The value that indicates if offset is used.
-    /// If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
+    /// # Returns
+    /// - `uses_offset`: The value that indicates if offset is used. If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_getUsesOffset()`.
     pub fn uses_offset(&self) -> Result<UsesOffset> {
         let mut __uses_offset: u32 = 0;
@@ -2822,13 +3102,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Sets the Reference Domain ID.
-    /// @param referenceDomainId The Reference Domain ID.
-    /// If set, gives the common identifier of one domain group.
-    /// Signals with the same Reference Domain ID share a common synchronization source
-    /// (all the signals in a group either come from the same device
-    /// or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.).
-    /// Those signals can always be read together, implying that a Multi Reader
-    /// can be used to read the signals if their sampling rates are compatible.
+    ///
+    /// # Parameters
+    /// - `reference_domain_id`: The Reference Domain ID. If set, gives the common identifier of one domain group. Signals with the same Reference Domain ID share a common synchronization source (all the signals in a group either come from the same device or are synchronized using a protocol, such as PTP, NTP, IRIG, etc.). Those signals can always be read together, implying that a Multi Reader can be used to read the signals if their sampling rates are compatible.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_setReferenceDomainId()`.
     pub fn set_reference_domain_id(&self, reference_domain_id: &str) -> Result<()> {
         let __reference_domain_id = crate::marshal::make_string(reference_domain_id)?;
@@ -2838,15 +3115,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Sets the Reference Domain Offset.
-    /// @param referenceDomainOffset The Reference Domain Offset.
-    /// If set, denotes the offset in ticks that must be added to the domain values of the signal
-    /// for them to be equal to that of the sync source. The sync source will always have an offset of 0.
-    /// This offset is changed only if the sync source changes and should be kept at 0 otherwise,
-    /// allowing clients to differentiate between data loss and resync events.
-    /// Any device can choose to always keep the offset at 0, representing changes in the offset in
-    /// the domain packet values instead. This implementation prevents clients from differentiating
-    /// between errors (data loss) and resync events. Additionally, if the offset is not configured,
-    /// clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
+    /// # Parameters
+    /// - `reference_domain_offset`: The Reference Domain Offset. If set, denotes the offset in ticks that must be added to the domain values of the signal for them to be equal to that of the sync source. The sync source will always have an offset of 0. This offset is changed only if the sync source changes and should be kept at 0 otherwise, allowing clients to differentiate between data loss and resync events. Any device can choose to always keep the offset at 0, representing changes in the offset in the domain packet values instead. This implementation prevents clients from differentiating between errors (data loss) and resync events. Additionally, if the offset is not configured, clients have no way of detecting a resync event in the case of asynchronous signals.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_setReferenceDomainOffset()`.
     pub fn set_reference_domain_offset(&self, reference_domain_offset: i64) -> Result<()> {
         let __reference_domain_offset = crate::value::int_to_ref(reference_domain_offset)?;
@@ -2856,13 +3128,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Sets the value that indicates the Reference Time Source.
-    /// @param referenceTimeProtocol The value that indicates the Reference Time Source.
-    /// If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according
-    /// to the chosen time standard. The possible values are Gps, Tai, and Utc.
-    /// This field is used to determine if two signals with different Domain IDs can be read
-    /// together. Signals that have configured a Reference Time Source are trusted to have absolute
-    /// time stamps that correlate to the chosen time standard (eg. two separate PTP networks,
-    /// both driven through GPS can be read together, as their absolute time is the same).
+    ///
+    /// # Parameters
+    /// - `reference_time_protocol`: The value that indicates the Reference Time Source. If not set to Unknown, the domain quantity is “time”, and the timestamps are absolute according to the chosen time standard. The possible values are Gps, Tai, and Utc. This field is used to determine if two signals with different Domain IDs can be read together. Signals that have configured a Reference Time Source are trusted to have absolute time stamps that correlate to the chosen time standard (eg. two separate PTP networks, both driven through GPS can be read together, as their absolute time is the same).
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_setReferenceTimeProtocol()`.
     pub fn set_reference_time_protocol(&self, reference_time_protocol: TimeProtocol) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqReferenceDomainInfoBuilder_setReferenceTimeProtocol)(self.as_raw() as *mut _, reference_time_protocol as u32) };
@@ -2871,8 +3140,10 @@ impl ReferenceDomainInfoBuilder {
     }
 
     /// Sets the value that indicates if offset is used.
-    /// @param\[out\] usesOffset The value that indicates if offset is used.
-    /// If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
+    /// # Returns
+    /// - `uses_offset`: The value that indicates if offset is used. If False, a device will contain time jumps due to resync in the domain signal data.
+    ///
     /// Calls the openDAQ C function `daqReferenceDomainInfoBuilder_setUsesOffset()`.
     pub fn set_uses_offset(&self, uses_offset: UsesOffset) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqReferenceDomainInfoBuilder_setUsesOffset)(self.as_raw() as *mut _, uses_offset as u32) };
@@ -2896,7 +3167,10 @@ impl ReusableDataPacket {
 
 impl RulePrivate {
     /// Checks whether the parameters are valid and returns an appropriate error code if not.
-    /// @retval OPENDAQ_ERR_INVALID_PARAMETERS If the parameters are invalid for the specific rule type.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_INVALID_PARAMETERS`: If the parameters are invalid for the specific rule type.
+    ///
     /// Calls the openDAQ C function `daqRulePrivate_verifyParameters()`.
     pub fn verify_parameters(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqRulePrivate_verifyParameters)(self.as_raw() as *mut _) };
@@ -2908,8 +3182,11 @@ impl RulePrivate {
 
 impl ScalingBuilder {
     /// Adds a string-object pair parameter to the Dictionary of Scaling parameters.
-    /// @param name The string-type name of the parameter.
-    /// @param parameter The object-type parameter.
+    ///
+    /// # Parameters
+    /// - `name`: The string-type name of the parameter.
+    /// - `parameter`: The object-type parameter.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_addParameter()`.
     pub fn add_parameter(&self, name: &str, parameter: impl Into<Value>) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2920,7 +3197,10 @@ impl ScalingBuilder {
     }
 
     /// Builds and returns a Scaling object using the currently set values of the Builder.
-    /// @param\[out\] scaling The built Scaling object.
+    ///
+    /// # Returns
+    /// - `scaling`: The built Scaling object.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_build()`.
     pub fn build(&self) -> Result<Option<Scaling>> {
         let mut __scaling: *mut sys::daqScaling = std::ptr::null_mut();
@@ -2930,6 +3210,7 @@ impl ScalingBuilder {
     }
 
     /// Creates a Scaling builder object with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_createScalingBuilder()`.
     pub fn new() -> Result<ScalingBuilder> {
         let mut __obj: *mut sys::daqScalingBuilder = std::ptr::null_mut();
@@ -2939,7 +3220,10 @@ impl ScalingBuilder {
     }
 
     /// Scaling builder copy factory that creates a configurable Scaling object from a non-configurable one.
-    /// @param scalingToCopy The scaling of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `scaling_to_copy`: The scaling of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_createScalingBuilderFromExisting()`.
     pub fn from_existing(scaling_to_copy: &Scaling) -> Result<ScalingBuilder> {
         let mut __obj: *mut sys::daqScalingBuilder = std::ptr::null_mut();
@@ -2949,7 +3233,10 @@ impl ScalingBuilder {
     }
 
     /// Gets the scaling's input data type.
-    /// @param\[out\] type The input data type.
+    ///
+    /// # Returns
+    /// - `type`: The input data type.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_getInputDataType()`.
     pub fn input_data_type(&self) -> Result<SampleType> {
         let mut __type_: u32 = 0;
@@ -2959,7 +3246,10 @@ impl ScalingBuilder {
     }
 
     /// Gets the scaling's output data type.
-    /// @param\[out\] type The output data type
+    ///
+    /// # Returns
+    /// - `type`: The output data type
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_getOutputDataType()`.
     pub fn output_data_type(&self) -> Result<ScaledSampleType> {
         let mut __type_: u32 = 0;
@@ -2969,7 +3259,10 @@ impl ScalingBuilder {
     }
 
     /// Gets the list of parameters that are used to calculate the scaling in conjunction with the input data.
-    /// @param\[out\] parameters The list of parameters. All elements are Number types.
+    ///
+    /// # Returns
+    /// - `parameters`: The list of parameters. All elements are Number types.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -2979,7 +3272,10 @@ impl ScalingBuilder {
     }
 
     /// Gets the type of the scaling that determines how the scaling parameters should be interpreted and how the scaling should be calculated.
-    /// @param\[out\] type The type of the scaling.
+    ///
+    /// # Returns
+    /// - `type`: The type of the scaling.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_getScalingType()`.
     pub fn scaling_type(&self) -> Result<ScalingType> {
         let mut __type_: u32 = 0;
@@ -2989,6 +3285,7 @@ impl ScalingBuilder {
     }
 
     /// Removes the parameter with the given name from the Dictionary of Scaling parameters.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_removeParameter()`.
     pub fn remove_parameter(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2998,9 +3295,10 @@ impl ScalingBuilder {
     }
 
     /// Sets the scaling's input data type.
-    /// @param type The input data type.
-    /// The input data type corresponds to the raw data passed through the signal path in
-    /// data packets.
+    ///
+    /// # Parameters
+    /// - `type`: The input data type. The input data type corresponds to the raw data passed through the signal path in data packets.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_setInputDataType()`.
     pub fn set_input_data_type(&self, type_: SampleType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScalingBuilder_setInputDataType)(self.as_raw() as *mut _, type_ as u32) };
@@ -3009,10 +3307,10 @@ impl ScalingBuilder {
     }
 
     /// Sets the scaling's output data type.
-    /// @param type The output data type
-    /// The output data type corresponds to the type specified in the value descriptor of
-    /// a signal, and is the type in which said signal's data should be read in after having
-    /// the scaling applied to it.
+    ///
+    /// # Parameters
+    /// - `type`: The output data type The output data type corresponds to the type specified in the value descriptor of a signal, and is the type in which said signal's data should be read in after having the scaling applied to it.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_setOutputDataType()`.
     pub fn set_output_data_type(&self, type_: ScaledSampleType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScalingBuilder_setOutputDataType)(self.as_raw() as *mut _, type_ as u32) };
@@ -3021,8 +3319,13 @@ impl ScalingBuilder {
     }
 
     /// Gets the list of parameters that are used to calculate the scaling in conjunction with the input data.
-    /// @param parameters The list of parameters. All elements are Number types.
-    /// @retval OPENDAQ_ERR_FROZEN if the object is frozen.
+    ///
+    /// # Parameters
+    /// - `parameters`: The list of parameters. All elements are Number types.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_FROZEN`: if the object is frozen.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_setParameters()`.
     pub fn set_parameters(&self, parameters: impl Into<Value>) -> Result<()> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -3032,7 +3335,10 @@ impl ScalingBuilder {
     }
 
     /// Sets the type of the scaling that determines how the scaling parameters should be interpreted and how the scaling should be calculated.
-    /// @param type The type of the scaling.
+    ///
+    /// # Parameters
+    /// - `type`: The type of the scaling.
+    ///
     /// Calls the openDAQ C function `daqScalingBuilder_setScalingType()`.
     pub fn set_scaling_type(&self, type_: ScalingType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScalingBuilder_setScalingType)(self.as_raw() as *mut _, type_ as u32) };
@@ -3044,10 +3350,13 @@ impl ScalingBuilder {
 
 impl Scaling {
     /// Creates a Scaling with a Linear scaling type configuration. The returned Scaling object is already frozen.
-    /// @param scale Coefficient by which the input data is to be multiplied.
-    /// @param offset Constant that is added to the \<em\>scale * value\</em\> multiplication result.
-    /// @param inputDataType The scaling's input data type.
-    /// @param outputDataType The scaling's output data type.
+    ///
+    /// # Parameters
+    /// - `scale`: Coefficient by which the input data is to be multiplied.
+    /// - `offset`: Constant that is added to the \<em\>scale * value\</em\> multiplication result.
+    /// - `input_data_type`: The scaling's input data type.
+    /// - `output_data_type`: The scaling's output data type.
+    ///
     /// Calls the openDAQ C function `daqScaling_createLinearScaling()`.
     pub fn linear(scale: impl Into<Value>, offset: impl Into<Value>, input_data_type: SampleType, output_data_type: ScaledSampleType) -> Result<Scaling> {
         let __scale = crate::value::to_daq_number(&scale.into())?;
@@ -3059,10 +3368,13 @@ impl Scaling {
     }
 
     /// Creates a Scaling object with given input/output types, Scaling type and parameters.
-    /// @param inputDataType The type of input data expected by the rule.
-    /// @param outputDataType The data type output by the rule after calculation.
-    /// @param scalingType The type of the scaling.
-    /// @param parameters Tha parameters of the Dimension rule.
+    ///
+    /// # Parameters
+    /// - `input_data_type`: The type of input data expected by the rule.
+    /// - `output_data_type`: The data type output by the rule after calculation.
+    /// - `scaling_type`: The type of the scaling.
+    /// - `parameters`: Tha parameters of the Dimension rule.
+    ///
     /// Calls the openDAQ C function `daqScaling_createScaling()`.
     pub fn new(input_data_type: SampleType, output_data_type: ScaledSampleType, scaling_type: ScalingType, parameters: impl Into<Value>) -> Result<Scaling> {
         let __parameters = crate::value::to_daq(&parameters.into())?;
@@ -3073,7 +3385,10 @@ impl Scaling {
     }
 
     /// Creates a Scaling object from Builder
-    /// @param builder Scaling Builder
+    ///
+    /// # Parameters
+    /// - `builder`: Scaling Builder
+    ///
     /// Calls the openDAQ C function `daqScaling_createScalingFromBuilder()`.
     pub fn from_builder(builder: &ScalingBuilder) -> Result<Scaling> {
         let mut __obj: *mut sys::daqScaling = std::ptr::null_mut();
@@ -3083,9 +3398,10 @@ impl Scaling {
     }
 
     /// Gets the scaling's input data type.
-    /// @param\[out\] type The input data type
-    /// The input data type corresponds to the raw values passed through the signal path in
-    /// data packets.
+    ///
+    /// # Returns
+    /// - `type`: The input data type The input data type corresponds to the raw values passed through the signal path in data packets.
+    ///
     /// Calls the openDAQ C function `daqScaling_getInputSampleType()`.
     pub fn input_sample_type(&self) -> Result<SampleType> {
         let mut __type_: u32 = 0;
@@ -3095,10 +3411,10 @@ impl Scaling {
     }
 
     /// Gets the scaling's output data type.
-    /// @param\[out\] type The output data type
-    /// The output data type corresponds to the sample type specified in the value descriptor of
-    /// a signal, and is the type in which said signal's data should be read in after having
-    /// the scaling applied to it.
+    ///
+    /// # Returns
+    /// - `type`: The output data type The output data type corresponds to the sample type specified in the value descriptor of a signal, and is the type in which said signal's data should be read in after having the scaling applied to it.
+    ///
     /// Calls the openDAQ C function `daqScaling_getOutputSampleType()`.
     pub fn output_sample_type(&self) -> Result<ScaledSampleType> {
         let mut __type_: u32 = 0;
@@ -3108,7 +3424,10 @@ impl Scaling {
     }
 
     /// Gets the dictionary of parameters that are used to calculate the scaling in conjunction with the input data.
-    /// @param\[out\] parameters The dictionary of parameters.
+    ///
+    /// # Returns
+    /// - `parameters`: The dictionary of parameters.
+    ///
     /// Calls the openDAQ C function `daqScaling_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -3118,7 +3437,10 @@ impl Scaling {
     }
 
     /// Gets the type of the scaling that determines how the scaling parameters should be interpreted and how the scaling should be calculated.
-    /// @param\[out\] type The type of the scaling.
+    ///
+    /// # Returns
+    /// - `type`: The type of the scaling.
+    ///
     /// Calls the openDAQ C function `daqScaling_getType()`.
     pub fn type_(&self) -> Result<ScalingType> {
         let mut __type_: u32 = 0;
@@ -3131,8 +3453,13 @@ impl Scaling {
 
 impl SignalConfig {
     /// Adds a related signal to the list of related signals.
-    /// @param signal The signal to be added.
-    /// @retval OPENDAQ_ERR_DUPLICATEITEM if the signal is already present in the list.
+    ///
+    /// # Parameters
+    /// - `signal`: The signal to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_DUPLICATEITEM`: if the signal is already present in the list.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_addRelatedSignal()`.
     pub fn add_related_signal(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_addRelatedSignal)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -3141,6 +3468,7 @@ impl SignalConfig {
     }
 
     /// Clears the list of related signals.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_clearRelatedSignals()`.
     pub fn clear_related_signals(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_clearRelatedSignals)(self.as_raw() as *mut _) };
@@ -3169,8 +3497,13 @@ impl SignalConfig {
     }
 
     /// Removes a signal from the list of related signal.
-    /// @param signal The signal to be removed.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the signal is not part of the list.
+    ///
+    /// # Parameters
+    /// - `signal`: The signal to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the signal is not part of the list.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_removeRelatedSignal()`.
     pub fn remove_related_signal(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_removeRelatedSignal)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -3179,7 +3512,10 @@ impl SignalConfig {
     }
 
     /// Sends a packet through all connections of the signal.
-    /// @param packet The packet to be sent.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be sent.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_sendPacket()`.
     pub fn send_packet(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_sendPacket)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -3188,9 +3524,10 @@ impl SignalConfig {
     }
 
     /// Sends a packet through all connections of the signal. Ownership of the packet is transfered.
-    /// @param packet The packet to be sent.
-    /// After calling the method, the packet should not be touched again. The ownership of the packet
-    /// is taken by underlying connections and it could be destroyed before the function returns.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be sent. After calling the method, the packet should not be touched again. The ownership of the packet is taken by underlying connections and it could be destroyed before the function returns.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_sendPacketAndStealRef()`.
     pub fn send_packet_and_steal_ref(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_sendPacketAndStealRef)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };
@@ -3199,8 +3536,10 @@ impl SignalConfig {
     }
 
     /// Sends multiple packets through all connections of the signal.
-    /// @param packets The packets to be sent.
-    /// Sending multiple packets creates a single notification to input port.
+    ///
+    /// # Parameters
+    /// - `packets`: The packets to be sent. Sending multiple packets creates a single notification to input port.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_sendPackets()`.
     pub fn send_packets(&self, packets: &[Packet]) -> Result<()> {
         let __packets = crate::marshal::list_from_interfaces(packets)?;
@@ -3210,9 +3549,10 @@ impl SignalConfig {
     }
 
     /// Sends multiple packets through all connections of the signal. Ownership of the packets is transfered.
-    /// @param packets The packets to be sent.
-    /// After calling the method, the packets should not be touched again. The ownership of the packets
-    /// is taken by underlying connections and they could be destroyed before the function returns.
+    ///
+    /// # Parameters
+    /// - `packets`: The packets to be sent. After calling the method, the packets should not be touched again. The ownership of the packets is taken by underlying connections and they could be destroyed before the function returns.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_sendPacketsAndStealRef()`.
     pub fn send_packets_and_steal_ref(&self, packets: &[Packet]) -> Result<()> {
         let __packets = crate::marshal::list_from_interfaces(packets)?;
@@ -3222,10 +3562,10 @@ impl SignalConfig {
     }
 
     /// Sets the data descriptor.
-    /// @param descriptor The data descriptor.
-    /// Setting the data descriptor triggers a Descriptor changed event packet to be sent to
-    /// all connections of the signal. If the signal is a domain signal of another, that signal
-    /// also sends a Descriptor changed event to all its connections.
+    ///
+    /// # Parameters
+    /// - `descriptor`: The data descriptor. Setting the data descriptor triggers a Descriptor changed event packet to be sent to all connections of the signal. If the signal is a domain signal of another, that signal also sends a Descriptor changed event to all its connections.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_setDescriptor()`.
     pub fn set_descriptor(&self, descriptor: &DataDescriptor) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_setDescriptor)(self.as_raw() as *mut _, descriptor.as_raw() as *mut _) };
@@ -3234,9 +3574,10 @@ impl SignalConfig {
     }
 
     /// Sets the domain signal reference.
-    /// @param signal The domain signal.
-    /// Setting a new domain signal triggers a Descriptor changed event packet to be sent to
-    /// all connections of the signal.
+    ///
+    /// # Parameters
+    /// - `signal`: The domain signal. Setting a new domain signal triggers a Descriptor changed event packet to be sent to all connections of the signal.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_setDomainSignal()`.
     pub fn set_domain_signal(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalConfig_setDomainSignal)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -3245,9 +3586,10 @@ impl SignalConfig {
     }
 
     /// Sets the last value of the signal.
-    /// @param lastValue The lastValue.
-    /// This method is used to manually set the last value of the signal. Useful when automatic calculation of
-    /// last value is disabled, usually due to performance reasons.
+    ///
+    /// # Parameters
+    /// - `last_value`: The lastValue. This method is used to manually set the last value of the signal. Useful when automatic calculation of last value is disabled, usually due to performance reasons.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_setLastValue()`.
     pub fn set_last_value(&self, last_value: impl Into<Value>) -> Result<()> {
         let __last_value = crate::value::to_daq(&last_value.into())?;
@@ -3257,7 +3599,10 @@ impl SignalConfig {
     }
 
     /// Sets the list of related signals.
-    /// @param signals The list of related signals.
+    ///
+    /// # Parameters
+    /// - `signals`: The list of related signals.
+    ///
     /// Calls the openDAQ C function `daqSignalConfig_setRelatedSignals()`.
     pub fn set_related_signals(&self, signals: &[Signal]) -> Result<()> {
         let __signals = crate::marshal::list_from_interfaces(signals)?;
@@ -3270,7 +3615,10 @@ impl SignalConfig {
 
 impl SignalEvents {
     /// Notifies the signal that it is no longer being used as a domain signal by the signal passed as the function argument.
-    /// @param signal The callee signal on which the domain signal reference has been removed.
+    ///
+    /// # Parameters
+    /// - `signal`: The callee signal on which the domain signal reference has been removed.
+    ///
     /// Calls the openDAQ C function `daqSignalEvents_domainSignalReferenceRemoved()`.
     pub fn domain_signal_reference_removed(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalEvents_domainSignalReferenceRemoved)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -3279,7 +3627,10 @@ impl SignalEvents {
     }
 
     /// Notifies the signal that it is being used as a domain signal by the signal passed as the function argument.
-    /// @param signal The callee signal on which the domain signal reference has been set.
+    ///
+    /// # Parameters
+    /// - `signal`: The callee signal on which the domain signal reference has been set.
+    ///
     /// Calls the openDAQ C function `daqSignalEvents_domainSignalReferenceSet()`.
     pub fn domain_signal_reference_set(&self, signal: &Signal) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalEvents_domainSignalReferenceSet)(self.as_raw() as *mut _, signal.as_raw() as *mut _) };
@@ -3288,9 +3639,10 @@ impl SignalEvents {
     }
 
     /// Notifies the signal that it has been connected to an input port forming a new connection.
-    /// @param connection The formed connection.
-    /// The data descriptor of the signal is enqueued on the connection, triggering the `onPacketReceived`
-    /// callback on the same thread.
+    ///
+    /// # Parameters
+    /// - `connection`: The formed connection. The data descriptor of the signal is enqueued on the connection, triggering the `onPacketReceived` callback on the same thread.
+    ///
     /// Calls the openDAQ C function `daqSignalEvents_listenerConnected()`.
     pub fn listener_connected(&self, connection: &Connection) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalEvents_listenerConnected)(self.as_raw() as *mut _, connection.as_raw() as *mut _) };
@@ -3299,9 +3651,10 @@ impl SignalEvents {
     }
 
     /// Notifies the signal that it has been connected to an input port forming a new connection.
-    /// @param connection The formed connection.
-    /// The data descriptor of the signal is enqueued on the connection, scheduling the `onPacketReceived`
-    /// callback.
+    ///
+    /// # Parameters
+    /// - `connection`: The formed connection. The data descriptor of the signal is enqueued on the connection, scheduling the `onPacketReceived` callback.
+    ///
     /// Calls the openDAQ C function `daqSignalEvents_listenerConnectedScheduled()`.
     pub fn listener_connected_scheduled(&self, connection: &Connection) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalEvents_listenerConnectedScheduled)(self.as_raw() as *mut _, connection.as_raw() as *mut _) };
@@ -3310,7 +3663,10 @@ impl SignalEvents {
     }
 
     /// Notifies the signal that it has been disconnected from an input port with the given connection.
-    /// @param connection The connection that was broken.
+    ///
+    /// # Parameters
+    /// - `connection`: The connection that was broken.
+    ///
     /// Calls the openDAQ C function `daqSignalEvents_listenerDisconnected()`.
     pub fn listener_disconnected(&self, connection: &Connection) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalEvents_listenerDisconnected)(self.as_raw() as *mut _, connection.as_raw() as *mut _) };
@@ -3322,6 +3678,7 @@ impl SignalEvents {
 
 impl SignalPrivate {
     /// Sets the domain signal to null without notifying the domain signal
+    ///
     /// Calls the openDAQ C function `daqSignalPrivate_clearDomainSignalWithoutNotification()`.
     pub fn clear_domain_signal_without_notification(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalPrivate_clearDomainSignalWithoutNotification)(self.as_raw() as *mut _) };
@@ -3330,7 +3687,10 @@ impl SignalPrivate {
     }
 
     /// Enable or disable keeping last data packet which is using by Signal method `getLastValue`
-    /// @param enabled Option for enabling method getLastValue
+    ///
+    /// # Parameters
+    /// - `enabled`: Option for enabling method getLastValue
+    ///
     /// Calls the openDAQ C function `daqSignalPrivate_enableKeepLastValue()`.
     pub fn enable_keep_last_value(&self, enabled: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalPrivate_enableKeepLastValue)(self.as_raw() as *mut _, u8::from(enabled)) };
@@ -3339,7 +3699,10 @@ impl SignalPrivate {
     }
 
     /// Returns True if last value calculation is enabled on the signal.
-    /// @param\[out\] keepLastValue True if enabled.
+    ///
+    /// # Returns
+    /// - `keep_last_value`: True if enabled.
+    ///
     /// Calls the openDAQ C function `daqSignalPrivate_getKeepLastValue()`.
     pub fn keep_last_value(&self) -> Result<bool> {
         let mut __keep_last_value: u8 = 0;
@@ -3349,7 +3712,10 @@ impl SignalPrivate {
     }
 
     /// Gets the signal serilized id. In local device the serilized id matached the signal global id. For remote id it is the signal id in the remote device.
-    /// @param\[out\] serializeId The signal serilized id.
+    ///
+    /// # Returns
+    /// - `serialize_id`: The signal serilized id.
+    ///
     /// Calls the openDAQ C function `daqSignalPrivate_getSignalSerializeId()`.
     pub fn signal_serialize_id(&self) -> Result<String> {
         let mut __serialize_id: *mut sys::daqString = std::ptr::null_mut();
@@ -3359,7 +3725,10 @@ impl SignalPrivate {
     }
 
     /// Sends a packet through all connections of the signal, acquiring a recursive lock instead of an acquisition lock.
-    /// @param packet The packet to be sent.
+    ///
+    /// # Parameters
+    /// - `packet`: The packet to be sent.
+    ///
     /// Calls the openDAQ C function `daqSignalPrivate_sendPacketRecursiveLock()`.
     pub fn send_packet_recursive_lock(&self, packet: &Packet) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignalPrivate_sendPacketRecursiveLock)(self.as_raw() as *mut _, packet.as_raw() as *mut _) };

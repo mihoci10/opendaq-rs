@@ -10,8 +10,8 @@ use crate::value::{Complex, Ratio, Value};
 use crate::generated::*;
 use std::ffi::c_char;
 
-/// Represents a collection of @ref ILoggerComponent "Logger Components" with multiple
-/// @ref ILoggerSink "Logger Sinks" and a single @ref ILoggerThreadPool "Logger Thread Pool"
+/// Represents a collection of ILoggerComponent "Logger Components" with multiple
+/// ILoggerSink "Logger Sinks" and a single ILoggerThreadPool "Logger Thread Pool"
 /// shared between components.
 /// Logger is used to create, manage and maintain Logger Components associated with different parts of
 /// the openDAQ SDK. The Logger provides methods, allowing for components to be added and removed dynamically.
@@ -154,9 +154,16 @@ impl crate::value::FromDaqOwned for Scheduler {
 
 impl Logger {
     /// Creates a component with a given name and adds it to the Logger object.
-    /// @param name The component's name.
-    /// @param\[out\] component Added component.
-    /// @retval OPENDAQ_ERR_INVALIDPARAMETER if @p name is empty string.
+    ///
+    /// # Parameters
+    /// - `name`: The component's name.
+    ///
+    /// # Returns
+    /// - `component`: Added component.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_INVALIDPARAMETER`: if `name` is empty string.
+    ///
     /// Calls the openDAQ C function `daqLogger_addComponent()`.
     pub fn add_component(&self, name: &str) -> Result<Option<LoggerComponent>> {
         let __name = crate::marshal::make_string(name)?;
@@ -176,6 +183,7 @@ impl Logger {
     }
 
     /// Triggers writing out the messages stored in temporary buffers for added components and sinks associated with the Logger object.
+    ///
     /// Calls the openDAQ C function `daqLogger_flush()`.
     pub fn flush(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLogger_flush)(self.as_raw() as *mut _) };
@@ -184,7 +192,10 @@ impl Logger {
     }
 
     /// Sets the minimum severity level of messages to be automatically flushed by components of Logger object.
-    /// @param level The log severity level.
+    ///
+    /// # Parameters
+    /// - `level`: The log severity level.
+    ///
     /// Calls the openDAQ C function `daqLogger_flushOnLevel()`.
     pub fn flush_on_level(&self, level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLogger_flushOnLevel)(self.as_raw() as *mut _, level as u32) };
@@ -193,9 +204,16 @@ impl Logger {
     }
 
     /// Gets an added component by name.
-    /// @param name The component's name.
-    /// @param\[out\] component The logger component with the name equal to @p `name`.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a component with the specified @p name was not added.
+    ///
+    /// # Parameters
+    /// - `name`: The component's name.
+    ///
+    /// # Returns
+    /// - `component`: The logger component with the name equal to ``name`.`
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a component with the specified `name` was not added.
+    ///
     /// Calls the openDAQ C function `daqLogger_getComponent()`.
     pub fn component(&self, name: &str) -> Result<Option<LoggerComponent>> {
         let __name = crate::marshal::make_string(name)?;
@@ -206,7 +224,10 @@ impl Logger {
     }
 
     /// Gets a list of added components.
-    /// @param\[out\] components The list of added components.
+    ///
+    /// # Returns
+    /// - `components`: The list of added components.
+    ///
     /// Calls the openDAQ C function `daqLogger_getComponents()`.
     pub fn components(&self) -> Result<Vec<LoggerComponent>> {
         let mut __components: *mut sys::daqList = std::ptr::null_mut();
@@ -216,7 +237,10 @@ impl Logger {
     }
 
     /// Gets the default log severity level.
-    /// @param\[out\] level The log severity level.
+    ///
+    /// # Returns
+    /// - `level`: The log severity level.
+    ///
     /// Calls the openDAQ C function `daqLogger_getLevel()`.
     pub fn level(&self) -> Result<LogLevel> {
         let mut __level: u32 = 0;
@@ -226,9 +250,16 @@ impl Logger {
     }
 
     /// Gets an added component by name or creates a new one with a given name and adds it to the Logger object.
-    /// @param name The component's name.
-    /// @param\[out\] component The logger component with the name equal to @p `name`.
-    /// @retval OPENDAQ_ERR_INVALIDPARAMETER if @p name is empty string.
+    ///
+    /// # Parameters
+    /// - `name`: The component's name.
+    ///
+    /// # Returns
+    /// - `component`: The logger component with the name equal to ``name`.`
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_INVALIDPARAMETER`: if `name` is empty string.
+    ///
     /// Calls the openDAQ C function `daqLogger_getOrAddComponent()`.
     pub fn or_add_component(&self, name: &str) -> Result<Option<LoggerComponent>> {
         let __name = crate::marshal::make_string(name)?;
@@ -239,8 +270,13 @@ impl Logger {
     }
 
     /// Removes the component with a given name from the Logger object.
-    /// @param name The component's name.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a component with the specified @p name was not added.
+    ///
+    /// # Parameters
+    /// - `name`: The component's name.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a component with the specified `name` was not added.
+    ///
     /// Calls the openDAQ C function `daqLogger_removeComponent()`.
     pub fn remove_component(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -250,7 +286,10 @@ impl Logger {
     }
 
     /// Sets the default log severity level.
-    /// @param level The log severity level.
+    ///
+    /// # Parameters
+    /// - `level`: The log severity level.
+    ///
     /// Calls the openDAQ C function `daqLogger_setLevel()`.
     pub fn set_level(&self, level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLogger_setLevel)(self.as_raw() as *mut _, level as u32) };
@@ -262,8 +301,13 @@ impl Logger {
 
 impl ModuleManager {
     /// Side-load a custom module in run-time from memory that was not found by default.
-    /// @param module The module to add.
-    /// @retval OPENDAQ_ERR_DUPLICATEITEM When an identical @p module was already added.
+    ///
+    /// # Parameters
+    /// - `module`: The module to add.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_DUPLICATEITEM`: When an identical `module` was already added.
+    ///
     /// Calls the openDAQ C function `daqModuleManager_addModule()`.
     pub fn add_module(&self, module: &Module) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqModuleManager_addModule)(self.as_raw() as *mut _, module.as_raw() as *mut _) };
@@ -290,7 +334,10 @@ impl ModuleManager {
     }
 
     /// Retrieves all modules known to the manager. Whether they were found or side-loaded.
-    /// @param\[out\] modules A list of known modules.
+    ///
+    /// # Returns
+    /// - `modules`: A list of known modules.
+    ///
     /// Calls the openDAQ C function `daqModuleManager_getModules()`.
     pub fn modules(&self) -> Result<Vec<Module>> {
         let mut __modules: *mut sys::daqList = std::ptr::null_mut();
@@ -300,8 +347,10 @@ impl ModuleManager {
     }
 
     /// Returns a dictionary of module IDs and the respective public keys of their vendors.
-    /// @param\[out\] vendorKeys key (IString) - module ID, value (IString) - public vendor key
-    /// Used to identify which authenticator/certificate was used to authenticate the module.
+    ///
+    /// # Returns
+    /// - `vendor_keys`: key (IString) - module ID, value (IString) - public vendor key Used to identify which authenticator/certificate was used to authenticate the module.
+    ///
     /// Calls the openDAQ C function `daqModuleManager_getVendorKeys()`.
     pub fn vendor_keys(&self) -> Result<std::collections::HashMap<String, String>> {
         let mut __vendor_keys: *mut sys::daqDict = std::ptr::null_mut();
@@ -311,10 +360,13 @@ impl ModuleManager {
     }
 
     /// Loads and adds a single module from the given absolute file system path.
-    /// @param path The absolute path to the module file.
-    /// @param\[out\] module The resulting loaded and added module object.
-    /// This function should be used only after the default modules have been loaded using `loadModules`.
-    /// The specified path must exist and reference a file with the proper extension.
+    ///
+    /// # Parameters
+    /// - `path`: The absolute path to the module file.
+    ///
+    /// # Returns
+    /// - `module`: The resulting loaded and added module object. This function should be used only after the default modules have been loaded using `loadModules`. The specified path must exist and reference a file with the proper extension.
+    ///
     /// Calls the openDAQ C function `daqModuleManager_loadModule()`.
     pub fn load_module(&self, path: &str) -> Result<Option<Module>> {
         let __path = crate::marshal::make_string(path)?;
@@ -325,7 +377,10 @@ impl ModuleManager {
     }
 
     /// Loads all modules from the directory path specified during manager construction. The Context is passed to all loaded modules for internal use.
-    /// @param context The Context containing the Logger, Scheduler, Property Object Class Manager and Module Manager
+    ///
+    /// # Parameters
+    /// - `context`: The Context containing the Logger, Scheduler, Property Object Class Manager and Module Manager
+    ///
     /// Calls the openDAQ C function `daqModuleManager_loadModules()`.
     pub fn load_modules(&self, context: &Context) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqModuleManager_loadModules)(self.as_raw() as *mut _, context.as_raw() as *mut _) };
@@ -334,7 +389,10 @@ impl ModuleManager {
     }
 
     /// Toggle whether this module manager will only load modules that can be authenticated.
-    /// @param authenticatedOnly true - only authenticated modules are loaded, false - all modules are loaded
+    ///
+    /// # Parameters
+    /// - `authenticated_only`: true - only authenticated modules are loaded, false - all modules are loaded
+    ///
     /// Calls the openDAQ C function `daqModuleManager_setAuthenticatedOnly()`.
     pub fn set_authenticated_only(&self, authenticated_only: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqModuleManager_setAuthenticatedOnly)(self.as_raw() as *mut _, u8::from(authenticated_only)) };
@@ -343,7 +401,10 @@ impl ModuleManager {
     }
 
     /// Imports the module authenticator.
-    /// @param authenticator A custom authenticator used to verify the signature/checksum of the modules.
+    ///
+    /// # Parameters
+    /// - `authenticator`: A custom authenticator used to verify the signature/checksum of the modules.
+    ///
     /// Calls the openDAQ C function `daqModuleManager_setModuleAuthenticator()`.
     pub fn set_module_authenticator(&self, authenticator: &ModuleAuthenticator) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqModuleManager_setModuleAuthenticator)(self.as_raw() as *mut _, authenticator.as_raw() as *mut _) };
@@ -371,8 +432,10 @@ impl Scheduler {
     }
 
     /// Checks if the main loop is currently set.
-    /// @param\[out\] isSet Returns @c true if the main loop is set and running.
-    /// This method does not gauarantee that the main loop is currently running, only that it has been set up.
+    ///
+    /// # Returns
+    /// - `is_set`: Returns `true` if the main loop is set and running. This method does not gauarantee that the main loop is currently running, only that it has been set up.
+    ///
     /// Calls the openDAQ C function `daqScheduler_isMainLoopSet()`.
     pub fn is_main_loop_set(&self) -> Result<bool> {
         let mut __is_set: u8 = 0;
@@ -382,7 +445,10 @@ impl Scheduler {
     }
 
     /// Returns whether more than one worker thread is used.
-    /// @param\[out\] multiThreaded Returns @c true if more that one worker thread is used by the scheduler.
+    ///
+    /// # Returns
+    /// - `multi_threaded`: Returns `true` if more that one worker thread is used by the scheduler.
+    ///
     /// Calls the openDAQ C function `daqScheduler_isMultiThreaded()`.
     pub fn is_multi_threaded(&self) -> Result<bool> {
         let mut __multi_threaded: u8 = 0;
@@ -392,9 +458,10 @@ impl Scheduler {
     }
 
     /// Starts and blocks the main event loop, executing scheduled tasks.
-    /// @param loopTime The maximum time to block the loop, in milliseconds.
-    /// This method runs the main loop, processing all enqueued work (including repetitive tasks)
-    /// until @ref stopMainLoop is called. Typically executed on the main thread or in a dedicated loop thread.
+    ///
+    /// # Parameters
+    /// - `loop_time`: The maximum time to block the loop, in milliseconds. This method runs the main loop, processing all enqueued work (including repetitive tasks) until stopMainLoop is called. Typically executed on the main thread or in a dedicated loop thread.
+    ///
     /// Calls the openDAQ C function `daqScheduler_runMainLoop()`.
     pub fn run_main_loop(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_runMainLoop)(self.as_raw() as *mut _, 1) };
@@ -403,9 +470,10 @@ impl Scheduler {
     }
 
     /// Starts and blocks the main event loop, executing scheduled tasks.
-    /// @param loopTime The maximum time to block the loop, in milliseconds.
-    /// This method runs the main loop, processing all enqueued work (including repetitive tasks)
-    /// until @ref stopMainLoop is called. Typically executed on the main thread or in a dedicated loop thread.
+    ///
+    /// # Parameters
+    /// - `loop_time`: The maximum time to block the loop, in milliseconds. This method runs the main loop, processing all enqueued work (including repetitive tasks) until stopMainLoop is called. Typically executed on the main thread or in a dedicated loop thread.
+    ///
     /// Calls the openDAQ C function `daqScheduler_runMainLoop()`.
     pub fn run_main_loop_with(&self, loop_time: usize) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_runMainLoop)(self.as_raw() as *mut _, loop_time) };
@@ -417,6 +485,7 @@ impl Scheduler {
     /// This non-blocking method runs one iteration of the main loop, executing one-time tasks
     /// and advancing any repetitive tasks. Intended for cases where the main loop is polled manually,
     /// such as in GUI frameworks or embedded systems.
+    ///
     /// Calls the openDAQ C function `daqScheduler_runMainLoopIteration()`.
     pub fn run_main_loop_iteration(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_runMainLoopIteration)(self.as_raw() as *mut _) };
@@ -424,10 +493,17 @@ impl Scheduler {
         Ok(())
     }
 
-    /// Schedules the specified @p work function to run on the thread-pool. The call does not block but immediately returns an @p awaitable that represents the asynchronous execution. It can be waited upon and queried for status and result.
-    /// @param function The function to schedule for execution.
-    /// @param\[out\] awaitable The object representing the state and result of the execution.
-    /// @retval OPENDAQ_ERR_SCHEDULER_STOPPED when the scheduler already stopped and is not accepting any more work.
+    /// Schedules the specified `work` function to run on the thread-pool. The call does not block but immediately returns an `awaitable` that represents the asynchronous execution. It can be waited upon and queried for status and result.
+    ///
+    /// # Parameters
+    /// - `function`: The function to schedule for execution.
+    ///
+    /// # Returns
+    /// - `awaitable`: The object representing the state and result of the execution.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_SCHEDULER_STOPPED`: when the scheduler already stopped and is not accepting any more work.
+    ///
     /// Calls the openDAQ C function `daqScheduler_scheduleFunction()`.
     pub fn schedule_function(&self, function: &FunctionObject) -> Result<Option<Awaitable>> {
         let mut __awaitable: *mut sys::daqAwaitable = std::ptr::null_mut();
@@ -436,10 +512,17 @@ impl Scheduler {
         Ok(unsafe { crate::marshal::take_object::<Awaitable>(__awaitable as *mut _) })
     }
 
-    /// Schedules the specified dependency @p graph to run on the thread-pool. The call does not block but immediately returns an @p awaitable that represents the asynchronous execution. It can be waited upon and queried for status and result. \<b\>Any exceptions that occur during the graph execution are silently ignored.\</b\>
-    /// @param graph The dependency graph (acyclic directed graph) to schedule.
-    /// @param\[out\] awaitable The object representing the state and result of the execution.
-    /// @retval OPENDAQ_ERR_SCHEDULER_STOPPED when the scheduler already stopped and is not accepting any more work.
+    /// Schedules the specified dependency `graph` to run on the thread-pool. The call does not block but immediately returns an `awaitable` that represents the asynchronous execution. It can be waited upon and queried for status and result. \<b\>Any exceptions that occur during the graph execution are silently ignored.\</b\>
+    ///
+    /// # Parameters
+    /// - `graph`: The dependency graph (acyclic directed graph) to schedule.
+    ///
+    /// # Returns
+    /// - `awaitable`: The object representing the state and result of the execution.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_SCHEDULER_STOPPED`: when the scheduler already stopped and is not accepting any more work.
+    ///
     /// Calls the openDAQ C function `daqScheduler_scheduleGraph()`.
     pub fn schedule_graph(&self, graph: &TaskGraph) -> Result<Option<Awaitable>> {
         let mut __awaitable: *mut sys::daqAwaitable = std::ptr::null_mut();
@@ -449,10 +532,13 @@ impl Scheduler {
     }
 
     /// Schedules the specified work callback to run on the thread-pool. The call does not block.
-    /// @param work The function to schedule for execution.
-    /// @retval OPENDAQ_ERR_SCHEDULER_STOPPED when the scheduler already stopped and is not accepting any more work.
-    /// Work is a lightweight callback that returns no value and accepts no procedure. It has less overhead than
-    /// function. The function does not return awaitable object.
+    ///
+    /// # Parameters
+    /// - `work`: The function to schedule for execution.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_SCHEDULER_STOPPED`: when the scheduler already stopped and is not accepting any more work. Work is a lightweight callback that returns no value and accepts no procedure. It has less overhead than function. The function does not return awaitable object.
+    ///
     /// Calls the openDAQ C function `daqScheduler_scheduleWork()`.
     pub fn schedule_work(&self, work: &Work) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_scheduleWork)(self.as_raw() as *mut _, work.as_raw() as *mut _) };
@@ -462,9 +548,12 @@ impl Scheduler {
 
     /// Schedules a task to be executed by the main loop.
     /// The provided work object is queued for execution during a call to either
-    /// @ref runMainLoop or @ref runMainLoopIteration. This mechanism is commonly used
+    /// runMainLoop or runMainLoopIteration. This mechanism is commonly used
     /// to marshal tasks from background threads to the main loop thread.
-    /// @param work A lightweight, non-blocking task object to be scheduled.
+    ///
+    /// # Parameters
+    /// - `work`: A lightweight, non-blocking task object to be scheduled.
+    ///
     /// Calls the openDAQ C function `daqScheduler_scheduleWorkOnMainLoop()`.
     pub fn schedule_work_on_main_loop(&self, work: &Work) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_scheduleWorkOnMainLoop)(self.as_raw() as *mut _, work.as_raw() as *mut _) };
@@ -473,6 +562,7 @@ impl Scheduler {
     }
 
     /// Cancels all outstanding work and waits for the remaining to complete. After this point the scheduler does not allow any new work or graphs for scheduling.
+    ///
     /// Calls the openDAQ C function `daqScheduler_stop()`.
     pub fn stop(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_stop)(self.as_raw() as *mut _) };
@@ -480,10 +570,11 @@ impl Scheduler {
         Ok(())
     }
 
-    /// Signals the main loop to stop processing and return from @ref runMainLoop.
+    /// Signals the main loop to stop processing and return from runMainLoop.
     /// This method unblocks the loop and requests graceful shutdown. It is typically called
     /// from another thread or in response to an application shutdown signal.
     /// Has no effect if the loop is not currently running.
+    ///
     /// Calls the openDAQ C function `daqScheduler_stopMainLoop()`.
     pub fn stop_main_loop(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_stopMainLoop)(self.as_raw() as *mut _) };
@@ -492,6 +583,7 @@ impl Scheduler {
     }
 
     /// Waits fo all current scheduled work and tasks to complete.
+    ///
     /// Calls the openDAQ C function `daqScheduler_waitAll()`.
     pub fn wait_all(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqScheduler_waitAll)(self.as_raw() as *mut _) };

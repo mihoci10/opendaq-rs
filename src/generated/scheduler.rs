@@ -233,7 +233,10 @@ impl crate::value::FromDaqOwned for Work {
 
 impl Awaitable {
     /// Cancels the outstanding work if it has not already started.
-    /// @param\[out\] canceled Is @c true if the execution was canceled or @c false if the execution has already completed
+    ///
+    /// # Returns
+    /// - `canceled`: Is `true` if the execution was canceled or `false` if the execution has already completed
+    ///
     /// Calls the openDAQ C function `daqAwaitable_cancel()`.
     pub fn cancel(&self) -> Result<bool> {
         let mut __canceled: u8 = 0;
@@ -243,8 +246,13 @@ impl Awaitable {
     }
 
     /// Waits until the awaitable has a valid result and retrieves it or re-throws the exception that occurred during the execution.
-    /// @param\[out\] result The execution result if any otherwise @c nullptr.
-    /// @retval OPENDAQ_ERR_EMPTY_AWAITABLE when there is no work associated with the awaitable.
+    ///
+    /// # Returns
+    /// - `result`: The execution result if any otherwise `nullptr.`
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_EMPTY_AWAITABLE`: when there is no work associated with the awaitable.
+    ///
     /// Calls the openDAQ C function `daqAwaitable_getResult()`.
     pub fn result(&self) -> Result<Value> {
         let mut __result: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -254,7 +262,10 @@ impl Awaitable {
     }
 
     /// Checks if the execution has already finished.
-    /// @param\[out\] completed Is @c true if the execution has finished or @c false if the execution is in progress or there is no work associated
+    ///
+    /// # Returns
+    /// - `completed`: Is `true` if the execution has finished or `false` if the execution is in progress or there is no work associated
+    ///
     /// Calls the openDAQ C function `daqAwaitable_hasCompleted()`.
     pub fn has_completed(&self) -> Result<bool> {
         let mut __completed: u8 = 0;
@@ -274,7 +285,10 @@ impl Awaitable {
 
 impl GraphVisualization {
     /// Returns the graph representation as a string.
-    /// @param\[out\] dot Graph's string representation
+    ///
+    /// # Returns
+    /// - `dot`: Graph's string representation
+    ///
     /// Calls the openDAQ C function `daqGraphVisualization_dump()`.
     pub fn dump(&self) -> Result<String> {
         let mut __dot: *mut sys::daqString = std::ptr::null_mut();
@@ -308,7 +322,10 @@ impl Task {
     }
 
     /// Gets the task name.
-    /// @param\[out\] name The task name.
+    ///
+    /// # Returns
+    /// - `name`: The task name.
+    ///
     /// Calls the openDAQ C function `daqTask_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -318,7 +335,10 @@ impl Task {
     }
 
     /// Sets the task name that is used in diagnostics.
-    /// @param name The new task name.
+    ///
+    /// # Parameters
+    /// - `name`: The new task name.
+    ///
     /// Calls the openDAQ C function `daqTask_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -328,8 +348,13 @@ impl Task {
     }
 
     /// Sets the continuation to only execute after this task completes. Be careful of forming cycles as tasks whose dependencies cannot be satisfied will never execute.
-    /// @param continuation The task that should wait for this one to complete.
-    /// @retval OPENDAQ_ERR_NOT_SUPPORTED If the @p continuation implementation was not crated by the scheduler library.
+    ///
+    /// # Parameters
+    /// - `continuation`: The task that should wait for this one to complete.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOT_SUPPORTED`: If the `continuation` implementation was not crated by the scheduler library.
+    ///
     /// Calls the openDAQ C function `daqTask_then()`.
     pub fn then(&self, continuation: &Task) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqTask_then)(self.as_raw() as *mut _, continuation.as_raw() as *mut _) };
@@ -341,6 +366,7 @@ impl Task {
 
 impl Work {
     /// Executes the callback.
+    ///
     /// Calls the openDAQ C function `daqWork_execute()`.
     pub fn execute(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqWork_execute)(self.as_raw() as *mut _) };

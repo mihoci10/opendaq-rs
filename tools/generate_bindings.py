@@ -224,23 +224,146 @@ def rust_interface_name(c_name: str) -> str:
     return c_name[3:]
 
 
-def doc_lines(text: str, indent: str = "") -> list[str]:
-    """Turn a raw doxygen block into /// doc comment lines, defusing what
-    rustdoc would read as markdown links or HTML tags."""
-    text = re.sub(r"^@brief\s+", "", text.strip())
-    if not text:
-        return []
-    lines = []
-    for line in text.split("\n"):
-        line = (
-            line.replace("[", "\\[")
+# Doxygen inline markers -> markdown, applied to prose (outside code spans).
+_DOXY_INLINE = [
+    (re.compile(r"@[cp]\s+(\S+)"), r"`\1`"),   # @c word / @p word -> `word`
+    (re.compile(r"@a\s+(\S+)"), r"*\1*"),      # @a word -> *word*
+    (re.compile(r"@ref\s+(\S+)"), r"\1"),      # @ref word -> word
+]
+
+
+def _doc_clean(text: str) -> str:
+    """Prepare one line of doxygen prose for rustdoc: apply the inline markers,
+    then escape `<>[]` *outside* code spans so rustdoc does not read them as
+    HTML tags or intra-doc links."""
+    for pattern, repl in _DOXY_INLINE:
+        text = pattern.sub(repl, text)
+    parts = text.split("`")
+    for i in range(0, len(parts), 2):  # even segments sit outside `code` spans
+        parts[i] = (
+            parts[i]
+            .replace("[", "\\[")
             .replace("]", "\\]")
             .replace("<", "\\<")
             .replace(">", "\\>")
-            .rstrip()
         )
-        lines.append(f"{indent}/// {line}".rstrip())
-    return lines
+    return "`".join(parts)
+
+
+def doc_lines(text: str, indent: str = "") -> list[str]:
+    """Translate a raw doxygen comment block into idiomatic rustdoc lines.
+
+    Prose becomes the summary/description; `@param` becomes a `# Parameters`
+    list (an out-parameter, which is the Rust return value, goes under
+    `# Returns` instead); `@return`/`@returns` and `@retval` become `# Returns`
+    / `# Errors`; and `@code`/`@endcode` become a fenced *text* block (so it is
+    never treated as a Rust doctest).  Inline `@c`/`@p`/`@a`/`@ref` markers are
+    converted, and parameter names are snake-cased to match the Rust signature."""
+    text = text.strip()
+    if not text:
+        return []
+
+    desc: list[tuple[str, str]] = []      # ("text" | "code" | "fence" | "blank", str)
+    params: list[list[str]] = []          # [name, desc] in-parameters
+    returns_items: list[list[str]] = []   # [name, desc] from @param[out]
+    returns_prose: list[str] = []         # from @return / @returns
+    errors: list[list[str]] = []          # [value, desc] from @retval
+    notes: list[str] = []                 # from @note / @remark / @warning / @throws
+    bucket, index = "desc", None
+    in_code = False
+
+    for raw in text.split("\n"):
+        stripped = raw.strip()
+        if in_code:
+            if re.match(r"@endcode\b", stripped):
+                desc.append(("fence", "```"))
+                in_code = False
+            else:
+                desc.append(("code", raw))
+            continue
+        if re.match(r"@code\b", stripped):
+            desc.append(("fence", "```text"))
+            in_code = True
+            continue
+
+        m = re.match(r"@param\b\s*(?:\[\s*([a-z, ]+?)\s*\])?\s*(\w+)\b\s*(.*)", stripped)
+        if m:
+            direction = (m.group(1) or "in").replace(" ", "")
+            name, rest = camel_to_snake(m.group(2)), m.group(3).strip()
+            if name == "self":
+                bucket, index = "skip", None
+            elif "out" in direction:
+                returns_items.append([name, rest])
+                bucket, index = "ri", len(returns_items) - 1
+            else:
+                params.append([name, rest])
+                bucket, index = "pa", len(params) - 1
+            continue
+        m = re.match(r"@returns?\b\s*(.*)", stripped)
+        if m:
+            returns_prose.append(m.group(1).strip())
+            bucket, index = "rp", len(returns_prose) - 1
+            continue
+        m = re.match(r"@retval\b\s+(\S+)\s*(.*)", stripped)
+        if m:
+            errors.append([m.group(1), m.group(2).strip()])
+            bucket, index = "er", len(errors) - 1
+            continue
+        m = re.match(r"@(?:note|remarks?|warning|throws?)\b\s*(.*)", stripped)
+        if m:
+            notes.append(m.group(1).strip())
+            bucket, index = "no", len(notes) - 1
+            continue
+
+        content = re.sub(r"^@(?:brief|details)\b\s*", "", stripped)
+        if content == "":
+            if bucket == "desc":
+                desc.append(("blank", ""))
+            bucket, index = "desc", None
+            continue
+        if bucket == "desc":
+            desc.append(("text", content))
+        elif bucket == "pa":
+            params[index][1] = (params[index][1] + " " + content).strip()
+        elif bucket == "ri":
+            returns_items[index][1] = (returns_items[index][1] + " " + content).strip()
+        elif bucket == "rp":
+            returns_prose[index] = (returns_prose[index] + " " + content).strip()
+        elif bucket == "er":
+            errors[index][1] = (errors[index][1] + " " + content).strip()
+        elif bucket == "no":
+            notes[index] = (notes[index] + " " + content).strip()
+        # bucket == "skip": the C `self` parameter carries no Rust doc
+
+    if in_code:  # unbalanced @code without @endcode -- close the fence
+        desc.append(("fence", "```"))
+
+    md: list[str] = []
+    for kind, s in desc:
+        md.append("" if kind == "blank" else s if kind in ("code", "fence") else _doc_clean(s))
+    while md and md[-1] == "":
+        md.pop()
+
+    def bullet(name: str, body: str) -> str:
+        return f"- `{name}`: {_doc_clean(body)}" if body else f"- `{name}`"
+
+    def section(title: str, entries: list[str]) -> None:
+        if not entries:
+            return
+        if md and md[-1] != "":
+            md.append("")
+        md.append(f"# {title}")
+        md.extend(entries)
+
+    section("Parameters", [bullet(n, d) for n, d in params])
+    section(
+        "Returns",
+        [_doc_clean(p) for p in returns_prose] + [bullet(n, d) for n, d in returns_items],
+    )
+    section("Errors", [bullet(v, d) for v, d in errors])
+    section("Notes", [_doc_clean(n) for n in notes])
+
+    return [f"{indent}/// {line}".rstrip() for line in md]
 
 
 # ---------------------------------------------------------------------------
@@ -1144,7 +1267,10 @@ def emit_function(model: Model, function: dict, skips: list[tuple[str, str]]) ->
             ret_type = outs[0].rust_type
         else:
             ret_type = "(" + ", ".join(o.rust_type for o in outs) + ")"
-        lines.extend(doc_lines(function.get("docstring", ""), "    "))
+        doc = doc_lines(function.get("docstring", ""), "    ")
+        lines.extend(doc)
+        if doc:
+            lines.append("    ///")
         lines.append(f"    /// Calls the openDAQ C function `{c_name}()`.")
         lines.append(f"    pub fn {name}({self_part}{sig}) -> Result<{ret_type}> {{")
         for p in use_params:

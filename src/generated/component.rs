@@ -1110,7 +1110,10 @@ impl ComponentHolder {
 
 impl ComponentPrivate {
     /// Retrieves the configuration which was used to create the component.
-    /// @param config The configuration of the component.
+    ///
+    /// # Parameters
+    /// - `config`: The configuration of the component.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_getComponentConfig()`.
     pub fn component_config(&self) -> Result<Option<PropertyObject>> {
         let mut __config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -1120,6 +1123,7 @@ impl ComponentPrivate {
     }
 
     /// Locks all attributes of the component.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_lockAllAttributes()`.
     pub fn lock_all_attributes(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_lockAllAttributes)(self.as_raw() as *mut _) };
@@ -1128,7 +1132,10 @@ impl ComponentPrivate {
     }
 
     /// Locks the attributes contained in the provided list.
-    /// @param attributes The list of attributes that should be locked. Is not case sensitive.
+    ///
+    /// # Parameters
+    /// - `attributes`: The list of attributes that should be locked. Is not case sensitive.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_lockAttributes()`.
     pub fn lock_attributes(&self, attributes: &[&str]) -> Result<()> {
         let __attributes = crate::marshal::list_from_strs(attributes)?;
@@ -1138,7 +1145,10 @@ impl ComponentPrivate {
     }
 
     /// Sets the configuration which was used to create the component.
-    /// @param config The configuration of the component.
+    ///
+    /// # Parameters
+    /// - `config`: The configuration of the component.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_setComponentConfig()`.
     pub fn set_component_config(&self, config: &PropertyObject) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_setComponentConfig)(self.as_raw() as *mut _, config.as_raw() as *mut _) };
@@ -1147,10 +1157,10 @@ impl ComponentPrivate {
     }
 
     /// Called by parent component to notify this component about parent's active state change.
-    /// @param parentActive True if parent is active.
-    /// The component updates its internal parentActive flag and recomputes its effective active state.
-    /// If the effective active state changes, triggers an AttributeChanged event.
-    /// Container components (folders, devices) propagate this call to their children.
+    ///
+    /// # Parameters
+    /// - `parent_active`: True if parent is active. The component updates its internal parentActive flag and recomputes its effective active state. If the effective active state changes, triggers an AttributeChanged event. Container components (folders, devices) propagate this call to their children.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_setParentActive()`.
     pub fn set_parent_active(&self, parent_active: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_setParentActive)(self.as_raw() as *mut _, u8::from(parent_active)) };
@@ -1159,7 +1169,10 @@ impl ComponentPrivate {
     }
 
     /// Triggers the component-specific core event with the provided arguments.
-    /// @param args The arguments of the core event.
+    ///
+    /// # Parameters
+    /// - `args`: The arguments of the core event.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_triggerComponentCoreEvent()`.
     pub fn trigger_component_core_event(&self, args: &CoreEventArgs) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_triggerComponentCoreEvent)(self.as_raw() as *mut _, args.as_raw() as *mut _) };
@@ -1168,6 +1181,7 @@ impl ComponentPrivate {
     }
 
     /// Unlocks all attributes of the component.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_unlockAllAttributes()`.
     pub fn unlock_all_attributes(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_unlockAllAttributes)(self.as_raw() as *mut _) };
@@ -1176,7 +1190,10 @@ impl ComponentPrivate {
     }
 
     /// Unlocks the attributes contained in the provided list.
-    /// @param attributes The list of attributes that should be unlocked. Is not case sensitive.
+    ///
+    /// # Parameters
+    /// - `attributes`: The list of attributes that should be unlocked. Is not case sensitive.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_unlockAttributes()`.
     pub fn unlock_attributes(&self, attributes: &[&str]) -> Result<()> {
         let __attributes = crate::marshal::list_from_strs(attributes)?;
@@ -1186,7 +1203,10 @@ impl ComponentPrivate {
     }
 
     /// Notifies component about the change of the operation mode.
-    /// @param modeType The new operation mode.
+    ///
+    /// # Parameters
+    /// - `mode_type`: The new operation mode.
+    ///
     /// Calls the openDAQ C function `daqComponentPrivate_updateOperationMode()`.
     pub fn update_operation_mode(&self, mode_type: OperationModeType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentPrivate_updateOperationMode)(self.as_raw() as *mut _, mode_type as u32) };
@@ -1198,8 +1218,11 @@ impl ComponentPrivate {
 
 impl ComponentStatusContainerPrivate {
     /// Adds the new status with given name and initial value.
-    /// @param name The name of the component status.
-    /// @param initialValue The initial value of the component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the component status.
+    /// - `initial_value`: The initial value of the component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainerPrivate_addStatus()`.
     pub fn add_status(&self, name: &str, initial_value: &Enumeration) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1209,9 +1232,12 @@ impl ComponentStatusContainerPrivate {
     }
 
     /// Adds the new status with given name, initial value, and message.
-    /// @param name The name of the component status.
-    /// @param initialValue The initial value of the component status.
-    /// @param message The message of the component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the component status.
+    /// - `initial_value`: The initial value of the component status.
+    /// - `message`: The message of the component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainerPrivate_addStatusWithMessage()`.
     pub fn add_status_with_message(&self, name: &str, initial_value: &Enumeration, message: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1222,8 +1248,11 @@ impl ComponentStatusContainerPrivate {
     }
 
     /// Sets the value for the existing component status.
-    /// @param name The name of the component status.
-    /// @param value The new value of the component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the component status.
+    /// - `value`: The new value of the component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainerPrivate_setStatus()`.
     pub fn set_status(&self, name: &str, value: &Enumeration) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1233,9 +1262,12 @@ impl ComponentStatusContainerPrivate {
     }
 
     /// Sets the value for the existing component status with a message.
-    /// @param name The name of the component status.
-    /// @param value The new value of the component status.
-    /// @param message The new message of the component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the component status.
+    /// - `value`: The new value of the component status.
+    /// - `message`: The new message of the component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainerPrivate_setStatusWithMessage()`.
     pub fn set_status_with_message(&self, name: &str, value: &Enumeration, message: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1257,8 +1289,13 @@ impl ComponentStatusContainer {
     }
 
     /// Gets the current value of Component status with a given name.
-    /// @param name The name of Component status.
-    /// @param\[out\] value The current value of Component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of Component status.
+    ///
+    /// # Returns
+    /// - `value`: The current value of Component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainer_getStatus()`.
     pub fn status(&self, name: &str) -> Result<Option<Enumeration>> {
         let __name = crate::marshal::make_string(name)?;
@@ -1269,8 +1306,13 @@ impl ComponentStatusContainer {
     }
 
     /// Gets the status message of Component status with a given name.
-    /// @param name The name of Component status.
-    /// @param\[out\] message The current message of Component status.
+    ///
+    /// # Parameters
+    /// - `name`: The name of Component status.
+    ///
+    /// # Returns
+    /// - `message`: The current message of Component status.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainer_getStatusMessage()`.
     pub fn status_message(&self, name: &str) -> Result<String> {
         let __name = crate::marshal::make_string(name)?;
@@ -1281,8 +1323,10 @@ impl ComponentStatusContainer {
     }
 
     /// Gets the current values of all Component statuses.
-    /// @param\[out\] statuses The Component statuses as a dictionary.
-    /// All objects in the statuses dictionary are key value pairs of \<IString, IEnumeration\>.
+    ///
+    /// # Returns
+    /// - `statuses`: The Component statuses as a dictionary. All objects in the statuses dictionary are key value pairs of \<IString, IEnumeration\>.
+    ///
     /// Calls the openDAQ C function `daqComponentStatusContainer_getStatuses()`.
     pub fn statuses(&self) -> Result<std::collections::HashMap<String, Enumeration>> {
         let mut __statuses: *mut sys::daqDict = std::ptr::null_mut();
@@ -1295,9 +1339,10 @@ impl ComponentStatusContainer {
 
 impl ComponentTypeBuilder {
     /// Builds and returns a Component type object using the currently set values of the Builder.
-    /// @param\[out\] componentType The built Component type.
-    /// Depending on the set "sort" builder parameter, a different Component type is created - eg. Streaming type,
-    /// Device type, Function block type, or Server type
+    ///
+    /// # Returns
+    /// - `component_type`: The built Component type. Depending on the set "sort" builder parameter, a different Component type is created - eg. Streaming type, Device type, Function block type, or Server type
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_build()`.
     pub fn build(&self) -> Result<Option<ComponentType>> {
         let mut __component_type: *mut sys::daqComponentType = std::ptr::null_mut();
@@ -1307,6 +1352,7 @@ impl ComponentTypeBuilder {
     }
 
     /// Creates a ComponentTypeBuilder with default parameters.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_createComponentTypeBuilder()`.
     pub fn new() -> Result<ComponentTypeBuilder> {
         let mut __obj: *mut sys::daqComponentTypeBuilder = std::ptr::null_mut();
@@ -1316,6 +1362,7 @@ impl ComponentTypeBuilder {
     }
 
     /// Creates a ComponentTypeBuilder with the type sort set to "Device".
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_createDeviceTypeBuilder()`.
     pub fn device() -> Result<ComponentTypeBuilder> {
         let mut __obj: *mut sys::daqComponentTypeBuilder = std::ptr::null_mut();
@@ -1325,6 +1372,7 @@ impl ComponentTypeBuilder {
     }
 
     /// Creates a ComponentTypeBuilder with the type sort set to "FunctionBlock".
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_createFunctionBlockTypeBuilder()`.
     pub fn function_block() -> Result<ComponentTypeBuilder> {
         let mut __obj: *mut sys::daqComponentTypeBuilder = std::ptr::null_mut();
@@ -1334,6 +1382,7 @@ impl ComponentTypeBuilder {
     }
 
     /// Creates a ComponentTypeBuilder with the type sort set to "Server".
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_createServerTypeBuilder()`.
     pub fn server() -> Result<ComponentTypeBuilder> {
         let mut __obj: *mut sys::daqComponentTypeBuilder = std::ptr::null_mut();
@@ -1343,6 +1392,7 @@ impl ComponentTypeBuilder {
     }
 
     /// Creates a ComponentTypeBuilder with the type sort set to "Streaming".
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_createStreamingTypeBuilder()`.
     pub fn streaming() -> Result<ComponentTypeBuilder> {
         let mut __obj: *mut sys::daqComponentTypeBuilder = std::ptr::null_mut();
@@ -1360,9 +1410,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Gets the default configuration object that will be cloned and passed to users by the built Component type when requested.
-    /// @param\[out\] defaultConfig The default configuration object.
-    /// Configuration objects are property object with user-defined key-value pairs.
-    /// For example: Port=1000, OutputRate=5000, ...
+    ///
+    /// # Returns
+    /// - `default_config`: The default configuration object. Configuration objects are property object with user-defined key-value pairs. For example: Port=1000, OutputRate=5000, ...
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_getDefaultConfig()`.
     pub fn default_config(&self) -> Result<Option<PropertyObject>> {
         let mut __default_config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -1372,8 +1423,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Gets the description of a component type.
-    /// @param\[out\] description The description of a component type.
-    /// A short description of a component type and the associated configuration parameters it offers.
+    ///
+    /// # Returns
+    /// - `description`: The description of a component type. A short description of a component type and the associated configuration parameters it offers.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -1383,8 +1436,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Gets the unique component type id.
-    /// @param\[out\] id The unique id of a component type.
-    /// Unique id should not be presented on the UI.
+    ///
+    /// # Returns
+    /// - `id`: The unique id of a component type. Unique id should not be presented on the UI.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -1394,8 +1449,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Gets the user-friendly name of a component type.
-    /// @param\[out\] name The user-friendly name of a component type.
-    /// Name is usually presented on the UI. Does not have to be unique.
+    ///
+    /// # Returns
+    /// - `name`: The user-friendly name of a component type. Name is usually presented on the UI. Does not have to be unique.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -1405,7 +1462,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Gets the component type sort. Can be either Streaming, Function block, Device, or Server. Depending on the setting, the corresponding Component type object will be built.
-    /// @param sort The sort of the component type.
+    ///
+    /// # Parameters
+    /// - `sort`: The sort of the component type.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_getTypeSort()`.
     pub fn type_sort(&self) -> Result<ComponentTypeSort> {
         let mut __sort: u32 = 0;
@@ -1423,9 +1483,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Sets the default configuration object that will be cloned and passed to users by the built Component type when requested.
-    /// @param defaultConfig The default configuration object.
-    /// Configuration objects are property object with user-defined key-value pairs.
-    /// For example: Port=1000, OutputRate=5000, ...
+    ///
+    /// # Parameters
+    /// - `default_config`: The default configuration object. Configuration objects are property object with user-defined key-value pairs. For example: Port=1000, OutputRate=5000, ...
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_setDefaultConfig()`.
     pub fn set_default_config(&self, default_config: &PropertyObject) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentTypeBuilder_setDefaultConfig)(self.as_raw() as *mut _, default_config.as_raw() as *mut _) };
@@ -1434,8 +1495,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Sets the description of a component type.
-    /// @param description The description of a component type.
-    /// A short description of a component type and the associated configuration parameters it offers.
+    ///
+    /// # Parameters
+    /// - `description`: The description of a component type. A short description of a component type and the associated configuration parameters it offers.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_setDescription()`.
     pub fn set_description(&self, description: &str) -> Result<()> {
         let __description = crate::marshal::make_string(description)?;
@@ -1445,8 +1508,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Sets the unique component type id.
-    /// @param id The unique id of a component type.
-    /// Unique id should not be presented on the UI.
+    ///
+    /// # Parameters
+    /// - `id`: The unique id of a component type. Unique id should not be presented on the UI.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_setId()`.
     pub fn set_id(&self, id: &str) -> Result<()> {
         let __id = crate::marshal::make_string(id)?;
@@ -1456,8 +1521,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Sets the user-friendly name of a component type.
-    /// @param name The user-friendly name of a component type.
-    /// Name is usually presented on the UI. Does not have to be unique.
+    ///
+    /// # Parameters
+    /// - `name`: The user-friendly name of a component type. Name is usually presented on the UI. Does not have to be unique.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1467,7 +1534,10 @@ impl ComponentTypeBuilder {
     }
 
     /// Sets the component type sort. Can be either Streaming, Function block, Device, or Server. Depending on the setting, the corresponding Component type object will be built.
-    /// @param sort The sort of the component type.
+    ///
+    /// # Parameters
+    /// - `sort`: The sort of the component type.
+    ///
     /// Calls the openDAQ C function `daqComponentTypeBuilder_setTypeSort()`.
     pub fn set_type_sort(&self, sort: ComponentTypeSort) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentTypeBuilder_setTypeSort)(self.as_raw() as *mut _, sort as u32) };
@@ -1479,7 +1549,10 @@ impl ComponentTypeBuilder {
 
 impl ComponentTypePrivate {
     /// Sets the module information.
-    /// @param info The module information.
+    ///
+    /// # Parameters
+    /// - `info`: The module information.
+    ///
     /// Calls the openDAQ C function `daqComponentTypePrivate_setModuleInfo()`.
     pub fn set_module_info(&self, info: &ModuleInfo) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentTypePrivate_setModuleInfo)(self.as_raw() as *mut _, info.as_raw() as *mut _) };
@@ -1491,9 +1564,10 @@ impl ComponentTypePrivate {
 
 impl ComponentType {
     /// The function clones and returns default configuration. On each call, we need to create new object, because we want that each instance of the component has its own configuration object.
-    /// @param\[out\] defaultConfig Newly created configuration object.
-    /// Configuration objects are property object with user-defined key-value pairs.
-    /// For example: Port=1000, OutputRate=5000, ...
+    ///
+    /// # Returns
+    /// - `default_config`: Newly created configuration object. Configuration objects are property object with user-defined key-value pairs. For example: Port=1000, OutputRate=5000, ...
+    ///
     /// Calls the openDAQ C function `daqComponentType_createDefaultConfig()`.
     pub fn create_default_config(&self) -> Result<Option<PropertyObject>> {
         let mut __default_config: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -1503,8 +1577,10 @@ impl ComponentType {
     }
 
     /// Gets the description of a component type.
-    /// @param\[out\] description The description of a component type.
-    /// A short description of a component type and the associated configuration parameters it offers.
+    ///
+    /// # Returns
+    /// - `description`: The description of a component type. A short description of a component type and the associated configuration parameters it offers.
+    ///
     /// Calls the openDAQ C function `daqComponentType_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -1514,8 +1590,10 @@ impl ComponentType {
     }
 
     /// Gets the unique component type id.
-    /// @param\[out\] id The unique id of a component type.
-    /// Unique id should not be presented on the UI.
+    ///
+    /// # Returns
+    /// - `id`: The unique id of a component type. Unique id should not be presented on the UI.
+    ///
     /// Calls the openDAQ C function `daqComponentType_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -1525,7 +1603,10 @@ impl ComponentType {
     }
 
     /// Retrieves the module information.
-    /// @param\[out\] info The module information.
+    ///
+    /// # Returns
+    /// - `info`: The module information.
+    ///
     /// Calls the openDAQ C function `daqComponentType_getModuleInfo()`.
     pub fn module_info(&self) -> Result<Option<ModuleInfo>> {
         let mut __info: *mut sys::daqModuleInfo = std::ptr::null_mut();
@@ -1535,8 +1616,10 @@ impl ComponentType {
     }
 
     /// Gets the user-friendly name of a component type.
-    /// @param\[out\] name The user-friendly name of a component type.
-    /// Name is usually presented on the UI. Does not have to be unique.
+    ///
+    /// # Returns
+    /// - `name`: The user-friendly name of a component type. Name is usually presented on the UI. Does not have to be unique.
+    ///
     /// Calls the openDAQ C function `daqComponentType_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -1549,9 +1632,11 @@ impl ComponentType {
 
 impl ComponentUpdateContext {
     /// Adds a device remapping from the original device's local ID to the new device local ID.
-    /// @param originalDeviceId The local ID of the original device to be remapped.
-    /// @param newDeviceId The local ID of the new device to be used for remapping.
-    /// Used to remap signal -\> input port connections to the remapped device when loading.
+    ///
+    /// # Parameters
+    /// - `original_device_id`: The local ID of the original device to be remapped.
+    /// - `new_device_id`: The local ID of the new device to be used for remapping. Used to remap signal -\> input port connections to the remapped device when loading.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_addDeviceRemapping()`.
     pub fn add_device_remapping(&self, original_device_id: &str, new_device_id: &str) -> Result<()> {
         let __original_device_id = crate::marshal::make_string(original_device_id)?;
@@ -1562,8 +1647,11 @@ impl ComponentUpdateContext {
     }
 
     /// Gets the DeviceUpdateOptions object for the device with the specified local ID. Returns null if no options are found for the device.
-    /// @param localId The local ID of the device to get the options for.
-    /// @param options The DeviceUpdateOptions object for the device with the specified local ID; null if no options are found for the device.
+    ///
+    /// # Parameters
+    /// - `local_id`: The local ID of the device to get the options for.
+    /// - `options`: The DeviceUpdateOptions object for the device with the specified local ID; null if no options are found for the device.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_getDeviceUpdateOptionsWithLocalIdOrNull()`.
     pub fn device_update_options_with_local_id_or_null(&self, local_id: &str) -> Result<Option<DeviceUpdateOptions>> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -1574,8 +1662,13 @@ impl ComponentUpdateContext {
     }
 
     /// Gets the dictionary with key-value pairs of input port local IDs and signal IDs for the specified parent component.
-    /// @param parentId The ID of the parent component.
-    /// @param\[out\] connections The connections to the input ports.
+    ///
+    /// # Parameters
+    /// - `parent_id`: The ID of the parent component.
+    ///
+    /// # Returns
+    /// - `connections`: The connections to the input ports.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_getInputPortConnections()`.
     pub fn input_port_connections(&self, parent_id: &str) -> Result<std::collections::HashMap<String, String>> {
         let __parent_id = crate::marshal::make_string(parent_id)?;
@@ -1594,7 +1687,10 @@ impl ComponentUpdateContext {
     }
 
     /// Gets the root component of the current component.
-    /// @param\[out\] rootComponent The root component.
+    ///
+    /// # Returns
+    /// - `root_component`: The root component.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_getRootComponent()`.
     pub fn root_component(&self) -> Result<Option<Component>> {
         let mut __root_component: *mut sys::daqComponent = std::ptr::null_mut();
@@ -1604,9 +1700,14 @@ impl ComponentUpdateContext {
     }
 
     /// Gets the signal by the specified parent and port ID.
-    /// @param parentId The ID of the parent component.
-    /// @param portId The ID of the input port.
-    /// @param\[out\] signal The found signal. If signal is not found signal is set to nullptr.
+    ///
+    /// # Parameters
+    /// - `parent_id`: The ID of the parent component.
+    /// - `port_id`: The ID of the input port.
+    ///
+    /// # Returns
+    /// - `signal`: The found signal. If signal is not found signal is set to nullptr.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_getSignal()`.
     pub fn signal(&self, parent_id: &str, port_id: &str) -> Result<Option<Signal>> {
         let __parent_id = crate::marshal::make_string(parent_id)?;
@@ -1618,7 +1719,10 @@ impl ComponentUpdateContext {
     }
 
     /// Gets the update parameters provided by the user through the `update` call.
-    /// @param updateParameters The update parameters.
+    ///
+    /// # Parameters
+    /// - `update_parameters`: The update parameters.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_getUpdateParameters()`.
     pub fn update_parameters(&self) -> Result<Option<UpdateParameters>> {
         let mut __update_parameters: *mut sys::daqUpdateParameters = std::ptr::null_mut();
@@ -1628,7 +1732,10 @@ impl ComponentUpdateContext {
     }
 
     /// Overrides the internal context state with that of another.
-    /// @param updateContext The context with which the object is to be overridden.
+    ///
+    /// # Parameters
+    /// - `update_context`: The context with which the object is to be overridden.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_overrideState()`.
     pub fn override_state(&self, update_context: &ComponentUpdateContext) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentUpdateContext_overrideState)(self.as_raw() as *mut _, update_context.as_raw() as *mut _) };
@@ -1638,6 +1745,7 @@ impl ComponentUpdateContext {
 
     /// Internal method that uses the device mapping to remap the input port connections.
     /// Should be called after the initial update, but before `onUpdatableUpdateEnd`.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_remapInputPortConnections()`.
     pub fn remap_input_port_connections(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentUpdateContext_remapInputPortConnections)(self.as_raw() as *mut _) };
@@ -1646,7 +1754,10 @@ impl ComponentUpdateContext {
     }
 
     /// Removes the connection to the input port for the specified parent component.
-    /// @param parentId The ID of the parent component.
+    ///
+    /// # Parameters
+    /// - `parent_id`: The ID of the parent component.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_removeInputPortConnection()`.
     pub fn remove_input_port_connection(&self, parent_id: &str) -> Result<()> {
         let __parent_id = crate::marshal::make_string(parent_id)?;
@@ -1656,9 +1767,12 @@ impl ComponentUpdateContext {
     }
 
     /// Sets signal connection to the input port for the specified parent component which is usualy a function block.
-    /// @param parentId The ID of the parent component.
-    /// @param portId The ID of the input port.
-    /// @param signalId The ID of the signal.
+    ///
+    /// # Parameters
+    /// - `parent_id`: The ID of the parent component.
+    /// - `port_id`: The ID of the input port.
+    /// - `signal_id`: The ID of the signal.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_setInputPortConnection()`.
     pub fn set_input_port_connection(&self, parent_id: &str, port_id: &str, signal_id: &str) -> Result<()> {
         let __parent_id = crate::marshal::make_string(parent_id)?;
@@ -1670,9 +1784,10 @@ impl ComponentUpdateContext {
     }
 
     /// Sets the root component of the current component. Iterates through the parent components until the root is found and sets it as the root component for the context.
-    /// @param baseComponent The base component from which we iterate to the openDAQ root.
-    /// This method shortcuts the need for callers to provide the openDAQ root device as the component, by automatically iterating
-    /// to the root component from any component in the hierarchy.
+    ///
+    /// # Parameters
+    /// - `base_component`: The base component from which we iterate to the openDAQ root. This method shortcuts the need for callers to provide the openDAQ root device as the component, by automatically iterating to the root component from any component in the hierarchy.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_setRootComponent()`.
     pub fn set_root_component(&self, root_component: &Component) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponentUpdateContext_setRootComponent)(self.as_raw() as *mut _, root_component.as_raw() as *mut _) };
@@ -1681,8 +1796,11 @@ impl ComponentUpdateContext {
     }
 
     /// Sets the signal dependency to the function block.
-    /// @param signalId The ID of the signal.
-    /// @param parentId The ID of the parent component.
+    ///
+    /// # Parameters
+    /// - `signal_id`: The ID of the signal.
+    /// - `parent_id`: The ID of the parent component.
+    ///
     /// Calls the openDAQ C function `daqComponentUpdateContext_setSignalDependency()`.
     pub fn set_signal_dependency(&self, signal_id: &str, parent_id: &str) -> Result<()> {
         let __signal_id = crate::marshal::make_string(signal_id)?;
@@ -1696,9 +1814,12 @@ impl ComponentUpdateContext {
 
 impl Component {
     /// Creates a component.
-    /// @param context The Context. Most often the creating function-block/device passes its own Context to the Folder.
-    /// @param parent The parent component.
-    /// @param localId The local ID of the component.
+    ///
+    /// # Parameters
+    /// - `context`: The Context. Most often the creating function-block/device passes its own Context to the Folder.
+    /// - `parent`: The parent component.
+    /// - `local_id`: The local ID of the component.
+    ///
     /// Calls the openDAQ C function `daqComponent_createComponent()`.
     pub fn new(context: &Context, parent: Option<&Component>, local_id: &str, class_name: Option<&str>) -> Result<Component> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -1710,11 +1831,13 @@ impl Component {
     }
 
     /// Finds the component (signal/device/function block) with the specified (global) id.
-    /// @param id The id of the component to search for.
-    /// @param\[out\] outComponent The resulting component.
-    /// If the component parameter is true, the starting component is the root device.
-    /// The id provided should be in relative form from the starting component. E.g., to find a signal in
-    /// the starting component, the id should be in the form of "Dev/dev_id/Ch/ch_id/Sig/sig_id.
+    ///
+    /// # Parameters
+    /// - `id`: The id of the component to search for.
+    ///
+    /// # Returns
+    /// - `out_component`: The resulting component. If the component parameter is true, the starting component is the root device. The id provided should be in relative form from the starting component. E.g., to find a signal in the starting component, the id should be in the form of "Dev/dev_id/Ch/ch_id/Sig/sig_id.
+    ///
     /// Calls the openDAQ C function `daqComponent_findComponent()`.
     pub fn find_component(&self, id: &str) -> Result<Option<Component>> {
         let __id = crate::marshal::make_string(id)?;
@@ -1725,9 +1848,10 @@ impl Component {
     }
 
     /// Returns true if the component is active; false otherwise.
-    /// @param\[out\] active True if the component is active; false otherwise.
-    /// A component is active if its local active state is true and its parent is active.
-    /// An active component acquires data, performs calculations and send packets on the signal path.
+    ///
+    /// # Returns
+    /// - `active`: True if the component is active; false otherwise. A component is active if its local active state is true and its parent is active. An active component acquires data, performs calculations and send packets on the signal path.
+    ///
     /// Calls the openDAQ C function `daqComponent_getActive()`.
     pub fn active(&self) -> Result<bool> {
         let mut __active: u8 = 0;
@@ -1737,7 +1861,10 @@ impl Component {
     }
 
     /// Gets the context object.
-    /// @param\[out\] context The context object.
+    ///
+    /// # Returns
+    /// - `context`: The context object.
+    ///
     /// Calls the openDAQ C function `daqComponent_getContext()`.
     pub fn context(&self) -> Result<Option<Context>> {
         let mut __context: *mut sys::daqContext = std::ptr::null_mut();
@@ -1747,8 +1874,10 @@ impl Component {
     }
 
     /// Gets the description of the component.
-    /// @param\[out\] description The description of the component. Empty if not configured.
-    /// The object that implements this interface defines how the description is specified.
+    ///
+    /// # Returns
+    /// - `description`: The description of the component. Empty if not configured. The object that implements this interface defines how the description is specified.
+    ///
     /// Calls the openDAQ C function `daqComponent_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -1758,10 +1887,10 @@ impl Component {
     }
 
     /// Gets the global ID of the component.
-    /// @param\[out\] globalId The global ID of the component.
-    /// Represents the identifier that is globally unique. Globally unique identifier is composed
-    /// from local identifiers from the parent components separated by '/' character. Device component
-    /// must make sure that its ID is globally unique.
+    ///
+    /// # Returns
+    /// - `global_id`: The global ID of the component. Represents the identifier that is globally unique. Globally unique identifier is composed from local identifiers from the parent components separated by '/' character. Device component must make sure that its ID is globally unique.
+    ///
     /// Calls the openDAQ C function `daqComponent_getGlobalId()`.
     pub fn global_id(&self) -> Result<String> {
         let mut __global_id: *mut sys::daqString = std::ptr::null_mut();
@@ -1771,9 +1900,10 @@ impl Component {
     }
 
     /// Returns true if the component is local active; false otherwise.
-    /// @param\[out\] localActive True if the component is local active; false otherwise.
-    /// An active component acquires data, performs calculations and send packets on the signal path.
-    /// Note that is local active is True, the component may still be inactive if its parents are inactive.
+    ///
+    /// # Returns
+    /// - `local_active`: True if the component is local active; false otherwise. An active component acquires data, performs calculations and send packets on the signal path. Note that is local active is True, the component may still be inactive if its parents are inactive.
+    ///
     /// Calls the openDAQ C function `daqComponent_getLocalActive()`.
     pub fn local_active(&self) -> Result<bool> {
         let mut __local_active: u8 = 0;
@@ -1783,10 +1913,10 @@ impl Component {
     }
 
     /// Gets the local ID of the component.
-    /// @param\[out\] localId The local ID of the component.
-    /// Represents the identifier that is unique in a relation to the
-    /// parent component. There is no predefined format for local ID. It is a string defined
-    /// by its parent component.
+    ///
+    /// # Returns
+    /// - `local_id`: The local ID of the component. Represents the identifier that is unique in a relation to the parent component. There is no predefined format for local ID. It is a string defined by its parent component.
+    ///
     /// Calls the openDAQ C function `daqComponent_getLocalId()`.
     pub fn local_id(&self) -> Result<String> {
         let mut __local_id: *mut sys::daqString = std::ptr::null_mut();
@@ -1796,7 +1926,10 @@ impl Component {
     }
 
     /// Gets a list of the component's locked attributes. The locked attributes cannot be modified via their respective setters.
-    /// @param\[out\] attributes A list of strings containing the names of locked attributes in capital case (eg. "Name", "Description").
+    ///
+    /// # Returns
+    /// - `attributes`: A list of strings containing the names of locked attributes in capital case (eg. "Name", "Description").
+    ///
     /// Calls the openDAQ C function `daqComponent_getLockedAttributes()`.
     pub fn locked_attributes(&self) -> Result<Vec<String>> {
         let mut __attributes: *mut sys::daqList = std::ptr::null_mut();
@@ -1806,8 +1939,10 @@ impl Component {
     }
 
     /// Gets the name of the component.
-    /// @param\[out\] name The name of the component. Local ID if name is not configured.
-    /// The object that implements this interface defines how the name is specified.
+    ///
+    /// # Returns
+    /// - `name`: The name of the component. Local ID if name is not configured. The object that implements this interface defines how the name is specified.
+    ///
     /// Calls the openDAQ C function `daqComponent_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -1817,12 +1952,10 @@ impl Component {
     }
 
     /// Gets the Core Event object that triggers whenever a change to this component happens within the openDAQ core structure.
-    /// @param\[out\] event The Core Event object. The event triggers with a Component reference and a CoreEventArgs object as arguments.
-    /// The Core Event is triggered on various changes to the openDAQ Components. This includes changes to property values,
-    /// addition/removal of child components, connecting signals to input ports and others. The event type can be identified
-    /// via the event ID available within the CoreEventArgs object. Each event type has a set of predetermined parameters
-    /// available in the `parameters` field of the arguments. These can be used by any openDAQ server, or other listener to
-    /// react to changes within the core structure.
+    ///
+    /// # Returns
+    /// - `event`: The Core Event object. The event triggers with a Component reference and a CoreEventArgs object as arguments. The Core Event is triggered on various changes to the openDAQ Components. This includes changes to property values, addition/removal of child components, connecting signals to input ports and others. The event type can be identified via the event ID available within the CoreEventArgs object. Each event type has a set of predetermined parameters available in the `parameters` field of the arguments. These can be used by any openDAQ server, or other listener to react to changes within the core structure.
+    ///
     /// Calls the openDAQ C function `daqComponent_getOnComponentCoreEvent()`.
     pub fn on_component_core_event(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -1832,7 +1965,10 @@ impl Component {
     }
 
     /// Gets the operation mode of the device.
-    /// @param\[out\] modeType The current operation mode.
+    ///
+    /// # Returns
+    /// - `mode_type`: The current operation mode.
+    ///
     /// Calls the openDAQ C function `daqComponent_getOperationMode()`.
     pub fn operation_mode(&self) -> Result<OperationModeType> {
         let mut __mode_type: u32 = 0;
@@ -1842,10 +1978,10 @@ impl Component {
     }
 
     /// Gets the parent of the component.
-    /// @param\[out\] parent The parent of the component.
-    /// Every openDAQ component has a parent, except for instance. Parent should be passed as
-    /// a parameter to the constructor/factory. Once the component is created, the parent
-    /// cannot be changed.
+    ///
+    /// # Returns
+    /// - `parent`: The parent of the component. Every openDAQ component has a parent, except for instance. Parent should be passed as a parameter to the constructor/factory. Once the component is created, the parent cannot be changed.
+    ///
     /// Calls the openDAQ C function `daqComponent_getParent()`.
     pub fn parent(&self) -> Result<Option<Component>> {
         let mut __parent: *mut sys::daqComponent = std::ptr::null_mut();
@@ -1855,7 +1991,10 @@ impl Component {
     }
 
     /// Returns true if the component's parent is active; false otherwise.
-    /// @param\[out\] parentActive True if the component's parent is active; false otherwise.
+    ///
+    /// # Returns
+    /// - `parent_active`: True if the component's parent is active; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqComponent_getParentActive()`.
     pub fn parent_active(&self) -> Result<bool> {
         let mut __parent_active: u8 = 0;
@@ -1865,7 +2004,10 @@ impl Component {
     }
 
     /// Gets the container of Component statuses.
-    /// @param\[out\] statusContainer The container of Component statuses.
+    ///
+    /// # Returns
+    /// - `status_container`: The container of Component statuses.
+    ///
     /// Calls the openDAQ C function `daqComponent_getStatusContainer()`.
     pub fn status_container(&self) -> Result<Option<ComponentStatusContainer>> {
         let mut __status_container: *mut sys::daqComponentStatusContainer = std::ptr::null_mut();
@@ -1875,8 +2017,10 @@ impl Component {
     }
 
     /// Gets the tags of the component.
-    /// @param\[out\] tags The tags of the component.
-    /// Tags are user definable labels that can be attached to the component.
+    ///
+    /// # Returns
+    /// - `tags`: The tags of the component. Tags are user definable labels that can be attached to the component.
+    ///
     /// Calls the openDAQ C function `daqComponent_getTags()`.
     pub fn tags(&self) -> Result<Option<Tags>> {
         let mut __tags: *mut sys::daqTags = std::ptr::null_mut();
@@ -1886,8 +2030,10 @@ impl Component {
     }
 
     /// Gets `visible` metadata state of the component
-    /// @param\[out\] visible True if the component is visible; False otherwise.
-    /// Visible determines whether search/getter methods return find the component by default.
+    ///
+    /// # Returns
+    /// - `visible`: True if the component is visible; False otherwise. Visible determines whether search/getter methods return find the component by default.
+    ///
     /// Calls the openDAQ C function `daqComponent_getVisible()`.
     pub fn visible(&self) -> Result<bool> {
         let mut __visible: u8 = 0;
@@ -1897,9 +2043,13 @@ impl Component {
     }
 
     /// Sets the component to be either active or inactive. Sets the local active state and notifies children about the parent active state change.
-    /// @param active The new local active state of the component.
-    /// @retval OPENDAQ_IGNORED if "Active" is part of the component's list of locked attributes, or if the new active value is equal to the previous.
-    /// An active component acquires data, performs calculations and send packets on the signal path.
+    ///
+    /// # Parameters
+    /// - `active`: The new local active state of the component.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if "Active" is part of the component's list of locked attributes, or if the new active value is equal to the previous. An active component acquires data, performs calculations and send packets on the signal path.
+    ///
     /// Calls the openDAQ C function `daqComponent_setActive()`.
     pub fn set_active(&self, active: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponent_setActive)(self.as_raw() as *mut _, u8::from(active)) };
@@ -1908,9 +2058,13 @@ impl Component {
     }
 
     /// Sets the description of the component.
-    /// @param description The description of the component.
-    /// @retval OPENDAQ_IGNORED if "Description" is part of the component's list of locked attributes, or if the new description value is equal to the previous.
-    /// The object that implements this interface defines how the description is specified.
+    ///
+    /// # Parameters
+    /// - `description`: The description of the component.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if "Description" is part of the component's list of locked attributes, or if the new description value is equal to the previous. The object that implements this interface defines how the description is specified.
+    ///
     /// Calls the openDAQ C function `daqComponent_setDescription()`.
     pub fn set_description(&self, description: &str) -> Result<()> {
         let __description = crate::marshal::make_string(description)?;
@@ -1920,9 +2074,13 @@ impl Component {
     }
 
     /// Sets the name of the component.
-    /// @param name The name of the component.
-    /// @retval OPENDAQ_IGNORED if "Name" is part of the component's list of locked attributes, or if the new name value is equal to the previous.
-    /// The object that implements this interface defines how the name is specified.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the component.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if "Name" is part of the component's list of locked attributes, or if the new name value is equal to the previous. The object that implements this interface defines how the name is specified.
+    ///
     /// Calls the openDAQ C function `daqComponent_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -1932,9 +2090,13 @@ impl Component {
     }
 
     /// Sets `visible` attribute state of the component
-    /// @param visible True if the component is visible; False otherwise.
-    /// @retval OPENDAQ_IGNORED if "Visible" is part of the component's list of locked attributes.
-    /// Visible determines whether search/getter methods return find the component by default.
+    ///
+    /// # Parameters
+    /// - `visible`: True if the component is visible; False otherwise.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if "Visible" is part of the component's list of locked attributes. Visible determines whether search/getter methods return find the component by default.
+    ///
     /// Calls the openDAQ C function `daqComponent_setVisible()`.
     pub fn set_visible(&self, visible: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqComponent_setVisible)(self.as_raw() as *mut _, u8::from(visible)) };
@@ -1947,6 +2109,7 @@ impl Component {
 impl Context {
     /// @ingroup opendaq_context
     /// @addtogroup opendaq_context_factories Factories
+    ///
     /// Calls the openDAQ C function `daqContext_createContext()`.
     pub fn new(scheduler: Option<&Scheduler>, logger: &Logger, type_manager: &TypeManager, module_manager: Option<&ModuleManager>, authentication_provider: Option<&AuthenticationProvider>, options: impl Into<Value>, discovery_servers: impl Into<Value>) -> Result<Context> {
         let __options = crate::value::to_daq(&options.into())?;
@@ -1958,7 +2121,10 @@ impl Context {
     }
 
     /// Gets the Authentication provider.
-    /// @param\[out\] authenticationProvider The authentication provider.
+    ///
+    /// # Returns
+    /// - `authentication_provider`: The authentication provider.
+    ///
     /// Calls the openDAQ C function `daqContext_getAuthenticationProvider()`.
     pub fn authentication_provider(&self) -> Result<Option<AuthenticationProvider>> {
         let mut __authentication_provider: *mut sys::daqAuthenticationProvider = std::ptr::null_mut();
@@ -1968,7 +2134,10 @@ impl Context {
     }
 
     /// Gets the dictionary of available discovery servers.
-    /// @param\[out\] servers The dictionary of available discovery servers.
+    ///
+    /// # Returns
+    /// - `servers`: The dictionary of available discovery servers.
+    ///
     /// Calls the openDAQ C function `daqContext_getDiscoveryServers()`.
     pub fn discovery_servers(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __servers: *mut sys::daqDict = std::ptr::null_mut();
@@ -1978,7 +2147,10 @@ impl Context {
     }
 
     /// Gets the logger.
-    /// @param\[out\] logger The logger.
+    ///
+    /// # Returns
+    /// - `logger`: The logger.
+    ///
     /// Calls the openDAQ C function `daqContext_getLogger()`.
     pub fn logger(&self) -> Result<Option<Logger>> {
         let mut __logger: *mut sys::daqLogger = std::ptr::null_mut();
@@ -1988,7 +2160,10 @@ impl Context {
     }
 
     /// Gets the Module Manager as a Base Object.
-    /// @param\[out\] manager The module manager.
+    ///
+    /// # Returns
+    /// - `manager`: The module manager.
+    ///
     /// Calls the openDAQ C function `daqContext_getModuleManager()`.
     pub fn module_manager(&self) -> Result<Value> {
         let mut __manager: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -1998,8 +2173,13 @@ impl Context {
     }
 
     /// Retrieves the options associated with the specified module ID.
-    /// @param moduleId The identifier of the module for which options are requested.
-    /// @param\[out\] options A dictionary containing the options associated with the specified module ID.
+    ///
+    /// # Parameters
+    /// - `module_id`: The identifier of the module for which options are requested.
+    ///
+    /// # Returns
+    /// - `options`: A dictionary containing the options associated with the specified module ID.
+    ///
     /// Calls the openDAQ C function `daqContext_getModuleOptions()`.
     pub fn module_options(&self, module_id: &str) -> Result<std::collections::HashMap<String, Value>> {
         let __module_id = crate::marshal::make_string(module_id)?;
@@ -2010,12 +2190,10 @@ impl Context {
     }
 
     /// Gets the Core Event object that triggers whenever a change happens within the openDAQ core structure.
-    /// @param\[out\] event The Core Event object. The event triggers with a Component reference and a CoreEventArgs object as arguments.
-    /// The Core Event is triggered on various changes to the openDAQ Components. This includes changes to property values,
-    /// addition/removal of child components, connecting signals to input ports and others. The event type can be identified
-    /// via the event ID available within the CoreEventArgs object. Each event type has a set of predetermined parameters
-    /// available in the `parameters` field of the arguments. These can be used by any openDAQ server, or other listener to
-    /// react to changes within the core structure.
+    ///
+    /// # Returns
+    /// - `event`: The Core Event object. The event triggers with a Component reference and a CoreEventArgs object as arguments. The Core Event is triggered on various changes to the openDAQ Components. This includes changes to property values, addition/removal of child components, connecting signals to input ports and others. The event type can be identified via the event ID available within the CoreEventArgs object. Each event type has a set of predetermined parameters available in the `parameters` field of the arguments. These can be used by any openDAQ server, or other listener to react to changes within the core structure.
+    ///
     /// Calls the openDAQ C function `daqContext_getOnCoreEvent()`.
     pub fn on_core_event(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -2025,7 +2203,10 @@ impl Context {
     }
 
     /// Gets the dictionary of options
-    /// @param\[out\] options The dictionary of options
+    ///
+    /// # Returns
+    /// - `options`: The dictionary of options
+    ///
     /// Calls the openDAQ C function `daqContext_getOptions()`.
     pub fn options(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __options: *mut sys::daqDict = std::ptr::null_mut();
@@ -2035,7 +2216,10 @@ impl Context {
     }
 
     /// Gets the scheduler.
-    /// @param\[out\] scheduler The scheduler.
+    ///
+    /// # Returns
+    /// - `scheduler`: The scheduler.
+    ///
     /// Calls the openDAQ C function `daqContext_getScheduler()`.
     pub fn scheduler(&self) -> Result<Option<Scheduler>> {
         let mut __scheduler: *mut sys::daqScheduler = std::ptr::null_mut();
@@ -2045,7 +2229,10 @@ impl Context {
     }
 
     /// Gets the Type Manager.
-    /// @param\[out\] manager The type manager.
+    ///
+    /// # Returns
+    /// - `manager`: The type manager.
+    ///
     /// Calls the openDAQ C function `daqContext_getTypeManager()`.
     pub fn type_manager(&self) -> Result<Option<TypeManager>> {
         let mut __manager: *mut sys::daqTypeManager = std::ptr::null_mut();
@@ -2094,7 +2281,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the list of child device options for the device. These are used to configure subdevices of the current device.
-    /// @param childDeviceOptions The list of child device options for the device.
+    ///
+    /// # Parameters
+    /// - `child_device_options`: The list of child device options for the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getChildDeviceOptions()`.
     pub fn child_device_options(&self) -> Result<Vec<DeviceUpdateOptions>> {
         let mut __child_device_options: *mut sys::daqList = std::ptr::null_mut();
@@ -2104,7 +2294,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the connection string of the device, as written in the setup string.
-    /// @param connectionString The connection string of the device.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The connection string of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getConnectionString()`.
     pub fn connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -2114,8 +2307,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the local ID of the device. The local ID is obtained from the JSON key for the device entry.
-    /// @param localId The local ID of the device.
-    /// The root device might not have the local ID configured. In this case the local ID will be set to "Root".
+    ///
+    /// # Parameters
+    /// - `local_id`: The local ID of the device. The root device might not have the local ID configured. In this case the local ID will be set to "Root".
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getLocalId()`.
     pub fn local_id(&self) -> Result<String> {
         let mut __local_id: *mut sys::daqString = std::ptr::null_mut();
@@ -2125,7 +2320,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the manufacturer of the device, as written in the setup string.
-    /// @param manufacturer The manufacturer of the device.
+    ///
+    /// # Parameters
+    /// - `manufacturer`: The manufacturer of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getManufacturer()`.
     pub fn manufacturer(&self) -> Result<String> {
         let mut __manufacturer: *mut sys::daqString = std::ptr::null_mut();
@@ -2135,8 +2333,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the new connection string of the device to be used for remapping.
-    /// @param connectionString The new connection string of the device to be used for remapping.
-    /// The manufacturer and serial number combination has priority over the connection string when remapping.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The new connection string of the device to be used for remapping. The manufacturer and serial number combination has priority over the connection string when remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getNewConnectionString()`.
     pub fn new_connection_string(&self) -> Result<String> {
         let mut __connection_string: *mut sys::daqString = std::ptr::null_mut();
@@ -2146,7 +2346,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the new manufacturer of the device to be used for remapping.
-    /// @param manufacturer The new manufacturer of the device to be used for remapping.
+    ///
+    /// # Parameters
+    /// - `manufacturer`: The new manufacturer of the device to be used for remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getNewManufacturer()`.
     pub fn new_manufacturer(&self) -> Result<String> {
         let mut __manufacturer: *mut sys::daqString = std::ptr::null_mut();
@@ -2156,7 +2359,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the new serial number of the device to be used for remapping.
-    /// @param serialNumber The new serial number of the device to be used for remapping.
+    ///
+    /// # Parameters
+    /// - `serial_number`: The new serial number of the device to be used for remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getNewSerialNumber()`.
     pub fn new_serial_number(&self) -> Result<String> {
         let mut __serial_number: *mut sys::daqString = std::ptr::null_mut();
@@ -2166,7 +2372,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the serial number of the device, as written in the setup string.
-    /// @param serialNumber The serial number of the device.
+    ///
+    /// # Parameters
+    /// - `serial_number`: The serial number of the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getSerialNumber()`.
     pub fn serial_number(&self) -> Result<String> {
         let mut __serial_number: *mut sys::daqString = std::ptr::null_mut();
@@ -2176,7 +2385,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Gets the update mode for the device.
-    /// @param mode The update mode for the device.
+    ///
+    /// # Parameters
+    /// - `mode`: The update mode for the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_getUpdateMode()`.
     pub fn update_mode(&self) -> Result<DeviceUpdateMode> {
         let mut __mode: u32 = 0;
@@ -2186,8 +2398,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Sets the new connection string of the device to be used for remapping.
-    /// @param connectionString The new connection string of the device to be used for remapping.
-    /// The manufacturer and serial number combination has priority over the connection string when remapping.
+    ///
+    /// # Parameters
+    /// - `connection_string`: The new connection string of the device to be used for remapping. The manufacturer and serial number combination has priority over the connection string when remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_setNewConnectionString()`.
     pub fn set_new_connection_string(&self, connection_string: &str) -> Result<()> {
         let __connection_string = crate::marshal::make_string(connection_string)?;
@@ -2197,7 +2411,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Sets the new manufacturer of the device to be used for remapping.
-    /// @param manufacturer The new manufacturer of the device to be used for remapping.
+    ///
+    /// # Parameters
+    /// - `manufacturer`: The new manufacturer of the device to be used for remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_setNewManufacturer()`.
     pub fn set_new_manufacturer(&self, manufacturer: &str) -> Result<()> {
         let __manufacturer = crate::marshal::make_string(manufacturer)?;
@@ -2207,7 +2424,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Sets the new serial number of the device to be used for remapping.
-    /// @param serialNumber The new serial number of the device to be used for remapping.
+    ///
+    /// # Parameters
+    /// - `serial_number`: The new serial number of the device to be used for remapping.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_setNewSerialNumber()`.
     pub fn set_new_serial_number(&self, serial_number: &str) -> Result<()> {
         let __serial_number = crate::marshal::make_string(serial_number)?;
@@ -2217,7 +2437,10 @@ impl DeviceUpdateOptions {
     }
 
     /// Sets the update mode for the device.
-    /// @param mode The update mode for the device.
+    ///
+    /// # Parameters
+    /// - `mode`: The update mode for the device.
+    ///
     /// Calls the openDAQ C function `daqDeviceUpdateOptions_setUpdateMode()`.
     pub fn set_update_mode(&self, mode: DeviceUpdateMode) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDeviceUpdateOptions_setUpdateMode)(self.as_raw() as *mut _, mode as u32) };
@@ -2229,7 +2452,10 @@ impl DeviceUpdateOptions {
 
 impl FolderConfig {
     /// Adds a component to the folder.
-    /// @param item The component.
+    ///
+    /// # Parameters
+    /// - `item`: The component.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_addItem()`.
     pub fn add_item(&self, item: &Component) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqFolderConfig_addItem)(self.as_raw() as *mut _, item.as_raw() as *mut _) };
@@ -2238,6 +2464,7 @@ impl FolderConfig {
     }
 
     /// Removes all items from the folder.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_clear()`.
     pub fn clear(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqFolderConfig_clear)(self.as_raw() as *mut _) };
@@ -2246,9 +2473,12 @@ impl FolderConfig {
     }
 
     /// Creates a folder.
-    /// @param context The Context. Most often the creating function-block/device passes its own Context to the Folder.
-    /// @param parent The parent component.
-    /// @param localId The local ID of the component.
+    ///
+    /// # Parameters
+    /// - `context`: The Context. Most often the creating function-block/device passes its own Context to the Folder.
+    /// - `parent`: The parent component.
+    /// - `local_id`: The local ID of the component.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_createFolder()`.
     pub fn folder(context: &Context, parent: &Component, local_id: &str) -> Result<FolderConfig> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2259,10 +2489,13 @@ impl FolderConfig {
     }
 
     /// Creates a folder with an interface ID that must be implemented by its children.
-    /// @param context The Context. Most often the creating function-block/device passes its own Context to the Folder.
-    /// @param itemType The ID of interface that child objects of the folder must implement.
-    /// @param parent The parent component.
-    /// @param localId The local ID of the component.
+    ///
+    /// # Parameters
+    /// - `context`: The Context. Most often the creating function-block/device passes its own Context to the Folder.
+    /// - `item_type`: The ID of interface that child objects of the folder must implement.
+    /// - `parent`: The parent component.
+    /// - `local_id`: The local ID of the component.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_createFolderWithItemType()`.
     pub fn folder_with_item_type(item_type: crate::IntfID, context: &Context, parent: &Component, local_id: &str) -> Result<FolderConfig> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2273,10 +2506,12 @@ impl FolderConfig {
     }
 
     /// Creates an IO folder.
-    /// @param context The Context. Most often the creating function-block/device passes its own Context to the Folder.
-    /// @param parent The parent component.
-    /// @param localId The local ID of the parent.
-    /// IO folders are folder created by device and may contain only channels and other IO folders.
+    ///
+    /// # Parameters
+    /// - `context`: The Context. Most often the creating function-block/device passes its own Context to the Folder.
+    /// - `parent`: The parent component.
+    /// - `local_id`: The local ID of the parent. IO folders are folder created by device and may contain only channels and other IO folders.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_createIoFolder()`.
     pub fn io_folder(context: &Context, parent: &Component, local_id: &str) -> Result<FolderConfig> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2287,7 +2522,10 @@ impl FolderConfig {
     }
 
     /// Removes the item from the folder.
-    /// @param item The item component.
+    ///
+    /// # Parameters
+    /// - `item`: The item component.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_removeItem()`.
     pub fn remove_item(&self, item: &Component) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqFolderConfig_removeItem)(self.as_raw() as *mut _, item.as_raw() as *mut _) };
@@ -2296,7 +2534,10 @@ impl FolderConfig {
     }
 
     /// Removes the item from the folder using local id of the component.
-    /// @param localId The local id of the component.
+    ///
+    /// # Parameters
+    /// - `local_id`: The local id of the component.
+    ///
     /// Calls the openDAQ C function `daqFolderConfig_removeItemWithLocalId()`.
     pub fn remove_item_with_local_id(&self, local_id: &str) -> Result<()> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2309,10 +2550,17 @@ impl FolderConfig {
 
 impl Folder {
     /// Gets the item component with the specified localId.
-    /// @param localId The local id of the child component.
-    /// @param\[out\] item The item component.
-    /// @retval OPENDAQ_SUCCESS if succeeded.
-    /// @retval OPENDAQ_NOT_FOUND if folder with the specified ID not found.
+    ///
+    /// # Parameters
+    /// - `local_id`: The local id of the child component.
+    ///
+    /// # Returns
+    /// - `item`: The item component.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_SUCCESS`: if succeeded.
+    /// - `OPENDAQ_NOT_FOUND`: if folder with the specified ID not found.
+    ///
     /// Calls the openDAQ C function `daqFolder_getItem()`.
     pub fn item(&self, local_id: &str) -> Result<Option<Component>> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2323,9 +2571,13 @@ impl Folder {
     }
 
     /// Gets the list of the items in the folder.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] items The list of the items.
-    /// If searchFilter is not provided, the returned list contains only immediate children with visible set to `true`.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `items`: The list of the items. If searchFilter is not provided, the returned list contains only immediate children with visible set to `true`.
+    ///
     /// Calls the openDAQ C function `daqFolder_getItems()`.
     pub fn items(&self) -> Result<Vec<Component>> {
         let mut __items: *mut sys::daqList = std::ptr::null_mut();
@@ -2335,9 +2587,13 @@ impl Folder {
     }
 
     /// Gets the list of the items in the folder.
-    /// @param searchFilter Provides an optional filter that filters out unwanted components and allows for recursion.
-    /// @param\[out\] items The list of the items.
-    /// If searchFilter is not provided, the returned list contains only immediate children with visible set to `true`.
+    ///
+    /// # Parameters
+    /// - `search_filter`: Provides an optional filter that filters out unwanted components and allows for recursion.
+    ///
+    /// # Returns
+    /// - `items`: The list of the items. If searchFilter is not provided, the returned list contains only immediate children with visible set to `true`.
+    ///
     /// Calls the openDAQ C function `daqFolder_getItems()`.
     pub fn items_with(&self, search_filter: Option<&SearchFilter>) -> Result<Vec<Component>> {
         let mut __items: *mut sys::daqList = std::ptr::null_mut();
@@ -2347,8 +2603,13 @@ impl Folder {
     }
 
     /// Returns True if the folder has an item with local ID.
-    /// @param localId The local ID of the item.
-    /// @param\[out\] value True if the folder contains item with local ID.
+    ///
+    /// # Parameters
+    /// - `local_id`: The local ID of the item.
+    ///
+    /// # Returns
+    /// - `value`: True if the folder contains item with local ID.
+    ///
     /// Calls the openDAQ C function `daqFolder_hasItem()`.
     pub fn has_item(&self, local_id: &str) -> Result<bool> {
         let __local_id = crate::marshal::make_string(local_id)?;
@@ -2359,7 +2620,10 @@ impl Folder {
     }
 
     /// Returns True if the folder is empty.
-    /// @param\[out\] empty True if the folder is empty.
+    ///
+    /// # Returns
+    /// - `empty`: True if the folder is empty.
+    ///
     /// Calls the openDAQ C function `daqFolder_isEmpty()`.
     pub fn is_empty(&self) -> Result<bool> {
         let mut __empty: u8 = 0;
@@ -2382,7 +2646,10 @@ impl ModuleInfo {
     }
 
     /// Gets the module id.
-    /// @param\[out\] id The module id.
+    ///
+    /// # Returns
+    /// - `id`: The module id.
+    ///
     /// Calls the openDAQ C function `daqModuleInfo_getId()`.
     pub fn id(&self) -> Result<String> {
         let mut __id: *mut sys::daqString = std::ptr::null_mut();
@@ -2392,7 +2659,10 @@ impl ModuleInfo {
     }
 
     /// Gets the module name.
-    /// @param\[out\] name The module name.
+    ///
+    /// # Returns
+    /// - `name`: The module name.
+    ///
     /// Calls the openDAQ C function `daqModuleInfo_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -2402,7 +2672,10 @@ impl ModuleInfo {
     }
 
     /// Retrieves the module version information.
-    /// @param\[out\] version The semantic version information.
+    ///
+    /// # Returns
+    /// - `version`: The semantic version information.
+    ///
     /// Calls the openDAQ C function `daqModuleInfo_getVersionInfo()`.
     pub fn version_info(&self) -> Result<Option<VersionInfo>> {
         let mut __version: *mut sys::daqVersionInfo = std::ptr::null_mut();
@@ -2415,7 +2688,10 @@ impl ModuleInfo {
 
 impl Removable {
     /// Returns True if component was removed.
-    /// @param\[out\] removed True if component was removed; otherwise False.
+    ///
+    /// # Returns
+    /// - `removed`: True if component was removed; otherwise False.
+    ///
     /// Calls the openDAQ C function `daqRemovable_isRemoved()`.
     pub fn is_removed(&self) -> Result<bool> {
         let mut __removed: u8 = 0;
@@ -2428,6 +2704,7 @@ impl Removable {
     /// Call `remove` on the component to mark it as removed. It's up to the implementation
     /// to define what is does on the act of removal. Basic implementation of `Component`
     /// will switch it to inactive state and it cannot be activated again.
+    ///
     /// Calls the openDAQ C function `daqRemovable_remove()`.
     pub fn remove(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqRemovable_remove)(self.as_raw() as *mut _) };
@@ -2439,7 +2716,10 @@ impl Removable {
 
 impl Signal {
     /// Gets the list of connections to input ports formed by the signal.
-    /// @param\[out\] connections The list of connections.
+    ///
+    /// # Returns
+    /// - `connections`: The list of connections.
+    ///
     /// Calls the openDAQ C function `daqSignal_getConnections()`.
     pub fn connections(&self) -> Result<Vec<Connection>> {
         let mut __connections: *mut sys::daqList = std::ptr::null_mut();
@@ -2449,9 +2729,10 @@ impl Signal {
     }
 
     /// Gets the signal's data descriptor.
-    /// @param\[out\] descriptor The signal's data descriptor.
-    /// The descriptor contains metadata about the signal, providing information about its name, description,...
-    /// and defines how the data in it's packet's buffers should be interpreted.
+    ///
+    /// # Returns
+    /// - `descriptor`: The signal's data descriptor. The descriptor contains metadata about the signal, providing information about its name, description,... and defines how the data in it's packet's buffers should be interpreted.
+    ///
     /// Calls the openDAQ C function `daqSignal_getDescriptor()`.
     pub fn descriptor(&self) -> Result<Option<DataDescriptor>> {
         let mut __descriptor: *mut sys::daqDataDescriptor = std::ptr::null_mut();
@@ -2461,9 +2742,10 @@ impl Signal {
     }
 
     /// Gets the signal that carries its domain data.
-    /// @param\[out\] signal The domain signal.
-    /// The domain signal contains domain (most often time) data that is used to interpret a signal's data in
-    /// a given domain. It has the same sampling rate as the signal.
+    ///
+    /// # Returns
+    /// - `signal`: The domain signal. The domain signal contains domain (most often time) data that is used to interpret a signal's data in a given domain. It has the same sampling rate as the signal.
+    ///
     /// Calls the openDAQ C function `daqSignal_getDomainSignal()`.
     pub fn domain_signal(&self) -> Result<Option<Signal>> {
         let mut __signal: *mut sys::daqSignal = std::ptr::null_mut();
@@ -2473,14 +2755,10 @@ impl Signal {
     }
 
     /// Gets the signal last value.
-    /// @param\[out\] value The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function.
-    /// If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64,
-    /// to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64,
-    /// to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly
-    /// one dimension.
-    /// For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is
-    /// determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value
-    /// from the packet data and returns it as an IString object.
+    ///
+    /// # Returns
+    /// - `value`: The IBaseObject value can be a nullptr if there is no value, or if the data type is not supported by the function. If a value is assigned, it can be cast based on the signal description to IFloat if the type is Float32 or Float64, to IInteger if the type is Int8 through Int64 or UInt8 through UInt64, to IComplexNumber if the type is ComplexFloat32 or ComplexFloat64, to IRange if the type is RangeInt64, to IString if the type is String, to IStruct if the type is Struct, and to IList of the forementioned types if there is exactly one dimension. For String type signals in binary data packets, the string data must be encoded as UTF-8 strings. The string length is determined by the sample size, and the string does not need to be null-terminated. The method extracts the string value from the packet data and returns it as an IString object.
+    ///
     /// Calls the openDAQ C function `daqSignal_getLastValue()`.
     pub fn last_value(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -2490,8 +2768,10 @@ impl Signal {
     }
 
     /// Returns true if the signal is public; false otherwise.
-    /// @param\[out\] isPublic True if the signal is public; false otherwise.
-    /// Public signals are visible to clients connected to the device, and are streamed.
+    ///
+    /// # Returns
+    /// - `is_public`: True if the signal is public; false otherwise. Public signals are visible to clients connected to the device, and are streamed.
+    ///
     /// Calls the openDAQ C function `daqSignal_getPublic()`.
     pub fn public(&self) -> Result<bool> {
         let mut __is_public: u8 = 0;
@@ -2501,9 +2781,10 @@ impl Signal {
     }
 
     /// Gets a list of related signals.
-    /// @param\[out\] signals The list of related signals.
-    /// Signals within the related signals list are facilitate the interpretation of a given signal's data, or
-    /// are otherwise relevant when working with the signal.
+    ///
+    /// # Returns
+    /// - `signals`: The list of related signals. Signals within the related signals list are facilitate the interpretation of a given signal's data, or are otherwise relevant when working with the signal.
+    ///
     /// Calls the openDAQ C function `daqSignal_getRelatedSignals()`.
     pub fn related_signals(&self) -> Result<Vec<Signal>> {
         let mut __signals: *mut sys::daqList = std::ptr::null_mut();
@@ -2513,9 +2794,10 @@ impl Signal {
     }
 
     /// Returns true if the signal is streamed; false otherwise.
-    /// @param\[out\] streamed True if the signal is streamed; false otherwise.
-    /// A streamed signal receives packets from a streaming server and forwards packets on the signal path.
-    /// Method always sets `streamed` parameter to False if the signal is local to the current Instance.
+    ///
+    /// # Returns
+    /// - `streamed`: True if the signal is streamed; false otherwise. A streamed signal receives packets from a streaming server and forwards packets on the signal path. Method always sets `streamed` parameter to False if the signal is local to the current Instance.
+    ///
     /// Calls the openDAQ C function `daqSignal_getStreamed()`.
     pub fn streamed(&self) -> Result<bool> {
         let mut __streamed: u8 = 0;
@@ -2525,8 +2807,10 @@ impl Signal {
     }
 
     /// Sets the signal to be either public or private.
-    /// @param isPublic If false, the signal is set to private; if true, the signal is set to be public.
-    /// Public signals are visible to clients connected to the device, and are streamed.
+    ///
+    /// # Parameters
+    /// - `is_public`: If false, the signal is set to private; if true, the signal is set to be public. Public signals are visible to clients connected to the device, and are streamed.
+    ///
     /// Calls the openDAQ C function `daqSignal_setPublic()`.
     pub fn set_public(&self, is_public: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignal_setPublic)(self.as_raw() as *mut _, u8::from(is_public)) };
@@ -2535,10 +2819,10 @@ impl Signal {
     }
 
     /// Sets the signal to be either streamed or not.
-    /// @param streamed The new streamed state of the signal.
-    /// A streamed signal receives packets from a streaming server and forwards packets on the signal path.
-    /// Setting the "Streamed" flag has no effect if the signal is local to the current Instance.
-    /// Method returns OPENDAQ_IGNORED if that is the case.
+    ///
+    /// # Parameters
+    /// - `streamed`: The new streamed state of the signal. A streamed signal receives packets from a streaming server and forwards packets on the signal path. Setting the "Streamed" flag has no effect if the signal is local to the current Instance. Method returns OPENDAQ_IGNORED if that is the case.
+    ///
     /// Calls the openDAQ C function `daqSignal_setStreamed()`.
     pub fn set_streamed(&self, streamed: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSignal_setStreamed)(self.as_raw() as *mut _, u8::from(streamed)) };
@@ -2550,8 +2834,13 @@ impl Signal {
 
 impl TagsPrivate {
     /// Adds a new tag to the list.
-    /// @param name The name of the tag to be added.
-    /// @retval OPENDAQ_IGNORED if a node with the `name` is already in the list of tags.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the tag to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if a node with the `name` is already in the list of tags.
+    ///
     /// Calls the openDAQ C function `daqTagsPrivate_add()`.
     pub fn add(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2561,8 +2850,13 @@ impl TagsPrivate {
     }
 
     /// Removes a new tag from the list.
-    /// @param name The name of the tag to be removed.
-    /// @retval OPENDAQ_IGNORED if a node with the `name` is not in the list of tags.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the tag to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_IGNORED`: if a node with the `name` is not in the list of tags.
+    ///
     /// Calls the openDAQ C function `daqTagsPrivate_remove()`.
     pub fn remove(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2572,7 +2866,10 @@ impl TagsPrivate {
     }
 
     /// Replaces all tags.
-    /// @param tags The new list of tags.
+    ///
+    /// # Parameters
+    /// - `tags`: The new list of tags.
+    ///
     /// Calls the openDAQ C function `daqTagsPrivate_replace()`.
     pub fn replace(&self, tags: &[&str]) -> Result<()> {
         let __tags = crate::marshal::list_from_strs(tags)?;
@@ -2585,8 +2882,13 @@ impl TagsPrivate {
 
 impl Tags {
     /// Checks whether a tag is present in the list of tags.
-    /// @param name The name of the tag being checked.
-    /// @param\[out\] value True if a tag is found; false otherwise.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the tag being checked.
+    ///
+    /// # Returns
+    /// - `value`: True if a tag is found; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqTags_contains()`.
     pub fn contains(&self, name: &str) -> Result<bool> {
         let __name = crate::marshal::make_string(name)?;
@@ -2605,7 +2907,10 @@ impl Tags {
     }
 
     /// Gets the list of all tags in the list.
-    /// @param\[out\] value The list of tag strings.
+    ///
+    /// # Returns
+    /// - `value`: The list of tag strings.
+    ///
     /// Calls the openDAQ C function `daqTags_getList()`.
     pub fn list(&self) -> Result<Vec<String>> {
         let mut __value: *mut sys::daqList = std::ptr::null_mut();
@@ -2615,8 +2920,13 @@ impl Tags {
     }
 
     /// Queries the list of tags, creating an EvalValue expression from the `query` string. Returns true if the list of tags matches the query, false otherwise.
-    /// @param query The query string. I.e. "tag1 || (tag2 && tag3)"
-    /// @param\[out\] value The result of the query
+    ///
+    /// # Parameters
+    /// - `query`: The query string. I.e. "tag1 || (tag2 && tag3)"
+    ///
+    /// # Returns
+    /// - `value`: The result of the query
+    ///
     /// Calls the openDAQ C function `daqTags_query()`.
     pub fn query(&self, query: &str) -> Result<bool> {
         let __query = crate::marshal::make_string(query)?;
@@ -2631,6 +2941,7 @@ impl Tags {
 impl UpdateParameters {
     /// @ingroup opendaq_update_parameters
     /// @addtogroup opendaq_update_parameters Factories
+    ///
     /// Calls the openDAQ C function `daqUpdateParameters_createUpdateParameters()`.
     pub fn new() -> Result<UpdateParameters> {
         let mut __obj: *mut sys::daqUpdateParameters = std::ptr::null_mut();
@@ -2640,7 +2951,10 @@ impl UpdateParameters {
     }
 
     /// Gets the device update options object that allows for specifying how a device and its subdevices are to be updated.
-    /// @param options The device update options object.
+    ///
+    /// # Parameters
+    /// - `options`: The device update options object.
+    ///
     /// Calls the openDAQ C function `daqUpdateParameters_getDeviceUpdateOptions()`.
     pub fn device_update_options(&self) -> Result<Option<DeviceUpdateOptions>> {
         let mut __options: *mut sys::daqDeviceUpdateOptions = std::ptr::null_mut();
@@ -2650,7 +2964,10 @@ impl UpdateParameters {
     }
 
     /// Sets the device update options object that allows for specifying how a device and its subdevices are to be updated.
-    /// @param options The device update options object.
+    ///
+    /// # Parameters
+    /// - `options`: The device update options object.
+    ///
     /// Calls the openDAQ C function `daqUpdateParameters_setDeviceUpdateOptions()`.
     pub fn set_device_update_options(&self, options: &DeviceUpdateOptions) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUpdateParameters_setDeviceUpdateOptions)(self.as_raw() as *mut _, options.as_raw() as *mut _) };

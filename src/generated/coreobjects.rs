@@ -104,12 +104,12 @@ impl crate::value::FromDaqOwned for AuthenticationProvider {
 /// variable when you need to add the variable to lists, dictionaries and other containers which
 /// accept `IBaseObject` interface.
 /// Available factories:
-/// @code
+/// ```text
 /// // Creates a new Boolean. Throws exception if not successful.
 /// IBoolean* Boolean_Create(Bool value)
 /// // Creates a new Boolean. Returns error code if not successful.
 /// ErrCode createBoolean(IBoolean** obj, Bool value)
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqBoolean` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -360,60 +360,9 @@ impl crate::value::FromDaqOwned for Coercer {
 /// - "Active": the new effective active state of the component (always present)
 /// - "LocalActive": present when the component's own active state was changed directly by the user
 /// - "ParentActive": present when the active state changed due to a parent component's active state change
-/// @note The native streaming server sends an RPC notification for the "Active" attribute change only when
-/// both "Active" and "LocalActive" are present in the payload (i.e. the change was triggered locally,
-/// not propagated from a parent).
-/// The ID of the event is 100, and the event name is "AttributeChanged".
-/// @subsubsection opendaq_core_event_types_tags_changed Tags changed
-/// Triggered when a tag of the sender component was added or removed.
-/// The event contains the following parameters:
-/// - The list of tags (list of string) under the key "Tags"
-/// The ID of the connected event is 110, and the event name is "TagsChanged".
-/// @subsubsection opendaq_core_event_types_component_status Component status changed
-/// Triggered whenever a component's status changes (excluding device's connection statuses).
-/// The sender of the event is the component.
-/// The event contains the following parameters:
-/// - The new status value encapsulated within an Enumeration object as a value and the status name as a key
-/// - The new status message under the key "Message"
-/// The ID of the event is 120, and the event name is "StatusChanged".
-/// @subsubsection opendaq_core_event_types_type_added Type added/removed
-/// Triggered whenever a new "Type" is added to- or removed from the Type manager. Eg. when a new Struct or Enumeration type is
-/// created and added.
-/// The sender of the above event types is always an empty Component pointer.
-/// The "TypeAdded" event contains the following parameters:
-/// - The newly added type under the key "Type"
-/// The ID of the event is 130, and the event name is "TypeAdded".
-/// The "TypeRemoved" event contains the following parameters:
-/// - The name of the removed type under the key "TypeName"
-/// The ID of the event is 140, and the event name is "TypeRemoved".
-/// @subsubsection opendaq_core_event_types_domain_changed Device domain changed
-/// Triggered whenever the "Domain" of a device changes.
-/// The sender of the above event types is the device of which domain changed.
-/// The "DeviceDomainChanged" event contains the following parameters:
-/// - The device domain under the key "DeviceDomain"
-/// The ID of the event is 150, and the event name is "DeviceDomainChanged".
-/// @subsubsection opendaq_core_event_types_device_connection_status Device connection status changed
-/// Triggered whenever connection status of a device changes.
-/// The sender of the event is the device of which connection status changed.
-/// The event contains the following parameters:
-/// - The changed status name string under the key "StatusName"
-/// - The new status value encapsulated within an Enumeration object under the key "StatusValue". The possible values:
-/// "Connected" - connection just established or restored, "Reconnecting" - connection lost, "Unrecoverable" - reconnection
-/// is not possible, "Removed" - connection removed (typically when corresponding streaming source is removed)
-/// - The connection string associated with connection under the key "ConnectionString"
-/// - The integer value specifying the type of particular connection which status changed (0 - Unknown, 1 - Configuration, 2 - Streaming,
-/// 3 - ConfigurationAndStreaming) under the key "ProtocolType"
-/// - The Streaming object associated with connection under the key "StreamingObject", the parameter is nullptr if connection
-/// is of configuration type or the corresponding streaming connection has been removed
-/// - The new status message under the key "Message", the parameter is nullptr if the corresponding connection has been removed
-/// The ID of the event is 170, and the event name is "ConnectionStatusChanged".
-/// @subsection opendaq_core_event_muting Muting core events
-/// Components, as previously mentioned, do not trigger core events until they are connected to the root of the
-/// openDAQ tree. This is achieved through internal methods that enable/disable the triggers recursively. By default,
-/// each component will not trigger any events - the triggers must be manually enabled. The SDK does this whenever
-/// a component is added as a child of a parent, if the parent's core triggers are enabled. When done so, the triggers
-/// are enabled recursively for the entirety of the subtree. A converse function can be used to instead recursively
-/// mute the events.
+///
+/// # Notes
+/// The native streaming server sends an RPC notification for the "Active" attribute change only when both "Active" and "LocalActive" are present in the payload (i.e. the change was triggered locally, not propagated from a parent). The ID of the event is 100, and the event name is "AttributeChanged". @subsubsection opendaq_core_event_types_tags_changed Tags changed Triggered when a tag of the sender component was added or removed. The event contains the following parameters: - The list of tags (list of string) under the key "Tags" The ID of the connected event is 110, and the event name is "TagsChanged". @subsubsection opendaq_core_event_types_component_status Component status changed Triggered whenever a component's status changes (excluding device's connection statuses). The sender of the event is the component. The event contains the following parameters: - The new status value encapsulated within an Enumeration object as a value and the status name as a key - The new status message under the key "Message" The ID of the event is 120, and the event name is "StatusChanged". @subsubsection opendaq_core_event_types_type_added Type added/removed Triggered whenever a new "Type" is added to- or removed from the Type manager. Eg. when a new Struct or Enumeration type is created and added. The sender of the above event types is always an empty Component pointer. The "TypeAdded" event contains the following parameters: - The newly added type under the key "Type" The ID of the event is 130, and the event name is "TypeAdded". The "TypeRemoved" event contains the following parameters: - The name of the removed type under the key "TypeName" The ID of the event is 140, and the event name is "TypeRemoved". @subsubsection opendaq_core_event_types_domain_changed Device domain changed Triggered whenever the "Domain" of a device changes. The sender of the above event types is the device of which domain changed. The "DeviceDomainChanged" event contains the following parameters: - The device domain under the key "DeviceDomain" The ID of the event is 150, and the event name is "DeviceDomainChanged". @subsubsection opendaq_core_event_types_device_connection_status Device connection status changed Triggered whenever connection status of a device changes. The sender of the event is the device of which connection status changed. The event contains the following parameters: - The changed status name string under the key "StatusName" - The new status value encapsulated within an Enumeration object under the key "StatusValue". The possible values: "Connected" - connection just established or restored, "Reconnecting" - connection lost, "Unrecoverable" - reconnection is not possible, "Removed" - connection removed (typically when corresponding streaming source is removed) - The connection string associated with connection under the key "ConnectionString" - The integer value specifying the type of particular connection which status changed (0 - Unknown, 1 - Configuration, 2 - Streaming, 3 - ConfigurationAndStreaming) under the key "ProtocolType" - The Streaming object associated with connection under the key "StreamingObject", the parameter is nullptr if connection is of configuration type or the corresponding streaming connection has been removed - The new status message under the key "Message", the parameter is nullptr if the corresponding connection has been removed The ID of the event is 170, and the event name is "ConnectionStatusChanged". @subsection opendaq_core_event_muting Muting core events Components, as previously mentioned, do not trigger core events until they are connected to the root of the openDAQ tree. This is achieved through internal methods that enable/disable the triggers recursively. By default, each component will not trigger any events - the triggers must be manually enabled. The SDK does this whenever a component is added as a child of a parent, if the parent's core triggers are enabled. When done so, the triggers are enabled recursively for the entirety of the subtree. A converse function can be used to instead recursively mute the events.
 /// Wrapper over the openDAQ `daqCoreEventArgs` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -776,12 +725,12 @@ impl crate::value::FromDaqOwned for FunctionObject {
 /// variable when you need to add the number to lists, dictionaries and other containers which
 /// accept `IBaseObject` and derived interfaces.
 /// Available factories:
-/// @code
+/// ```text
 /// // Creates a new Integer. Throws exception if not successful.
 /// IInteger* Integer_Create(Int value)
 /// // Creates a new IntObject. Returns error code if not successful.
 /// ErrCode createInteger(IInteger** obj, Int value)
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqInteger` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -1976,12 +1925,12 @@ impl crate::value::FromDaqOwned for PropertyValueEventArgs {
 /// other containers which accept `IBaseObject` and derived interfaces.
 /// Rational numbers are defined as numerator / denominator.
 /// Available factories:
-/// @code
+/// ```text
 /// // Creates a new Ratio object. Throws exception if not successful.
 /// IRatio* Ratio_Create(Int numerator, Int denominator)
 /// // Creates a new Ratio object. Returns error code if not successful.
 /// ErrCode createRatio(IRatio** obj, Int numerator, Int denominator)
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqRatio` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -2077,7 +2026,7 @@ impl crate::value::FromDaqOwned for SearchFilter {
 /// variable when you need to add the variable to lists, dictionaries and other containers which
 /// accept `IBaseObject` and derived interfaces.
 /// Available factories:
-/// @code
+/// ```text
 /// // Creates a new String object. Throws exception if not successful.
 /// IString* String_Create(ConstCharPtr value)
 /// // Creates a new String object with predefined length. Returns error code if not successful.
@@ -2086,7 +2035,7 @@ impl crate::value::FromDaqOwned for SearchFilter {
 /// IString* StringN_Create(ConstCharPtr data, SizeT length)
 /// // Creates a new String object. Returns error code if not successful.
 /// ErrCode createStringN(IString** obj, ConstCharPtr data, SizeT length)
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqString` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -2578,8 +2527,11 @@ impl crate::value::FromDaqOwned for Validator {
 
 impl ArgumentInfo {
     /// Creates an Argument info object with the specified name and type.
-    /// @param name The name of the argument.
-    /// @param type The type expected of the argument.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the argument.
+    /// - `type`: The type expected of the argument.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_createArgumentInfo()`.
     pub fn new(name: &str, type_: CoreType) -> Result<ArgumentInfo> {
         let __name = crate::marshal::make_string(name)?;
@@ -2590,9 +2542,12 @@ impl ArgumentInfo {
     }
 
     /// Creates a dict-type Argument info object with the specified name, key type and item type.
-    /// @param name The name of the argument.
-    /// @param keyType Corresponds to the expected type of key in the dictionary argument.
-    /// @param itemType Corresponds to the expected type of items in the dictionary argument.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the argument.
+    /// - `key_type`: Corresponds to the expected type of key in the dictionary argument.
+    /// - `item_type`: Corresponds to the expected type of items in the dictionary argument.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_createDictArgumentInfo()`.
     pub fn dict(name: &str, key_type: CoreType, item_type: CoreType) -> Result<ArgumentInfo> {
         let __name = crate::marshal::make_string(name)?;
@@ -2603,8 +2558,11 @@ impl ArgumentInfo {
     }
 
     /// Creates a list-type Argument info object with the specified name and item type.
-    /// @param name The name of the argument.
-    /// @param itemType Corresponds to the expected type of items in the list argument.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the argument.
+    /// - `item_type`: Corresponds to the expected type of items in the list argument.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_createListArgumentInfo()`.
     pub fn list(name: &str, item_type: CoreType) -> Result<ArgumentInfo> {
         let __name = crate::marshal::make_string(name)?;
@@ -2615,10 +2573,10 @@ impl ArgumentInfo {
     }
 
     /// Gets the item type of list/dict-type Argument Info objects. The item type specifies the type of values in the list or dictionary arguments.
-    /// @param\[out\] itemType The item type of the list/dictionary argument.
-    /// In list-type Argument Info, the type of each item corresponds to the item type.
-    /// In dict-type Argument Info, the type of each value in the \<key, value\> pairing corresponds to the
-    /// item type.
+    ///
+    /// # Returns
+    /// - `item_type`: The item type of the list/dictionary argument. In list-type Argument Info, the type of each item corresponds to the item type. In dict-type Argument Info, the type of each value in the \<key, value\> pairing corresponds to the item type.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_getItemType()`.
     pub fn item_type(&self) -> Result<CoreType> {
         let mut __item_type: u32 = 0;
@@ -2628,7 +2586,10 @@ impl ArgumentInfo {
     }
 
     /// Gets the key type of dict-type Argument Info objects. The item type specifies the type of keys in dictionary arguments.
-    /// @param\[out\] keyType The key type of the dictionary argument.
+    ///
+    /// # Returns
+    /// - `key_type`: The key type of the dictionary argument.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_getKeyType()`.
     pub fn key_type(&self) -> Result<CoreType> {
         let mut __key_type: u32 = 0;
@@ -2638,7 +2599,10 @@ impl ArgumentInfo {
     }
 
     /// Gets the name of the argument.
-    /// @param\[out\] name The name of the argument.
+    ///
+    /// # Returns
+    /// - `name`: The name of the argument.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -2648,10 +2612,10 @@ impl ArgumentInfo {
     }
 
     /// Gets the core type of the argument.
-    /// @param\[out\] type The type of the argument.
-    /// Dictionary, List and Object types should be avoided in public function/procedure callable objects
-    /// as their key, item, or base interface type cannot be determined without internal knowledge
-    /// of the function/procedure.
+    ///
+    /// # Returns
+    /// - `type`: The type of the argument. Dictionary, List and Object types should be avoided in public function/procedure callable objects as their key, item, or base interface type cannot be determined without internal knowledge of the function/procedure.
+    ///
     /// Calls the openDAQ C function `daqArgumentInfo_getType()`.
     pub fn type_(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -2664,9 +2628,12 @@ impl ArgumentInfo {
 
 impl AuthenticationProvider {
     /// Authenticate user using username and password. If authentication is successful, a User instance is returned. Otherwise an exception is thrown.
-    /// @param username The username.
-    /// @param password The password in plain text.
-    /// @param user\[out\] And instance of successfully authenticated user. If authentication is not successful, an exception is thrown.
+    ///
+    /// # Parameters
+    /// - `username`: The username.
+    /// - `password`: The password in plain text.
+    /// - `user`: \[out\] And instance of successfully authenticated user. If authentication is not successful, an exception is thrown.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_authenticate()`.
     pub fn authenticate(&self, username: &str, password: &str) -> Result<Option<User>> {
         let __username = crate::marshal::make_string(username)?;
@@ -2678,7 +2645,10 @@ impl AuthenticationProvider {
     }
 
     /// Authenticate as anonymous user. If anonymous authentication is not allowed, an exception is thrown.
-    /// @param user\[out\] Pointer to anonymous user instance. If authentication is not successful, an exception is thrown.
+    ///
+    /// # Parameters
+    /// - `user`: \[out\] Pointer to anonymous user instance. If authentication is not successful, an exception is thrown.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_authenticateAnonymous()`.
     pub fn authenticate_anonymous(&self) -> Result<Option<User>> {
         let mut __user_out: *mut sys::daqUser = std::ptr::null_mut();
@@ -2688,7 +2658,10 @@ impl AuthenticationProvider {
     }
 
     /// Creates an empty authentication provider without any user.
-    /// @param allowAnonymous True if anonymous authentication is allowed.
+    ///
+    /// # Parameters
+    /// - `allow_anonymous`: True if anonymous authentication is allowed.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_createAuthenticationProvider()`.
     pub fn new(allow_anonymous: bool) -> Result<AuthenticationProvider> {
         let mut __obj: *mut sys::daqAuthenticationProvider = std::ptr::null_mut();
@@ -2698,7 +2671,10 @@ impl AuthenticationProvider {
     }
 
     /// Creates an authentication provider out of json file.
-    /// @param filename File path to a json file containing a list of serialized User objects.
+    ///
+    /// # Parameters
+    /// - `filename`: File path to a json file containing a list of serialized User objects.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_createJsonFileAuthenticationProvider()`.
     pub fn json_file(filename: &str) -> Result<AuthenticationProvider> {
         let __filename = crate::marshal::make_string(filename)?;
@@ -2709,7 +2685,10 @@ impl AuthenticationProvider {
     }
 
     /// Creates an authentication provider out of json string.
-    /// @param jsonString Json string containg a list of serialized User objects.
+    ///
+    /// # Parameters
+    /// - `json_string`: Json string containg a list of serialized User objects.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_createJsonStringAuthenticationProvider()`.
     pub fn json_string(json_string: &str) -> Result<AuthenticationProvider> {
         let __json_string = crate::marshal::make_string(json_string)?;
@@ -2720,8 +2699,11 @@ impl AuthenticationProvider {
     }
 
     /// Creates an authentication provider out of static list of users.
-    /// @param allowAnonymous True if anonymous authentication is allowed.
-    /// @param userList List of User objects.
+    ///
+    /// # Parameters
+    /// - `allow_anonymous`: True if anonymous authentication is allowed.
+    /// - `user_list`: List of User objects.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_createStaticAuthenticationProvider()`.
     pub fn static_(allow_anonymous: bool, user_list: impl Into<Value>) -> Result<AuthenticationProvider> {
         let __user_list = crate::value::to_daq(&user_list.into())?;
@@ -2732,8 +2714,11 @@ impl AuthenticationProvider {
     }
 
     /// Find a user instance by its username. If no user with maching username is not found, null is returned.
-    /// @param username The username.
-    /// @param userOut\[out\] Found user instance. If no user with maching username is not found, null is returned.
+    ///
+    /// # Parameters
+    /// - `username`: The username.
+    /// - `user_out`: \[out\] Found user instance. If no user with maching username is not found, null is returned.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_findUser()`.
     pub fn find_user(&self, username: &str) -> Result<Option<User>> {
         let __username = crate::marshal::make_string(username)?;
@@ -2744,7 +2729,10 @@ impl AuthenticationProvider {
     }
 
     /// Returns true if anonymous authentication is allowed. When anonymous authentication is enabled, user can connect to the server without providing username or password.
-    /// @param allowedOut\[out\] True if anonymous authentication is allowed.
+    ///
+    /// # Parameters
+    /// - `allowed_out`: \[out\] True if anonymous authentication is allowed.
+    ///
     /// Calls the openDAQ C function `daqAuthenticationProvider_isAnonymousAllowed()`.
     pub fn is_anonymous_allowed(&self) -> Result<bool> {
         let mut __allowed_out: u8 = 0;
@@ -2765,9 +2753,13 @@ impl BooleanObject {
     }
 
     /// Compares stored boolean value to the boolean parameter.
-    /// @param value Value for comparison.
-    /// @param\[out\] equal The result of the comparison.
-    /// Call this method to directly compare the object to the boolean parameter.
+    ///
+    /// # Parameters
+    /// - `value`: Value for comparison.
+    ///
+    /// # Returns
+    /// - `equal`: The result of the comparison. Call this method to directly compare the object to the boolean parameter.
+    ///
     /// Calls the openDAQ C function `daqBoolean_equalsValue()`.
     pub fn equals_value(&self, value: bool) -> Result<bool> {
         let mut __equal: u8 = 0;
@@ -2777,9 +2769,11 @@ impl BooleanObject {
     }
 
     /// Gets a boolean value stored in the object.
-    /// @param\[out\] value Stored boolean value.
-    /// @return OPENDAQ_SUCCESS if succeeded, error code otherwise.
-    /// Call this method to extract the boolean value that is stored in the object.
+    ///
+    /// # Returns
+    /// OPENDAQ_SUCCESS if succeeded, error code otherwise. Call this method to extract the boolean value that is stored in the object.
+    /// - `value`: Stored boolean value.
+    ///
     /// Calls the openDAQ C function `daqBoolean_getValue()`.
     pub fn value(&self) -> Result<bool> {
         let mut __value: u8 = 0;
@@ -2792,9 +2786,12 @@ impl BooleanObject {
 
 impl CallableInfo {
     /// Creates a CallableInfo object with the specified arguments and return type.
-    /// @param argumentInfo The list of `ArgumentInfo` type argument information.
-    /// @param returnType The return type of the described callable object.
-    /// @param constFlag A flag indicating if the function is marked as const or not. A const function promises not to modify the state of the device or any other objects under the openDAQ instance.
+    ///
+    /// # Parameters
+    /// - `argument_info`: The list of `ArgumentInfo` type argument information.
+    /// - `return_type`: The return type of the described callable object.
+    /// - `const_flag`: A flag indicating if the function is marked as const or not. A const function promises not to modify the state of the device or any other objects under the openDAQ instance.
+    ///
     /// Calls the openDAQ C function `daqCallableInfo_createCallableInfo()`.
     pub fn new(argument_info: impl Into<Value>, return_type: CoreType, const_flag: bool) -> Result<CallableInfo> {
         let __argument_info = crate::value::to_daq(&argument_info.into())?;
@@ -2805,7 +2802,10 @@ impl CallableInfo {
     }
 
     /// Gets the list of arguments the callable function/procedure expects.
-    /// @param\[out\] argumentInfo the list of arguments of type `ArgumentInfo`.
+    ///
+    /// # Returns
+    /// - `argument_info`: the list of arguments of type `ArgumentInfo`.
+    ///
     /// Calls the openDAQ C function `daqCallableInfo_getArguments()`.
     pub fn arguments(&self) -> Result<Vec<ArgumentInfo>> {
         let mut __argument_info: *mut sys::daqList = std::ptr::null_mut();
@@ -2815,7 +2815,10 @@ impl CallableInfo {
     }
 
     /// Gets the return type of the callable function.
-    /// @param\[out\] type The return type of the callable.
+    ///
+    /// # Returns
+    /// - `type`: The return type of the callable.
+    ///
     /// Calls the openDAQ C function `daqCallableInfo_getReturnType()`.
     pub fn return_type(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -2825,7 +2828,10 @@ impl CallableInfo {
     }
 
     /// A flag indicating if function is marked as const. A const function promises not to modify the state of the device or any other objects under the openDAQ instance.
-    /// @param\[out\] constFlag a flag indicating if the function is marked as const or not.
+    ///
+    /// # Returns
+    /// - `const_flag`: a flag indicating if the function is marked as const or not.
+    ///
     /// Calls the openDAQ C function `daqCallableInfo_isConst()`.
     pub fn is_const(&self) -> Result<bool> {
         let mut __const_flag: u8 = 0;
@@ -2838,11 +2844,18 @@ impl CallableInfo {
 
 impl Coercer {
     /// Coerces `value` to match the coercion restrictions and outputs the result.
-    /// @param propObj Optional property object parameter required if the coercion depends on other properties of the Property object.
-    /// @param value The value to be coerced to fit the restrictions.
-    /// @param\[out\] result The coercer output containing the modified `value`.
-    /// @retval OPENDAQ_ERR_COERCE_FAILED if `value` cannot be coerced to fit the restrictions.
-    /// @retval OPENDAQ_SUCCESS If the value either already fits the restrictions, or was successfully modified to do so.
+    ///
+    /// # Parameters
+    /// - `prop_obj`: Optional property object parameter required if the coercion depends on other properties of the Property object.
+    /// - `value`: The value to be coerced to fit the restrictions.
+    ///
+    /// # Returns
+    /// - `result`: The coercer output containing the modified `value`.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_COERCE_FAILED`: if `value` cannot be coerced to fit the restrictions.
+    /// - `OPENDAQ_SUCCESS`: If the value either already fits the restrictions, or was successfully modified to do so.
+    ///
     /// Calls the openDAQ C function `daqCoercer_coerce()`.
     pub fn coerce(&self, prop_obj: impl Into<Value>, value: impl Into<Value>) -> Result<Value> {
         let __prop_obj = crate::value::to_daq(&prop_obj.into())?;
@@ -2864,7 +2877,10 @@ impl Coercer {
     }
 
     /// Creates a Coercer with the given evaluation expression.
-    /// @param eval The evaluation expression used for coercion.
+    ///
+    /// # Parameters
+    /// - `eval`: The evaluation expression used for coercion.
+    ///
     /// Calls the openDAQ C function `daqCoercer_createCoercer()`.
     pub fn new(eval: &str) -> Result<Coercer> {
         let __eval = crate::marshal::make_string(eval)?;
@@ -2875,7 +2891,10 @@ impl Coercer {
     }
 
     /// Gets the string expression used when creating the coercer.
-    /// @param\[out\] eval The coercion expression.
+    ///
+    /// # Returns
+    /// - `eval`: The coercion expression.
+    ///
     /// Calls the openDAQ C function `daqCoercer_getEval()`.
     pub fn eval(&self) -> Result<String> {
         let mut __eval: *mut sys::daqString = std::ptr::null_mut();
@@ -2888,8 +2907,11 @@ impl Coercer {
 
 impl CoreEventArgs {
     /// Creates Core event args with a given ID and custom parameters.
-    /// @param eventId The ID of the event. If the ID is not equal to one of the pre-defined IDs, the event name will be "Unknown".
-    /// @param parameters The parameters of the event.
+    ///
+    /// # Parameters
+    /// - `event_id`: The ID of the event. If the ID is not equal to one of the pre-defined IDs, the event name will be "Unknown".
+    /// - `parameters`: The parameters of the event.
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgs()`.
     pub fn new(event_id: CoreEventId, event_name: &str, parameters: impl Into<Value>) -> Result<CoreEventArgs> {
         let __event_name = crate::marshal::make_string(event_name)?;
@@ -2901,10 +2923,12 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a property is added to a component.
-    /// @param propOwner The property object that owns the added property.
-    /// @param prop The property that was added.
-    /// @param path The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name.
-    /// The ID of the event is 20, and the event name is "PropertyAdded".
+    ///
+    /// # Parameters
+    /// - `prop_owner`: The property object that owns the added property.
+    /// - `prop`: The property that was added.
+    /// - `path`: The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name. The ID of the event is 20, and the event name is "PropertyAdded".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsPropertyAdded()`.
     pub fn property_added(prop_owner: &PropertyObject, prop: &Property, path: &str) -> Result<CoreEventArgs> {
         let __path = crate::marshal::make_string(path)?;
@@ -2915,11 +2939,12 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a property object is finished updating.
-    /// @param propOwner The property object that was updated.
-    /// @param updatedProperties The dictionary of updated properties. Contains the name (string) of a property as key, and the new value (base object) as the dictionary value.
-    /// @param path The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id.
-    /// A property object finished updating when `endUpdate` is called, or at the end of the `update` call.
-    /// The ID of the event is 10, and the event name is "PropertyObjectUpdateEnd".
+    ///
+    /// # Parameters
+    /// - `prop_owner`: The property object that was updated.
+    /// - `updated_properties`: The dictionary of updated properties. Contains the name (string) of a property as key, and the new value (base object) as the dictionary value.
+    /// - `path`: The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id. A property object finished updating when `endUpdate` is called, or at the end of the `update` call. The ID of the event is 10, and the event name is "PropertyObjectUpdateEnd".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsPropertyObjectUpdateEnd()`.
     pub fn property_object_update_end(prop_owner: &PropertyObject, updated_properties: impl Into<Value>, path: &str) -> Result<CoreEventArgs> {
         let __updated_properties = crate::value::to_daq(&updated_properties.into())?;
@@ -2931,10 +2956,12 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that property order of a component is changed.
-    /// @param propOwner The property object that owns the properties whose order was changed.
-    /// @param propertyOrder The list of property names in the new order.
-    /// @param path The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2".
-    /// The ID of the event is 190, and the event name is "PropertyOrderChanged".
+    ///
+    /// # Parameters
+    /// - `prop_owner`: The property object that owns the properties whose order was changed.
+    /// - `property_order`: The list of property names in the new order.
+    /// - `path`: The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". The ID of the event is 190, and the event name is "PropertyOrderChanged".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsPropertyOrderChanged()`.
     pub fn property_order_changed(prop_owner: &PropertyObject, property_order: impl Into<Value>, path: &str) -> Result<CoreEventArgs> {
         let __property_order = crate::value::to_daq(&property_order.into())?;
@@ -2946,10 +2973,12 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a property is removed from a component.
-    /// @param propOwner The property object that owned the removed property.
-    /// @param propName The name of the property that was removed.
-    /// @param path The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name.
-    /// The ID of the event is 30, and the event name is "PropertyRemoved".
+    ///
+    /// # Parameters
+    /// - `prop_owner`: The property object that owned the removed property.
+    /// - `prop_name`: The name of the property that was removed.
+    /// - `path`: The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name. The ID of the event is 30, and the event name is "PropertyRemoved".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsPropertyRemoved()`.
     pub fn property_removed(prop_owner: &PropertyObject, prop_name: &str, path: &str) -> Result<CoreEventArgs> {
         let __prop_name = crate::marshal::make_string(prop_name)?;
@@ -2961,11 +2990,13 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a property value of a component is changed.
-    /// @param propOwner The property object that owns the changed property.
-    /// @param propName The name of the property of which value was changed.
-    /// @param value The new value of the property.
-    /// @param path The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name.
-    /// The ID of the event is 0, and the event name is "PropertyValueChanged".
+    ///
+    /// # Parameters
+    /// - `prop_owner`: The property object that owns the changed property.
+    /// - `prop_name`: The name of the property of which value was changed.
+    /// - `value`: The new value of the property.
+    /// - `path`: The relative path to the property owner from the sender component. Used for object-type properties. Eg. "child1.child2". Does not include the Component id and property name. The ID of the event is 0, and the event name is "PropertyValueChanged".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsPropertyValueChanged()`.
     pub fn property_value_changed(prop_owner: &PropertyObject, prop_name: &str, value: impl Into<Value>, path: &str) -> Result<CoreEventArgs> {
         let __prop_name = crate::marshal::make_string(prop_name)?;
@@ -2978,8 +3009,10 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a type is added to the type manager.
-    /// @param type The type that was added.
-    /// The ID of the event is 130, and the event name is "TypeAdded".
+    ///
+    /// # Parameters
+    /// - `type`: The type that was added. The ID of the event is 130, and the event name is "TypeAdded".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsTypeAdded()`.
     pub fn type_added(type_: &Type) -> Result<CoreEventArgs> {
         let mut __obj: *mut sys::daqCoreEventArgs = std::ptr::null_mut();
@@ -2989,8 +3022,10 @@ impl CoreEventArgs {
     }
 
     /// Creates Core event args that are passed as argument when a type is removed from the type manager.
-    /// @param typeName The name of the removed type
-    /// The ID of the event is 140, and the event name is "TypeRemoved".
+    ///
+    /// # Parameters
+    /// - `type_name`: The name of the removed type The ID of the event is 140, and the event name is "TypeRemoved".
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_createCoreEventArgsTypeRemoved()`.
     pub fn type_removed(type_name: &str) -> Result<CoreEventArgs> {
         let __type_name = crate::marshal::make_string(type_name)?;
@@ -3001,7 +3036,10 @@ impl CoreEventArgs {
     }
 
     /// Gets the parameters of the core event.
-    /// @param\[out\] parameters The parameters of the core event.
+    ///
+    /// # Returns
+    /// - `parameters`: The parameters of the core event.
+    ///
     /// Calls the openDAQ C function `daqCoreEventArgs_getParameters()`.
     pub fn parameters(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __parameters: *mut sys::daqDict = std::ptr::null_mut();
@@ -3014,6 +3052,7 @@ impl CoreEventArgs {
 
 impl DictObject {
     /// Removes all elements from the list.
+    ///
     /// Calls the openDAQ C function `daqDict_clear()`.
     pub fn clear(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqDict_clear)(self.as_raw() as *mut _) };
@@ -3038,8 +3077,10 @@ impl DictObject {
     }
 
     /// Deletes the element with the specified key.
-    /// @param key The key of the element to delete.
-    /// If the client needs the element deleted, it should use `removeAt` method.
+    ///
+    /// # Parameters
+    /// - `key`: The key of the element to delete. If the client needs the element deleted, it should use `removeAt` method.
+    ///
     /// Calls the openDAQ C function `daqDict_deleteItem()`.
     pub fn delete_item(&self, key: impl Into<Value>) -> Result<()> {
         let __key = crate::value::to_daq(&key.into())?;
@@ -3049,10 +3090,13 @@ impl DictObject {
     }
 
     /// Gets the element with the specified key.
-    /// @param key The key of the element to get.
-    /// @param\[out\] value The element with the specified key.
-    /// The reference count of the element that is retrieved is incremented. The client is
-    /// responsible for calling `releaseRef` when the element is no longer needed.
+    ///
+    /// # Parameters
+    /// - `key`: The key of the element to get.
+    ///
+    /// # Returns
+    /// - `value`: The element with the specified key. The reference count of the element that is retrieved is incremented. The client is responsible for calling `releaseRef` when the element is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqDict_get()`.
     pub fn get(&self, key: impl Into<Value>) -> Result<Value> {
         let __key = crate::value::to_daq(&key.into())?;
@@ -3063,7 +3107,10 @@ impl DictObject {
     }
 
     /// Gets the number of elements contained in the dictionary.
-    /// @param\[out\] size The number of elements contained in the dictionary.
+    ///
+    /// # Returns
+    /// - `size`: The number of elements contained in the dictionary.
+    ///
     /// Calls the openDAQ C function `daqDict_getCount()`.
     pub fn count(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -3073,9 +3120,10 @@ impl DictObject {
     }
 
     /// Gets the list of all keys in the dictionary.
-    /// @param\[out\] keys The list of the keys.
-    /// The order of the keys is not defined.
-    /// The client is responsible for calling `releaseRef` when the list is no longer needed.
+    ///
+    /// # Returns
+    /// - `keys`: The list of the keys. The order of the keys is not defined. The client is responsible for calling `releaseRef` when the list is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqDict_getKeyList()`.
     pub fn key_list(&self) -> Result<Vec<Value>> {
         let mut __keys: *mut sys::daqList = std::ptr::null_mut();
@@ -3085,9 +3133,10 @@ impl DictObject {
     }
 
     /// Gets the iterable interface of the keys.
-    /// @param\[out\] iterable The iterable interface of the keys.
-    /// The Iterable interface enables iteration through the keys.
-    /// The client is responsible for calling `releaseRef` when the interface is no longer needed.
+    ///
+    /// # Returns
+    /// - `iterable`: The iterable interface of the keys. The Iterable interface enables iteration through the keys. The client is responsible for calling `releaseRef` when the interface is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqDict_getKeys()`.
     pub fn keys(&self) -> Result<Option<Iterable>> {
         let mut __iterable: *mut sys::daqIterable = std::ptr::null_mut();
@@ -3097,9 +3146,10 @@ impl DictObject {
     }
 
     /// Gets the list of all elements in the dictionary.
-    /// @param\[out\] values The list of the elements.
-    /// The order of the elements is not defined.
-    /// The client is responsible for calling `releaseRef` when the list is no longer needed.
+    ///
+    /// # Returns
+    /// - `values`: The list of the elements. The order of the elements is not defined. The client is responsible for calling `releaseRef` when the list is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqDict_getValueList()`.
     pub fn value_list(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -3109,9 +3159,10 @@ impl DictObject {
     }
 
     /// Gets the iterable interface of the elements.
-    /// @param\[out\] iterable The iterable interface of the elements.
-    /// The Iterable interface enables iteration through the elements.
-    /// The client is responsible for calling `releaseRef` when the interface is no longer needed.
+    ///
+    /// # Returns
+    /// - `iterable`: The iterable interface of the elements. The Iterable interface enables iteration through the elements. The client is responsible for calling `releaseRef` when the interface is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqDict_getValues()`.
     pub fn values(&self) -> Result<Option<Iterable>> {
         let mut __iterable: *mut sys::daqIterable = std::ptr::null_mut();
@@ -3121,8 +3172,13 @@ impl DictObject {
     }
 
     /// Checks if the element with the specified key exists in the dictionary.
-    /// @param key The key of the element to check.
-    /// @param\[out\] hasKey True if the element exists, False otherwise.
+    ///
+    /// # Parameters
+    /// - `key`: The key of the element to check.
+    ///
+    /// # Returns
+    /// - `has_key`: True if the element exists, False otherwise.
+    ///
     /// Calls the openDAQ C function `daqDict_hasKey()`.
     pub fn has_key(&self, key: impl Into<Value>) -> Result<bool> {
         let __key = crate::value::to_daq(&key.into())?;
@@ -3133,10 +3189,13 @@ impl DictObject {
     }
 
     /// Removes the element with the specified key.
-    /// @param key The key of the element to remove.
-    /// @param\[out\] value The element with the specified key.
-    /// The client is responsible for calling `releaseRef` when the element is no longer needed.
-    /// If the client does not need the element after it is removed, it should call `delete` method.
+    ///
+    /// # Parameters
+    /// - `key`: The key of the element to remove.
+    ///
+    /// # Returns
+    /// - `value`: The element with the specified key. The client is responsible for calling `releaseRef` when the element is no longer needed. If the client does not need the element after it is removed, it should call `delete` method.
+    ///
     /// Calls the openDAQ C function `daqDict_remove()`.
     pub fn remove(&self, key: impl Into<Value>) -> Result<Value> {
         let __key = crate::value::to_daq(&key.into())?;
@@ -3147,9 +3206,11 @@ impl DictObject {
     }
 
     /// Sets the element with the specified key.
-    /// @param key The key of the element to set.
-    /// @param value The element with the specified key.
-    /// The reference count of the key and the element is incremented.
+    ///
+    /// # Parameters
+    /// - `key`: The key of the element to set.
+    /// - `value`: The element with the specified key. The reference count of the key and the element is incremented.
+    ///
     /// Calls the openDAQ C function `daqDict_set()`.
     pub fn set(&self, key: impl Into<Value>, value: impl Into<Value>) -> Result<()> {
         let __key = crate::value::to_daq(&key.into())?;
@@ -3229,7 +3290,10 @@ impl Enumeration {
     }
 
     /// Gets the Enumeration's type.
-    /// @param\[out\] type The Enumeration type
+    ///
+    /// # Returns
+    /// - `type`: The Enumeration type
+    ///
     /// Calls the openDAQ C function `daqEnumeration_getEnumerationType()`.
     pub fn enumeration_type(&self) -> Result<Option<EnumerationType>> {
         let mut __type_: *mut sys::daqEnumerationType = std::ptr::null_mut();
@@ -3239,7 +3303,10 @@ impl Enumeration {
     }
 
     /// Gets the Enumeration value as Integer enumerator constant.
-    /// @param\[out\] value Emumeration Integer value.
+    ///
+    /// # Returns
+    /// - `value`: Emumeration Integer value.
+    ///
     /// Calls the openDAQ C function `daqEnumeration_getIntValue()`.
     pub fn int_value(&self) -> Result<i64> {
         let mut __value: i64 = Default::default();
@@ -3249,7 +3316,10 @@ impl Enumeration {
     }
 
     /// Gets the Enumeration value as String containing the name of the enumerator constant.
-    /// @param\[out\] value Emumeration value.
+    ///
+    /// # Returns
+    /// - `value`: Emumeration value.
+    ///
     /// Calls the openDAQ C function `daqEnumeration_getValue()`.
     pub fn value(&self) -> Result<String> {
         let mut __value: *mut sys::daqString = std::ptr::null_mut();
@@ -3262,11 +3332,13 @@ impl Enumeration {
 
 impl EvalValue {
     /// Clones the object and attaches an owner.
-    /// @param owner The owner to attach to the cloned eval value.
-    /// @param\[out\] clonedValue The cloned object.
-    /// When the expression contains reference to some property object, then the expression cannot be
-    /// evaluated unless an owner is attached to eval value. However, the object can be cloned with the
-    /// specified owner attached. The client can then evaluate the cloned object.
+    ///
+    /// # Parameters
+    /// - `owner`: The owner to attach to the cloned eval value.
+    ///
+    /// # Returns
+    /// - `cloned_value`: The cloned object. When the expression contains reference to some property object, then the expression cannot be evaluated unless an owner is attached to eval value. However, the object can be cloned with the specified owner attached. The client can then evaluate the cloned object.
+    ///
     /// Calls the openDAQ C function `daqEvalValue_cloneWithOwner()`.
     pub fn clone_with_owner(&self, owner: &PropertyObject) -> Result<Option<EvalValue>> {
         let mut __cloned_value: *mut sys::daqEvalValue = std::ptr::null_mut();
@@ -3304,8 +3376,10 @@ impl EvalValue {
     }
 
     /// Gets the expression.
-    /// @param\[out\] eval The expression.
-    /// Expression is passed as a parameter to the factory function.
+    ///
+    /// # Returns
+    /// - `eval`: The expression. Expression is passed as a parameter to the factory function.
+    ///
     /// Calls the openDAQ C function `daqEvalValue_getEval()`.
     pub fn eval(&self) -> Result<String> {
         let mut __eval: *mut sys::daqString = std::ptr::null_mut();
@@ -3318,6 +3392,7 @@ impl EvalValue {
     /// When an eval value object is created, the expression is passed as an argument to the factory
     /// function. Parsing of the expression can fail, but the factory function will always succeed. Use this
     /// function to check if the parsing of the expression succeeded without evaluating the expression.
+    ///
     /// Calls the openDAQ C function `daqEvalValue_getParseErrorCode()`.
     pub fn parse_error_code(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqEvalValue_getParseErrorCode)(self.as_raw() as *mut _) };
@@ -3326,8 +3401,10 @@ impl EvalValue {
     }
 
     /// Returns the names of all properties referenced by the eval value.
-    /// @param\[out\] propertyReferences The names of referenced properties.
-    /// Referenced properties are all occurrences matching the '"%" propref' pattern in the evaluation string.
+    ///
+    /// # Returns
+    /// - `property_references`: The names of referenced properties. Referenced properties are all occurrences matching the '"%" propref' pattern in the evaluation string.
+    ///
     /// Calls the openDAQ C function `daqEvalValue_getPropertyReferences()`.
     pub fn property_references(&self) -> Result<Vec<String>> {
         let mut __property_references: *mut sys::daqList = std::ptr::null_mut();
@@ -3337,12 +3414,15 @@ impl EvalValue {
     }
 
     /// Gets the result of the expression.
-    /// @param\[out\] obj The result of the expression.
-    /// @retval OPENDAQ_ERR_CALCFAILED when calculation failed.
-    /// @retval OPENDAQ_ERR_RESOLVEFAILED when reference resolution failed
-    /// @retval OPENDAQ_ERR_PARSEFAILED when expression parsing failed
-    /// When this method is called for the first time, the object will trigger
-    /// execution and return result.
+    ///
+    /// # Returns
+    /// - `obj`: The result of the expression.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_CALCFAILED`: when calculation failed.
+    /// - `OPENDAQ_ERR_RESOLVEFAILED`: when reference resolution failed
+    /// - `OPENDAQ_ERR_PARSEFAILED`: when expression parsing failed When this method is called for the first time, the object will trigger execution and return result.
+    ///
     /// Calls the openDAQ C function `daqEvalValue_getResult()`.
     pub fn result(&self) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -3482,9 +3562,13 @@ impl IntegerObject {
     }
 
     /// Compares stored int value to the int parameter.
-    /// @param value Value for comparison.
-    /// @param\[out\] equals The result of the comparison.
-    /// Call this method to directly compare the object to the value parameter.
+    ///
+    /// # Parameters
+    /// - `value`: Value for comparison.
+    ///
+    /// # Returns
+    /// - `equals`: The result of the comparison. Call this method to directly compare the object to the value parameter.
+    ///
     /// Calls the openDAQ C function `daqInteger_equalsValue()`.
     pub fn equals_value(&self, value: i64) -> Result<bool> {
         let mut __equals: u8 = 0;
@@ -3494,8 +3578,10 @@ impl IntegerObject {
     }
 
     /// Gets an int value stored in the object.
-    /// @param\[out\] value Stored int value.
-    /// Call this method to extract the int value that is stored in the object.
+    ///
+    /// # Returns
+    /// - `value`: Stored int value. Call this method to extract the int value that is stored in the object.
+    ///
     /// Calls the openDAQ C function `daqInteger_getValue()`.
     pub fn value(&self) -> Result<i64> {
         let mut __value: i64 = Default::default();
@@ -3508,6 +3594,7 @@ impl IntegerObject {
 
 impl ListObject {
     /// Removes all elements from the list.
+    ///
     /// Calls the openDAQ C function `daqList_clear()`.
     pub fn clear(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqList_clear)(self.as_raw() as *mut _) };
@@ -3516,8 +3603,10 @@ impl ListObject {
     }
 
     /// Creates and returns the stop iterator of the list.
-    /// @param\[out\] iterator The stop iterator.
-    /// Use iterators to iterate through the elements.
+    ///
+    /// # Returns
+    /// - `iterator`: The stop iterator. Use iterators to iterate through the elements.
+    ///
     /// Calls the openDAQ C function `daqList_createEndIterator()`.
     pub fn create_end_iterator(&self) -> Result<Option<ObjectIterator>> {
         let mut __iterator: *mut sys::daqIterator = std::ptr::null_mut();
@@ -3543,8 +3632,10 @@ impl ListObject {
     }
 
     /// Creates and returns the start iterator of the list.
-    /// @param\[out\] iterator The start iterator.
-    /// Use iterators to iterate through the elements.
+    ///
+    /// # Returns
+    /// - `iterator`: The start iterator. Use iterators to iterate through the elements.
+    ///
     /// Calls the openDAQ C function `daqList_createStartIterator()`.
     pub fn create_start_iterator(&self) -> Result<Option<ObjectIterator>> {
         let mut __iterator: *mut sys::daqIterator = std::ptr::null_mut();
@@ -3554,8 +3645,10 @@ impl ListObject {
     }
 
     /// Deletes the element at a specific position.
-    /// @param index The zero-based index of the element to remove.
-    /// If the client needs the element deleted, it should use `removeAt` method.
+    ///
+    /// # Parameters
+    /// - `index`: The zero-based index of the element to remove. If the client needs the element deleted, it should use `removeAt` method.
+    ///
     /// Calls the openDAQ C function `daqList_deleteAt()`.
     pub fn delete_at(&self, index: usize) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqList_deleteAt)(self.as_raw() as *mut _, index) };
@@ -3564,7 +3657,10 @@ impl ListObject {
     }
 
     /// Gets the number of elements contained in the list.
-    /// @param\[out\] size The number of elements contained in the list.
+    ///
+    /// # Returns
+    /// - `size`: The number of elements contained in the list.
+    ///
     /// Calls the openDAQ C function `daqList_getCount()`.
     pub fn count(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -3574,10 +3670,13 @@ impl ListObject {
     }
 
     /// Gets the element at a specific position.
-    /// @param index The zero-based index of the element to get.
-    /// @param\[out\] obj The element at the specified index.
-    /// The reference count of the element that is retrieved is incremented. The client is
-    /// responsible for calling `releaseRef` when the element is no longer needed.
+    ///
+    /// # Parameters
+    /// - `index`: The zero-based index of the element to get.
+    ///
+    /// # Returns
+    /// - `obj`: The element at the specified index. The reference count of the element that is retrieved is incremented. The client is responsible for calling `releaseRef` when the element is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqList_getItemAt()`.
     pub fn item_at(&self, index: usize) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -3587,9 +3686,11 @@ impl ListObject {
     }
 
     /// Inserts the element at a specific position.
-    /// @param index The zero-based index of the element to insert.
-    /// @param obj The element to insert at the specified index.
-    /// The reference count of the element is incremented.
+    ///
+    /// # Parameters
+    /// - `index`: The zero-based index of the element to insert.
+    /// - `obj`: The element to insert at the specified index. The reference count of the element is incremented.
+    ///
     /// Calls the openDAQ C function `daqList_insertAt()`.
     pub fn insert_at(&self, index: usize, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3599,9 +3700,10 @@ impl ListObject {
     }
 
     /// Inserts the element at the end of the list without incrementing the reference count.
-    /// @param obj The element to insert.
-    /// The reference count of the element is not incremented. The client can use this method when it no
-    /// longer needs to access the element after calling the method.
+    ///
+    /// # Parameters
+    /// - `obj`: The element to insert. The reference count of the element is not incremented. The client can use this method when it no longer needs to access the element after calling the method.
+    ///
     /// Calls the openDAQ C function `daqList_moveBack()`.
     pub fn move_back(&self, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3611,9 +3713,10 @@ impl ListObject {
     }
 
     /// Inserts the element at the start of the list without incrementing the reference count.
-    /// @param obj The element to insert.
-    /// The reference count of the element is not incremented. The client can use this method when it no
-    /// longer needs to access the element after calling the method.
+    ///
+    /// # Parameters
+    /// - `obj`: The element to insert. The reference count of the element is not incremented. The client can use this method when it no longer needs to access the element after calling the method.
+    ///
     /// Calls the openDAQ C function `daqList_moveFront()`.
     pub fn move_front(&self, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3623,9 +3726,10 @@ impl ListObject {
     }
 
     /// Gets the element from the end of the list.
-    /// @param\[out\] obj The extracted element.
-    /// The reference count of the element that is retrieved is incremented. The client is
-    /// responsible for calling `releaseRef` when the element is no longer needed.
+    ///
+    /// # Returns
+    /// - `obj`: The extracted element. The reference count of the element that is retrieved is incremented. The client is responsible for calling `releaseRef` when the element is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqList_popBack()`.
     pub fn pop_back(&self) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -3635,9 +3739,10 @@ impl ListObject {
     }
 
     /// Gets the element from the start of the list.
-    /// @param\[out\] obj The extracted element.
-    /// The reference count of the element that is retrieved is incremented. The client is
-    /// responsible for calling `releaseRef` when the element is no longer needed.
+    ///
+    /// # Returns
+    /// - `obj`: The extracted element. The reference count of the element that is retrieved is incremented. The client is responsible for calling `releaseRef` when the element is no longer needed.
+    ///
     /// Calls the openDAQ C function `daqList_popFront()`.
     pub fn pop_front(&self) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -3647,8 +3752,10 @@ impl ListObject {
     }
 
     /// Inserts the element at the end of the list.
-    /// @param obj The element to insert.
-    /// The reference count of the element is incremented.
+    ///
+    /// # Parameters
+    /// - `obj`: The element to insert. The reference count of the element is incremented.
+    ///
     /// Calls the openDAQ C function `daqList_pushBack()`.
     pub fn push_back(&self, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3658,8 +3765,10 @@ impl ListObject {
     }
 
     /// Inserts the element at the start of the list.
-    /// @param obj The element to insert.
-    /// The reference count of the element is incremented.
+    ///
+    /// # Parameters
+    /// - `obj`: The element to insert. The reference count of the element is incremented.
+    ///
     /// Calls the openDAQ C function `daqList_pushFront()`.
     pub fn push_front(&self, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3669,10 +3778,13 @@ impl ListObject {
     }
 
     /// Removes the element at a specific position.
-    /// @param index The zero-based index of the element to remove.
-    /// @param\[out\] obj The removed element.
-    /// The client is responsible for calling `releaseRef` when the element is no longer needed.
-    /// If the client does not need the element after it is removed, it should call `delete` method.
+    ///
+    /// # Parameters
+    /// - `index`: The zero-based index of the element to remove.
+    ///
+    /// # Returns
+    /// - `obj`: The removed element. The client is responsible for calling `releaseRef` when the element is no longer needed. If the client does not need the element after it is removed, it should call `delete` method.
+    ///
     /// Calls the openDAQ C function `daqList_removeAt()`.
     pub fn remove_at(&self, index: usize) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -3682,9 +3794,11 @@ impl ListObject {
     }
 
     /// Sets the element at a specific position.
-    /// @param index The zero-based index of the element to set.
-    /// @param obj The element to set at the specified index.
-    /// The reference count of the element is incremented.
+    ///
+    /// # Parameters
+    /// - `index`: The zero-based index of the element to set.
+    /// - `obj`: The element to set at the specified index. The reference count of the element is incremented.
+    ///
     /// Calls the openDAQ C function `daqList_setItemAt()`.
     pub fn set_item_at(&self, index: usize, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -3697,8 +3811,11 @@ impl ListObject {
 
 impl NumberObject {
     /// Gets a value stored in the object as a floating point value.
-    /// @param\[out\] value Stored value as a floating point.
-    /// @return OPENDAQ_SUCCESS if succeeded, error code otherwise.
+    ///
+    /// # Returns
+    /// OPENDAQ_SUCCESS if succeeded, error code otherwise.
+    /// - `value`: Stored value as a floating point.
+    ///
     /// Calls the openDAQ C function `daqNumber_getFloatValue()`.
     pub fn float_value(&self) -> Result<f64> {
         let mut __value: f64 = Default::default();
@@ -3708,8 +3825,11 @@ impl NumberObject {
     }
 
     /// Gets a value stored in the object as an integer value.
-    /// @param\[out\] value Stored value as an integer.
-    /// @return OPENDAQ_SUCCESS if succeeded, error code otherwise.
+    ///
+    /// # Returns
+    /// OPENDAQ_SUCCESS if succeeded, error code otherwise.
+    /// - `value`: Stored value as an integer.
+    ///
     /// Calls the openDAQ C function `daqNumber_getIntValue()`.
     pub fn int_value(&self) -> Result<i64> {
         let mut __value: i64 = Default::default();
@@ -3722,7 +3842,10 @@ impl NumberObject {
 
 impl Ownable {
     /// Sets the owner of the object.
-    /// @param owner The object that will own this object.
+    ///
+    /// # Parameters
+    /// - `owner`: The object that will own this object.
+    ///
     /// Calls the openDAQ C function `daqOwnable_setOwner()`.
     pub fn set_owner(&self, owner: &PropertyObject) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqOwnable_setOwner)(self.as_raw() as *mut _, owner.as_raw() as *mut _) };
@@ -3734,7 +3857,10 @@ impl Ownable {
 
 impl PermissionManagerInternal {
     /// Adds a reference to the permission manager of a child object.
-    /// @param childManager A reference to the permission manager of a child object.
+    ///
+    /// # Parameters
+    /// - `child_manager`: A reference to the permission manager of a child object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManagerInternal_addChildManager()`.
     pub fn add_child_manager(&self, child_manager: &PermissionManager) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionManagerInternal_addChildManager)(self.as_raw() as *mut _, child_manager.as_raw() as *mut _) };
@@ -3743,7 +3869,10 @@ impl PermissionManagerInternal {
     }
 
     /// Returns permisisons configuration object.
-    /// @param permissionsOut\[out\] A Permissions configuration object.
+    ///
+    /// # Parameters
+    /// - `permissions_out`: \[out\] A Permissions configuration object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManagerInternal_getPermissions()`.
     pub fn permissions(&self) -> Result<Option<Permissions>> {
         let mut __permissions_out: *mut sys::daqPermissions = std::ptr::null_mut();
@@ -3753,7 +3882,10 @@ impl PermissionManagerInternal {
     }
 
     /// Removes a reference to the permission manager of a child object.
-    /// @param childManager A reference to the permission manager of a child object.
+    ///
+    /// # Parameters
+    /// - `child_manager`: A reference to the permission manager of a child object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManagerInternal_removeChildManager()`.
     pub fn remove_child_manager(&self, child_manager: &PermissionManager) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionManagerInternal_removeChildManager)(self.as_raw() as *mut _, child_manager.as_raw() as *mut _) };
@@ -3762,7 +3894,10 @@ impl PermissionManagerInternal {
     }
 
     /// Change the parant of a permission manager.
-    /// @param parentManager A reference to the permission manager of a parent object.
+    ///
+    /// # Parameters
+    /// - `parent_manager`: A reference to the permission manager of a parent object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManagerInternal_setParent()`.
     pub fn set_parent(&self, parent_manager: &PermissionManager) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionManagerInternal_setParent)(self.as_raw() as *mut _, parent_manager.as_raw() as *mut _) };
@@ -3771,6 +3906,7 @@ impl PermissionManagerInternal {
     }
 
     /// Recursively update permissions of objects with new permissions from their parents.
+    ///
     /// Calls the openDAQ C function `daqPermissionManagerInternal_updateInheritedPermissions()`.
     pub fn update_inherited_permissions(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionManagerInternal_updateInheritedPermissions)(self.as_raw() as *mut _) };
@@ -3782,7 +3918,10 @@ impl PermissionManagerInternal {
 
 impl PermissionManager {
     /// Creates an permission manager with a given parent.
-    /// @param parent Permission manager of a parent object. It can be null for a root object.
+    ///
+    /// # Parameters
+    /// - `parent`: Permission manager of a parent object. It can be null for a root object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManager_createPermissionManager()`.
     pub fn new(parent: &PermissionManager) -> Result<PermissionManager> {
         let mut __obj: *mut sys::daqPermissionManager = std::ptr::null_mut();
@@ -3792,9 +3931,14 @@ impl PermissionManager {
     }
 
     /// Check if user has a given permission on an object of the permission manager.
-    /// @param user A reference to the user.
-    /// @param permission A permission to test.
-    /// @param\[out\] authorizedOut Returns true if user is authorized and false otherwise.
+    ///
+    /// # Parameters
+    /// - `user`: A reference to the user.
+    /// - `permission`: A permission to test.
+    ///
+    /// # Returns
+    /// - `authorized_out`: Returns true if user is authorized and false otherwise.
+    ///
     /// Calls the openDAQ C function `daqPermissionManager_isAuthorized()`.
     pub fn is_authorized(&self, user: &User, permission: Permission) -> Result<bool> {
         let mut __authorized_out: u8 = 0;
@@ -3804,7 +3948,10 @@ impl PermissionManager {
     }
 
     /// Set object permission configuration.
-    /// @param permissions Permissions configuration object.
+    ///
+    /// # Parameters
+    /// - `permissions`: Permissions configuration object.
+    ///
     /// Calls the openDAQ C function `daqPermissionManager_setPermissions()`.
     pub fn set_permissions(&self, permissions: &Permissions) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionManager_setPermissions)(self.as_raw() as *mut _, permissions.as_raw() as *mut _) };
@@ -3816,7 +3963,10 @@ impl PermissionManager {
 
 impl PermissionMaskBuilder {
     /// Build permission mask and return it as 64-bit integer.
-    /// @param permissionMask\[out\] Permission mask defined as 64-bit integer where each bit corresponds to a specific permissoin defined by Permission enum.
+    ///
+    /// # Parameters
+    /// - `permission_mask`: \[out\] Permission mask defined as 64-bit integer where each bit corresponds to a specific permissoin defined by Permission enum.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_build()`.
     pub fn build(&self) -> Result<i64> {
         let mut __permission_mask: i64 = Default::default();
@@ -3826,6 +3976,7 @@ impl PermissionMaskBuilder {
     }
 
     /// Removes all permissions from bit mask.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_clear()`.
     pub fn clear(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionMaskBuilder_clear)(self.as_raw() as *mut _) };
@@ -3834,6 +3985,7 @@ impl PermissionMaskBuilder {
     }
 
     /// Creates a permision mask builder object.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_createPermissionMaskBuilder()`.
     pub fn new() -> Result<PermissionMaskBuilder> {
         let mut __obj: *mut sys::daqPermissionMaskBuilder = std::ptr::null_mut();
@@ -3843,7 +3995,10 @@ impl PermissionMaskBuilder {
     }
 
     /// Creates a permission mask builder object from integer permission mask.
-    /// @param permissionMask Permission mask defined as 64-bit integer where each bit corresponds to a specific permission defined in Permission enum.
+    ///
+    /// # Parameters
+    /// - `permission_mask`: Permission mask defined as 64-bit integer where each bit corresponds to a specific permission defined in Permission enum.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_createPermissionMaskBuilderFromMask()`.
     pub fn from_mask(permission_mask: i64) -> Result<PermissionMaskBuilder> {
         let mut __obj: *mut sys::daqPermissionMaskBuilder = std::ptr::null_mut();
@@ -3853,6 +4008,7 @@ impl PermissionMaskBuilder {
     }
 
     /// Add execute permission to the bit mask.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_execute()`.
     pub fn execute(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionMaskBuilder_execute)(self.as_raw() as *mut _) };
@@ -3861,6 +4017,7 @@ impl PermissionMaskBuilder {
     }
 
     /// Add read permission to the bit mask.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_read()`.
     pub fn read(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionMaskBuilder_read)(self.as_raw() as *mut _) };
@@ -3869,6 +4026,7 @@ impl PermissionMaskBuilder {
     }
 
     /// Add write permission to the bit mask.
+    ///
     /// Calls the openDAQ C function `daqPermissionMaskBuilder_write()`.
     pub fn write(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionMaskBuilder_write)(self.as_raw() as *mut _) };
@@ -3880,8 +4038,11 @@ impl PermissionMaskBuilder {
 
 impl PermissionsBuilder {
     /// Allow a specified set of permissions for a given group. If the inherit flag is enabled, this method will allow both the specified permissions and any permissions already allowed for the group on the parent component. Denied permissions will always overrule allowed permissions.
-    /// @param groupId The id of a group to allow permissions for.
-    /// @param permissions A set of permissions to allow for given group.
+    ///
+    /// # Parameters
+    /// - `group_id`: The id of a group to allow permissions for.
+    /// - `permissions`: A set of permissions to allow for given group.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_allow()`.
     pub fn allow(&self, group_id: &str, permissions: &PermissionMaskBuilder) -> Result<()> {
         let __group_id = crate::marshal::make_string(group_id)?;
@@ -3891,8 +4052,11 @@ impl PermissionsBuilder {
     }
 
     /// Strictly assign a specified set of permissions for a given group. This method allows only the specified permissions and will not inherit any permissions from the parent object for the group, even if the inherit flag is enabled.
-    /// @param groupId The id of a group to set permissions for.
-    /// @param permissions A set of permissions to allow for given group.
+    ///
+    /// # Parameters
+    /// - `group_id`: The id of a group to set permissions for.
+    /// - `permissions`: A set of permissions to allow for given group.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_assign()`.
     pub fn assign(&self, group_id: &str, permissions: &PermissionMaskBuilder) -> Result<()> {
         let __group_id = crate::marshal::make_string(group_id)?;
@@ -3902,7 +4066,10 @@ impl PermissionsBuilder {
     }
 
     /// Builds the permission config object.
-    /// @param configOut\[out\] Permission config object.
+    ///
+    /// # Parameters
+    /// - `config_out`: \[out\] Permission config object.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_build()`.
     pub fn build(&self) -> Result<Option<Permissions>> {
         let mut __config_out: *mut sys::daqPermissions = std::ptr::null_mut();
@@ -3912,6 +4079,7 @@ impl PermissionsBuilder {
     }
 
     /// Creates a Permissions builder object.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_createPermissionsBuilder()`.
     pub fn new() -> Result<PermissionsBuilder> {
         let mut __obj: *mut sys::daqPermissionsBuilder = std::ptr::null_mut();
@@ -3921,8 +4089,11 @@ impl PermissionsBuilder {
     }
 
     /// Deny a specified set of permissions for a given group. If the inherit flag is enabled, this method will deny both the specified permissions and any permissions already denied for the group on the parent component. Denied permissions will always overrule allowed permissions.
-    /// @param groupId The id of a group to deny permissions for.
-    /// @param permissions A set of permissions to deny for given group.
+    ///
+    /// # Parameters
+    /// - `group_id`: The id of a group to deny permissions for.
+    /// - `permissions`: A set of permissions to deny for given group.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_deny()`.
     pub fn deny(&self, group_id: &str, permissions: &PermissionMaskBuilder) -> Result<()> {
         let __group_id = crate::marshal::make_string(group_id)?;
@@ -3932,7 +4103,10 @@ impl PermissionsBuilder {
     }
 
     /// Add permissions of another permission config object and overwrite existing ones. Inherit flag will not be overwritten.
-    /// @param config Permission config object.
+    ///
+    /// # Parameters
+    /// - `config`: Permission config object.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_extend()`.
     pub fn extend(&self, config: &Permissions) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionsBuilder_extend)(self.as_raw() as *mut _, config.as_raw() as *mut _) };
@@ -3941,7 +4115,10 @@ impl PermissionsBuilder {
     }
 
     /// Configure component to inherit or ignore permissions from the parent object.
-    /// @param inherit Flag signifying if component should inherit permissions from its parent object.
+    ///
+    /// # Parameters
+    /// - `inherit`: Flag signifying if component should inherit permissions from its parent object.
+    ///
     /// Calls the openDAQ C function `daqPermissionsBuilder_inherit()`.
     pub fn inherit(&self, inherit: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPermissionsBuilder_inherit)(self.as_raw() as *mut _, u8::from(inherit)) };
@@ -3953,7 +4130,10 @@ impl PermissionsBuilder {
 
 impl PermissionsInternal {
     /// Returns a dictionary of assigned permissions for each group.
-    /// @param permissions\[out\] A dictionary of assigned permissions for each group.
+    ///
+    /// # Parameters
+    /// - `permissions`: \[out\] A dictionary of assigned permissions for each group.
+    ///
     /// Calls the openDAQ C function `daqPermissionsInternal_getAssigned()`.
     pub fn assigned(&self) -> Result<std::collections::HashMap<String, i64>> {
         let mut __permissions: *mut sys::daqDict = std::ptr::null_mut();
@@ -3966,7 +4146,10 @@ impl PermissionsInternal {
 
 impl Permissions {
     /// Returns a dictionary of allowed permissions for each group.
-    /// @param permissions\[out\] A dictionary of allowed permissions for each group.
+    ///
+    /// # Parameters
+    /// - `permissions`: \[out\] A dictionary of allowed permissions for each group.
+    ///
     /// Calls the openDAQ C function `daqPermissions_getAllowed()`.
     pub fn allowed(&self) -> Result<std::collections::HashMap<String, i64>> {
         let mut __permissions: *mut sys::daqDict = std::ptr::null_mut();
@@ -3976,7 +4159,10 @@ impl Permissions {
     }
 
     /// Returns a dictionary of denied permissions for each group.
-    /// @param permissions\[out\] A dictionary of denied permissions for each group.
+    ///
+    /// # Parameters
+    /// - `permissions`: \[out\] A dictionary of denied permissions for each group.
+    ///
     /// Calls the openDAQ C function `daqPermissions_getDenied()`.
     pub fn denied(&self) -> Result<std::collections::HashMap<String, i64>> {
         let mut __permissions: *mut sys::daqDict = std::ptr::null_mut();
@@ -3986,7 +4172,10 @@ impl Permissions {
     }
 
     /// Returns true if an object should inherit permissions from its parent object.
-    /// @param isInherited\[out\] True if permissions should be inherited from parent object.
+    ///
+    /// # Parameters
+    /// - `is_inherited`: \[out\] True if permissions should be inherited from parent object.
+    ///
     /// Calls the openDAQ C function `daqPermissions_getInherited()`.
     pub fn inherited(&self) -> Result<bool> {
         let mut __is_inherited: u8 = 0;
@@ -4010,7 +4199,10 @@ impl Procedure {
 
 impl PropertyBuilder {
     /// Builds and returns a Property using the currently set values of the Builder.
-    /// @param\[out\] property The built property.
+    ///
+    /// # Returns
+    /// - `property`: The built property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_build()`.
     pub fn build(&self) -> Result<Option<Property>> {
         let mut __property: *mut sys::daqProperty = std::ptr::null_mut();
@@ -4020,9 +4212,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a boolean Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The boolean default value. Can be an EvalValue.
-    /// The Property Value type is `ctBool`. Note that the defaultValue parameter can be EvalValue.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The boolean default value. Can be an EvalValue. The Property Value type is `ctBool`. Note that the defaultValue parameter can be EvalValue.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createBoolPropertyBuilder()`.
     pub fn bool(name: &str, default_value: bool) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4034,13 +4228,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a dictionary Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The dictionary default value.
-    /// The Property Value type is `ctDict`. The dictionary passed as default value must have homogeneous key
-    /// and value lists (all dictionary keys/values must be of the same type).
-    /// The Property's Item type field will be set according to defaultValue dictionary Item type. The same goes for
-    /// the Key type.
-    /// TODO: defaultValue can be an EvalValue once dictionaries are supported.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The dictionary default value. The Property Value type is `ctDict`. The dictionary passed as default value must have homogeneous key and value lists (all dictionary keys/values must be of the same type). The Property's Item type field will be set according to defaultValue dictionary Item type. The same goes for the Key type. TODO: defaultValue can be an EvalValue once dictionaries are supported.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createDictPropertyBuilder()`.
     pub fn dict(name: &str, default_value: impl Into<Value>) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4052,9 +4244,11 @@ impl PropertyBuilder {
     }
 
     /// Creates an Enumeration Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The default structure value.
-    /// The Property Value type is `ctEnumeration`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The default structure value. The Property Value type is `ctEnumeration`.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createEnumerationPropertyBuilder()`.
     pub fn enumeration(name: &str, default_value: &Enumeration) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4065,9 +4259,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a floating point value Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The float default value. Can be an EvalValue
-    /// The Property Value type is `ctFloat`. Note that the defaultValue parameter can be EvalValue.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The float default value. Can be an EvalValue The Property Value type is `ctFloat`. Note that the defaultValue parameter can be EvalValue.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createFloatPropertyBuilder()`.
     pub fn float(name: &str, default_value: f64) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4079,10 +4275,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a function- or procedure-type Property builder object. Requires the a CallableInfo object to specify the argument type/count and function return type.
-    /// @param name The name of the Property.
-    /// @param callableInfo Information about the callable argument type/count and return type.
-    /// The Property Value type is `ctFunction` or `ctProc`, depending on if `callableInfo` contains information
-    /// on the return type or not.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `callable_info`: Information about the callable argument type/count and return type. The Property Value type is `ctFunction` or `ctProc`, depending on if `callableInfo` contains information on the return type or not.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createFunctionPropertyBuilder()`.
     pub fn function(name: &str, callable_info: &CallableInfo) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4093,9 +4290,11 @@ impl PropertyBuilder {
     }
 
     /// Creates an integer Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The integer default value. Can be an EvalValue.
-    /// The Property Value type is `ctInt`. Note that the defaultValue parameter can be EvalValue.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The integer default value. Can be an EvalValue. The Property Value type is `ctInt`. Note that the defaultValue parameter can be EvalValue.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createIntPropertyBuilder()`.
     pub fn int(name: &str, default_value: i64) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4107,11 +4306,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a list Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The list default value. Can be an EvalValue.
-    /// The Property Value type is `ctList`. Note that the defaultValue parameter can be EvalValue.
-    /// The list passed as `defaultValue` must be homogeneous.
-    /// The Property's Item type field will be set according to defaultValue list type.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The list default value. Can be an EvalValue. The Property Value type is `ctList`. Note that the defaultValue parameter can be EvalValue. The list passed as `defaultValue` must be homogeneous. The Property's Item type field will be set according to defaultValue list type.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createListPropertyBuilder()`.
     pub fn list(name: &str, default_value: impl Into<Value>) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4123,12 +4322,11 @@ impl PropertyBuilder {
     }
 
     /// Creates an object-type Property builder object with a specified name and default value..
-    /// @param name The name of the Property.
-    /// @param defaultValue The Property object default value.
-    /// The Property Value type is `ctObject`. Object properties cannot be have any metadata other than
-    /// their name, description, and default value configured. The PropertyObject default value can only
-    /// be a base PropertyObject type (not a descendant type).
-    /// If the defaultValue is not specified, it will automatically be configured to an empty Property Object.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The Property object default value. The Property Value type is `ctObject`. Object properties cannot be have any metadata other than their name, description, and default value configured. The PropertyObject default value can only be a base PropertyObject type (not a descendant type). If the defaultValue is not specified, it will automatically be configured to an empty Property Object.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createObjectPropertyBuilder()`.
     pub fn object(name: &str, default_value: &PropertyObject) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4139,8 +4337,10 @@ impl PropertyBuilder {
     }
 
     /// Creates an Property builder object with only the name field configured.
-    /// @param name The name of the Property.
-    /// The default Value type is `ctUndefined`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property. The default Value type is `ctUndefined`.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createPropertyBuilder()`.
     pub fn new(name: &str) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4151,10 +4351,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a ratio Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The ratio default value.
-    /// The Property Value type is `ctRatio`.
-    /// TODO: defaultValue can be an EvalValue once ratios are supported.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The ratio default value. The Property Value type is `ctRatio`. TODO: defaultValue can be an EvalValue once ratios are supported.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createRatioPropertyBuilder()`.
     pub fn ratio(name: &str, default_value: Ratio) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4166,8 +4367,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a Reference Property builder object that points at a property specified in the `referencedProperty` parameter.
-    /// @param name The name of the Property.
-    /// @param referencedPropertyEval The evaluation expression that evaluates to another property.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `referenced_property_eval`: The evaluation expression that evaluates to another property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createReferencePropertyBuilder()`.
     pub fn reference(name: &str, referenced_property_eval: &EvalValue) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4178,10 +4382,12 @@ impl PropertyBuilder {
     }
 
     /// Creates a Selection Property builder object with a list of selection values. The default value is an integer index into the default selected value.
-    /// @param name The name of the Property.
-    /// @param selectionValues The list of selectable values.
-    /// @param defaultValue The default index into the list of selection values.
-    /// The Property Value type is `ctInt`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `selection_values`: The list of selectable values.
+    /// - `default_value`: The default index into the list of selection values. The Property Value type is `ctInt`.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createSelectionPropertyBuilder()`.
     pub fn selection(name: &str, selection_values: impl Into<Value>, default_value: i64) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4194,10 +4400,12 @@ impl PropertyBuilder {
     }
 
     /// Creates a Selection Property builder object with a dictionary of selection values. The default value is an integer key into the provided dictionary.
-    /// @param name The name of the Property.
-    /// @param selectionValues The dictionary of selectable values. The key type must be `ctInt`.
-    /// @param defaultValue The default key into the list of selection values.
-    /// The Property Value type is `ctInt`. The key type of the Selection values dictionary must be `ctInt`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `selection_values`: The dictionary of selectable values. The key type must be `ctInt`.
+    /// - `default_value`: The default key into the list of selection values. The Property Value type is `ctInt`. The key type of the Selection values dictionary must be `ctInt`.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createSparseSelectionPropertyBuilder()`.
     pub fn sparse_selection(name: &str, selection_values: impl Into<Value>, default_value: i64) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4210,9 +4418,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a string Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The integer default value. Can be an EvalValue.
-    /// The Property Value type is `ctString`. Note that the defaultValue parameter can be EvalValue.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The integer default value. Can be an EvalValue. The Property Value type is `ctString`. Note that the defaultValue parameter can be EvalValue.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createStringPropertyBuilder()`.
     pub fn string(name: &str, default_value: &str) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4224,9 +4434,11 @@ impl PropertyBuilder {
     }
 
     /// Creates a Struct Property builder object with a specified name and default value.
-    /// @param name The name of the Property.
-    /// @param defaultValue The default structure value.
-    /// The Property Value type is `ctStruct`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The default structure value. The Property Value type is `ctStruct`.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_createStructPropertyBuilder()`.
     pub fn struct_(name: &str, default_value: &Struct) -> Result<PropertyBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4237,7 +4449,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Callable information objects of the Property that specifies the argument and return types of the callable object stored as the Property value.
-    /// @param\[out\] callable The Callable info object.
+    ///
+    /// # Returns
+    /// - `callable`: The Callable info object.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getCallableInfo()`.
     pub fn callable_info(&self) -> Result<Option<CallableInfo>> {
         let mut __callable: *mut sys::daqCallableInfo = std::ptr::null_mut();
@@ -4247,7 +4462,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the coercer of the Property.
-    /// @param\[out\] coercer The coercer.
+    ///
+    /// # Returns
+    /// - `coercer`: The coercer.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getCoercer()`.
     pub fn coercer(&self) -> Result<Option<Coercer>> {
         let mut __coercer: *mut sys::daqCoercer = std::ptr::null_mut();
@@ -4257,7 +4475,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Default value of the Property.
-    /// @param\[out\] value The Default value of the Property.
+    ///
+    /// # Returns
+    /// - `value`: The Default value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getDefaultValue()`.
     pub fn default_value(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -4267,7 +4488,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the short string Description of the Property.
-    /// @param\[out\] description The Description of the Property.
+    ///
+    /// # Returns
+    /// - `description`: The Description of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -4281,7 +4505,10 @@ impl PropertyBuilder {
     /// When false (default), the property stores the index of the selected entry (IndexSelection).
     /// This flag is ignored for sparse selection properties and for selection properties
     /// with a valueType other than ctInt.
-    /// @param isIntegerValueSelection The current value of the flag.
+    ///
+    /// # Parameters
+    /// - `is_integer_value_selection`: The current value of the flag.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getIsIntegerValueSelection()`.
     pub fn is_integer_value_selection(&self) -> Result<bool> {
         let mut __is_integer_value_selection: u8 = 0;
@@ -4291,7 +4518,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Maximum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param\[out\] max The Maximum value of the Property.
+    ///
+    /// # Returns
+    /// - `max`: The Maximum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getMaxValue()`.
     pub fn max_value(&self) -> Result<Option<f64>> {
         let mut __max: *mut sys::daqNumber = std::ptr::null_mut();
@@ -4301,7 +4531,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Minimum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param\[out\] min The Minimum value of the Property.
+    ///
+    /// # Returns
+    /// - `min`: The Minimum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getMinValue()`.
     pub fn min_value(&self) -> Result<Option<f64>> {
         let mut __min: *mut sys::daqNumber = std::ptr::null_mut();
@@ -4311,7 +4544,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Name of the Property.
-    /// @param\[out\] name The Name of the Property.
+    ///
+    /// # Returns
+    /// - `name`: The Name of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -4321,7 +4557,10 @@ impl PropertyBuilder {
     }
 
     /// Gets a custom on-read event. Used mostly when cloning properties.
-    /// @param\[out\] event The on-read event.
+    ///
+    /// # Returns
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getOnPropertyValueRead()`.
     pub fn on_property_value_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -4331,7 +4570,10 @@ impl PropertyBuilder {
     }
 
     /// Gets a custom on-write event. Used mostly when cloning properties.
-    /// @param\[out\] event The on-write event.
+    ///
+    /// # Returns
+    /// - `event`: The on-write event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getOnPropertyValueWrite()`.
     pub fn on_property_value_write(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -4341,7 +4583,10 @@ impl PropertyBuilder {
     }
 
     /// Gets a custom on-selection-values-read event. Used mostly when cloning properties.
-    /// @param event The on-read event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getOnSelectionValuesRead()`.
     pub fn on_selection_values_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -4351,7 +4596,10 @@ impl PropertyBuilder {
     }
 
     /// Gets a custom on-suggested-values-read event. Used mostly when cloning properties.
-    /// @param event The on-read event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getOnSuggestedValuesRead()`.
     pub fn on_suggested_values_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -4361,7 +4609,10 @@ impl PropertyBuilder {
     }
 
     /// Used to determine whether the Property is a read-only property or not.
-    /// @param\[out\] readOnly True if the Property is a read-only property; false otherwise.
+    ///
+    /// # Returns
+    /// - `read_only`: True if the Property is a read-only property; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getReadOnly()`.
     pub fn read_only(&self) -> Result<Option<bool>> {
         let mut __read_only: *mut sys::daqBoolean = std::ptr::null_mut();
@@ -4371,7 +4622,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the referenced property.
-    /// @param\[out\] propertyEval The referenced property.
+    ///
+    /// # Returns
+    /// - `property_eval`: The referenced property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getReferencedProperty()`.
     pub fn referenced_property(&self) -> Result<Option<EvalValue>> {
         let mut __property_eval: *mut sys::daqEvalValue = std::ptr::null_mut();
@@ -4381,7 +4635,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the list or dictionary of selection values.
-    /// @param\[out\] values The list/dictionary of possible selection values.
+    ///
+    /// # Returns
+    /// - `values`: The list/dictionary of possible selection values.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getSelectionValues()`.
     pub fn selection_values(&self) -> Result<Value> {
         let mut __values: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -4391,7 +4648,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the list of Suggested values. Contains values that are the optimal gettings for the corresponding Property value. These values, however, are not enforced when getting a new Property value.
-    /// @param\[out\] values The Suggested values of the Property.
+    ///
+    /// # Returns
+    /// - `values`: The Suggested values of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getSuggestedValues()`.
     pub fn suggested_values(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -4401,7 +4661,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Unit of the Property.
-    /// @param\[out\] unit The Unit of the Property.
+    ///
+    /// # Returns
+    /// - `unit`: The Unit of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -4411,7 +4674,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the validator of the Property.
-    /// @param\[out\] validator The validator.
+    ///
+    /// # Returns
+    /// - `validator`: The validator.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getValidator()`.
     pub fn validator(&self) -> Result<Option<Validator>> {
         let mut __validator: *mut sys::daqValidator = std::ptr::null_mut();
@@ -4421,7 +4687,10 @@ impl PropertyBuilder {
     }
 
     /// Gets the Value type of the Property.
-    /// @param\[out\] type The value type.
+    ///
+    /// # Returns
+    /// - `type`: The value type.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getValueType()`.
     pub fn value_type(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -4431,7 +4700,10 @@ impl PropertyBuilder {
     }
 
     /// Used to determine whether the property is visible or not.
-    /// @param\[out\] visible True if the Property is visible; false otherwise.
+    ///
+    /// # Returns
+    /// - `visible`: True if the Property is visible; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_getVisible()`.
     pub fn visible(&self) -> Result<Option<bool>> {
         let mut __visible: *mut sys::daqBoolean = std::ptr::null_mut();
@@ -4441,7 +4713,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Callable information objects of the Property that specifies the argument and return types of the callable object stored as the Property value.
-    /// @param callable The Callable info object.
+    ///
+    /// # Parameters
+    /// - `callable`: The Callable info object.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setCallableInfo()`.
     pub fn set_callable_info(&self, callable: &CallableInfo) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setCallableInfo)(self.as_raw() as *mut _, callable.as_raw() as *mut _) };
@@ -4450,8 +4725,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the coercer of the Property.
-    /// @param coercer The coercer.
-    /// Used to coerce a value written to the corresponding Property value to the constraints specified by the coercer.
+    ///
+    /// # Parameters
+    /// - `coercer`: The coercer. Used to coerce a value written to the corresponding Property value to the constraints specified by the coercer.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setCoercer()`.
     pub fn set_coercer(&self, coercer: &Coercer) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setCoercer)(self.as_raw() as *mut _, coercer.as_raw() as *mut _) };
@@ -4460,7 +4737,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Default value of the Property. The Default value must always be configured for a Property to be in a valid state. Exceptions are Function/Procedure and Reference properties. The function will freeze default value if it is freezable.
-    /// @param value The Default value of the Property.
+    ///
+    /// # Parameters
+    /// - `value`: The Default value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setDefaultValue()`.
     pub fn set_default_value(&self, value: impl Into<Value>) -> Result<()> {
         let __value = crate::value::to_daq(&value.into())?;
@@ -4470,7 +4750,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the short string Description of the Property.
-    /// @param description The Description of the Property.
+    ///
+    /// # Parameters
+    /// - `description`: The Description of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setDescription()`.
     pub fn set_description(&self, description: &str) -> Result<()> {
         let __description = crate::marshal::make_string(description)?;
@@ -4484,7 +4767,10 @@ impl PropertyBuilder {
     /// When false (default), the property stores the index of the selected entry (IndexSelection).
     /// This flag is ignored for sparse selection properties and for selection properties
     /// with a valueType other than ctInt.
-    /// @param isIntegerValueSelection True to store the selected value; false to store the selection index.
+    ///
+    /// # Parameters
+    /// - `is_integer_value_selection`: True to store the selected value; false to store the selection index.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setIsIntegerValueSelection()`.
     pub fn set_is_integer_value_selection(&self, is_integer_value_selection: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setIsIntegerValueSelection)(self.as_raw() as *mut _, u8::from(is_integer_value_selection)) };
@@ -4493,7 +4779,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Maximum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param max The Maximum value of the Property.
+    ///
+    /// # Parameters
+    /// - `max`: The Maximum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setMaxValue()`.
     pub fn set_max_value(&self, max: impl Into<Value>) -> Result<()> {
         let __max = crate::value::to_daq_number(&max.into())?;
@@ -4503,7 +4792,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Minimum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param min The Minimum value of the Property.
+    ///
+    /// # Parameters
+    /// - `min`: The Minimum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setMinValue()`.
     pub fn set_min_value(&self, min: impl Into<Value>) -> Result<()> {
         let __min = crate::value::to_daq_number(&min.into())?;
@@ -4513,7 +4805,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Name of the Property. The names of Properties in a Property object must be unique. The name is used as the key to the corresponding Property value when getting/setting the value.
-    /// @param name The Name of the Property.
+    ///
+    /// # Parameters
+    /// - `name`: The Name of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -4523,7 +4818,10 @@ impl PropertyBuilder {
     }
 
     /// Sets a custom on-read event. Used mostly when cloning properties.
-    /// @param event The on-read event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setOnPropertyValueRead()`.
     pub fn set_on_property_value_read(&self, event: &Event) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setOnPropertyValueRead)(self.as_raw() as *mut _, event.as_raw() as *mut _) };
@@ -4532,7 +4830,10 @@ impl PropertyBuilder {
     }
 
     /// Sets a custom on-write event. Used mostly when cloning properties.
-    /// @param event The on-write event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-write event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setOnPropertyValueWrite()`.
     pub fn set_on_property_value_write(&self, event: &Event) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setOnPropertyValueWrite)(self.as_raw() as *mut _, event.as_raw() as *mut _) };
@@ -4541,7 +4842,10 @@ impl PropertyBuilder {
     }
 
     /// Sets a custom on-selection-values-read event. Used mostly when cloning properties.
-    /// @param event The on-read event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setOnSelectionValuesRead()`.
     pub fn set_on_selection_values_read(&self, event: &Event) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setOnSelectionValuesRead)(self.as_raw() as *mut _, event.as_raw() as *mut _) };
@@ -4550,7 +4854,10 @@ impl PropertyBuilder {
     }
 
     /// Sets a custom on-suggested-values-read event. Used mostly when cloning properties.
-    /// @param event The on-read event.
+    ///
+    /// # Parameters
+    /// - `event`: The on-read event.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setOnSuggestedValuesRead()`.
     pub fn set_on_suggested_values_read(&self, event: &Event) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setOnSuggestedValuesRead)(self.as_raw() as *mut _, event.as_raw() as *mut _) };
@@ -4559,8 +4866,10 @@ impl PropertyBuilder {
     }
 
     /// Used to determine whether the Property is a read-only property or not.
-    /// @param readOnly True if the Property is a read-only property; false otherwise.
-    /// Read-only Property values can still be modified by using the `PropertyObjectProtected` interface methods.
+    ///
+    /// # Parameters
+    /// - `read_only`: True if the Property is a read-only property; false otherwise. Read-only Property values can still be modified by using the `PropertyObjectProtected` interface methods.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setReadOnly()`.
     pub fn set_read_only(&self, read_only: bool) -> Result<()> {
         let __read_only = crate::value::bool_to_ref(read_only)?;
@@ -4570,8 +4879,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the referenced property. If set, all getters except for the `Name`, `Referenced property`, and `Is referenced` getters will return the value of the `Referenced property`.
-    /// @param propertyEval The referenced property.
-    /// If the Property is not bound to a Property object this call will not be able to return the Referenced property.
+    ///
+    /// # Parameters
+    /// - `property_eval`: The referenced property. If the Property is not bound to a Property object this call will not be able to return the Referenced property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setReferencedProperty()`.
     pub fn set_referenced_property(&self, property_eval: &EvalValue) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setReferencedProperty)(self.as_raw() as *mut _, property_eval.as_raw() as *mut _) };
@@ -4580,7 +4891,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the list or dictionary of selection values. If the list/dictionary is not empty, the property is a Selection property, and must have the Value type `ctInt`.
-    /// @param values The list/dictionary of possible selection values.
+    ///
+    /// # Parameters
+    /// - `values`: The list/dictionary of possible selection values.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setSelectionValues()`.
     pub fn set_selection_values(&self, values: impl Into<Value>) -> Result<()> {
         let __values = crate::value::to_daq(&values.into())?;
@@ -4590,7 +4904,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the list of Suggested values. Contains values that are the optimal settings for the corresponding Property value. These values, however, are not enforced when setting a new Property value.
-    /// @param values The Suggested values of the Property.
+    ///
+    /// # Parameters
+    /// - `values`: The Suggested values of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setSuggestedValues()`.
     pub fn set_suggested_values(&self, values: impl Into<Value>) -> Result<()> {
         let __values = crate::value::to_daq(&values.into())?;
@@ -4600,7 +4917,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Unit of the Property.
-    /// @param unit The Unit of the Property.
+    ///
+    /// # Parameters
+    /// - `unit`: The Unit of the Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setUnit()`.
     pub fn set_unit(&self, unit: &Unit) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setUnit)(self.as_raw() as *mut _, unit.as_raw() as *mut _) };
@@ -4609,8 +4929,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the validator of the Property.
-    /// @param validator The validator.
-    /// Used to validate whether a value written to the corresponding Property value is valid or not.
+    ///
+    /// # Parameters
+    /// - `validator`: The validator. Used to validate whether a value written to the corresponding Property value is valid or not.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setValidator()`.
     pub fn set_validator(&self, validator: &Validator) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setValidator)(self.as_raw() as *mut _, validator.as_raw() as *mut _) };
@@ -4619,7 +4941,10 @@ impl PropertyBuilder {
     }
 
     /// Sets the Value type of the Property. Values written to the corresponding Property value must be of the same type.
-    /// @param type The value type.
+    ///
+    /// # Parameters
+    /// - `type`: The value type.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setValueType()`.
     pub fn set_value_type(&self, type_: CoreType) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyBuilder_setValueType)(self.as_raw() as *mut _, type_ as u32) };
@@ -4628,7 +4953,10 @@ impl PropertyBuilder {
     }
 
     /// Used to determine whether the property is visible or not.
-    /// @param visible True if the Property is visible; false otherwise.
+    ///
+    /// # Parameters
+    /// - `visible`: True if the Property is visible; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqPropertyBuilder_setVisible()`.
     pub fn set_visible(&self, visible: bool) -> Result<()> {
         let __visible = crate::value::bool_to_ref(visible)?;
@@ -4641,6 +4969,7 @@ impl PropertyBuilder {
 
 impl PropertyInternal {
     /// Clones the property without an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_clone()`.
     pub fn clone_object(&self) -> Result<Option<Property>> {
         let mut __cloned_property: *mut sys::daqProperty = std::ptr::null_mut();
@@ -4652,6 +4981,7 @@ impl PropertyInternal {
     /// Clones the property, setting the passed PropertyObject as its owner.
     /// If the provided owner is the same as the current owner of the property, the property is not cloned.
     /// Instead the property itself is returned as-is.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_cloneWithOwner()`.
     pub fn clone_with_owner(&self, owner: &PropertyObject) -> Result<Option<Property>> {
         let mut __cloned_property: *mut sys::daqProperty = std::ptr::null_mut();
@@ -4701,6 +5031,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property default value in an as either a BaseObject or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getDefaultValueUnresolved()`.
     pub fn default_value_unresolved(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -4718,6 +5049,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property description in an as either a String or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getDescriptionUnresolved()`.
     pub fn description_unresolved(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -4783,6 +5115,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property max value in an as either a Number or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getMaxValueUnresolved()`.
     pub fn max_value_unresolved(&self) -> Result<Option<f64>> {
         let mut __max: *mut sys::daqNumber = std::ptr::null_mut();
@@ -4800,6 +5133,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property min value in an as either a Number or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getMinValueUnresolved()`.
     pub fn min_value_unresolved(&self) -> Result<Option<f64>> {
         let mut __min: *mut sys::daqNumber = std::ptr::null_mut();
@@ -4817,6 +5151,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property read-only field in an as either a Boolean or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getReadOnlyUnresolved()`.
     pub fn read_only_unresolved(&self) -> Result<Option<bool>> {
         let mut __read_only: *mut sys::daqBoolean = std::ptr::null_mut();
@@ -4834,6 +5169,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property referenced property in an as either a Property or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getReferencedPropertyUnresolved()`.
     pub fn referenced_property_unresolved(&self) -> Result<Option<EvalValue>> {
         let mut __property_eval: *mut sys::daqEvalValue = std::ptr::null_mut();
@@ -4851,6 +5187,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property selection values in an as either a Dictionary of Int-BaseObject pairs, List of BaseObjects, or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getSelectionValuesUnresolved()`.
     pub fn selection_values_unresolved(&self) -> Result<Value> {
         let mut __values: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -4876,6 +5213,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property suggested values in an as either a List of BaseObjects or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getSuggestedValuesUnresolved()`.
     pub fn suggested_values_unresolved(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -4893,6 +5231,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property unit in an as either a String (TODO: as an IUnit once supported) or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getUnitUnresolved()`.
     pub fn unit_unresolved(&self) -> Result<Value> {
         let mut __unit: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -4918,6 +5257,7 @@ impl PropertyInternal {
     }
 
     /// Gets the unresolved type of the Property
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getValueTypeUnresolved()`.
     pub fn value_type_unresolved(&self) -> Result<CoreType> {
         let mut __core_type: u32 = 0;
@@ -4935,6 +5275,7 @@ impl PropertyInternal {
     }
 
     /// Gets the Property visible field in an as either a Boolean or unresolved EvalValue. The EvalValue is bound to the owner, if the Property has an owner.
+    ///
     /// Calls the openDAQ C function `daqPropertyInternal_getVisibleUnresolved()`.
     pub fn visible_unresolved(&self) -> Result<Option<bool>> {
         let mut __visible: *mut sys::daqBoolean = std::ptr::null_mut();
@@ -4963,10 +5304,14 @@ impl PropertyInternal {
 
 impl PropertyObjectClassBuilder {
     /// Adds a property to the class.
-    /// @param property The property to be added.
-    /// @retval OPENDAQ_ERR_ALREADYEXISTS if a property with the same name already added to the class.
-    /// @retval OPENDAQ_ERR_INVALIDTYPE if the property is an object type and is not atomic.
-    /// The default value of object-type properties that are added to a class are frozen once added.
+    ///
+    /// # Parameters
+    /// - `property`: The property to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_ALREADYEXISTS`: if a property with the same name already added to the class.
+    /// - `OPENDAQ_ERR_INVALIDTYPE`: if the property is an object type and is not atomic. The default value of object-type properties that are added to a class are frozen once added.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_addProperty()`.
     pub fn add_property(&self, property: &Property) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObjectClassBuilder_addProperty)(self.as_raw() as *mut _, property.as_raw() as *mut _) };
@@ -4975,7 +5320,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Builds and returns a Property object class using the currently set values of the Builder.
-    /// @param\[out\] propertyObjectClass The built Property object class.
+    ///
+    /// # Returns
+    /// - `property_object_class`: The built Property object class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_build()`.
     pub fn build(&self) -> Result<Option<PropertyObjectClass>> {
         let mut __property_object_class: *mut sys::daqPropertyObjectClass = std::ptr::null_mut();
@@ -4985,7 +5333,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Creates a property object class configuration object with a given name.
-    /// @param name The name of the class.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_createPropertyObjectClassBuilder()`.
     pub fn new(name: &str) -> Result<PropertyObjectClassBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -4996,8 +5347,11 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Creates a Property object class configuration object with a given name, and a reference to the Type manager.
-    /// @param manager The Property object class manager object.
-    /// @param name The name of the class.
+    ///
+    /// # Parameters
+    /// - `manager`: The Property object class manager object.
+    /// - `name`: The name of the class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_createPropertyObjectClassBuilderWithManager()`.
     pub fn with_manager(manager: &TypeManager, name: &str) -> Result<PropertyObjectClassBuilder> {
         let __name = crate::marshal::make_string(name)?;
@@ -5008,7 +5362,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets a type manager
-    /// @param\[out\] manager a type manager
+    ///
+    /// # Returns
+    /// - `manager`: a type manager
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_getManager()`.
     pub fn manager(&self) -> Result<Option<TypeManager>> {
         let mut __manager: *mut sys::daqTypeManager = std::ptr::null_mut();
@@ -5018,7 +5375,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets the name of the property class.
-    /// @param\[out\] className The name of the class.
+    ///
+    /// # Returns
+    /// - `class_name`: The name of the class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __class_name: *mut sys::daqString = std::ptr::null_mut();
@@ -5028,7 +5388,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets the name of the parent of the property class.
-    /// @param\[out\] parentName The parent class's name.
+    ///
+    /// # Returns
+    /// - `parent_name`: The parent class's name.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_getParentName()`.
     pub fn parent_name(&self) -> Result<String> {
         let mut __parent_name: *mut sys::daqString = std::ptr::null_mut();
@@ -5038,7 +5401,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets the dictionary of properties
-    /// @param\[out\] properties dictionary of properties
+    ///
+    /// # Returns
+    /// - `properties`: dictionary of properties
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_getProperties()`.
     pub fn properties(&self) -> Result<std::collections::HashMap<String, Property>> {
         let mut __properties: *mut sys::daqDict = std::ptr::null_mut();
@@ -5048,7 +5414,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets a custom order of properties as defined in the list of property names.
-    /// @param\[out\] orderedPropertyNames A list of names of properties. The order of the list is applied to the class's properties.
+    ///
+    /// # Returns
+    /// - `ordered_property_names`: A list of names of properties. The order of the list is applied to the class's properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_getPropertyOrder()`.
     pub fn property_order(&self) -> Result<Vec<String>> {
         let mut __ordered_property_names: *mut sys::daqList = std::ptr::null_mut();
@@ -5058,8 +5427,13 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Removes a property with the given name from the class.
-    /// @param propertyName The name of the property to be removed.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the property with `propertyName` is not a member of the class.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the property to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the property with `propertyName` is not a member of the class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_removeProperty()`.
     pub fn remove_property(&self, property_name: &str) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5069,7 +5443,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Sets the name of the property class.
-    /// @param className The name of the class.
+    ///
+    /// # Parameters
+    /// - `class_name`: The name of the class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_setName()`.
     pub fn set_name(&self, class_name: &str) -> Result<()> {
         let __class_name = crate::marshal::make_string(class_name)?;
@@ -5079,7 +5456,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Gets the name of the parent of the property class.
-    /// @param parentName The parent class's name.
+    ///
+    /// # Parameters
+    /// - `parent_name`: The parent class's name.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_setParentName()`.
     pub fn set_parent_name(&self, parent_name: &str) -> Result<()> {
         let __parent_name = crate::marshal::make_string(parent_name)?;
@@ -5089,10 +5469,10 @@ impl PropertyObjectClassBuilder {
     }
 
     /// Sets a custom order of properties as defined in the list of property names.
-    /// @param orderedPropertyNames A list of names of properties. The order of the list is applied to the class's properties.
-    /// The list should contain names of properties available in the class. When retrieving the class's properties, they will
-    /// be sorted in the order in which the names appear in the provided list. Any class properties not in the custom order are
-    /// kept in insertion order at the end of the class's list of properties.
+    ///
+    /// # Parameters
+    /// - `ordered_property_names`: A list of names of properties. The order of the list is applied to the class's properties. The list should contain names of properties available in the class. When retrieving the class's properties, they will be sorted in the order in which the names appear in the provided list. Any class properties not in the custom order are kept in insertion order at the end of the class's list of properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassBuilder_setPropertyOrder()`.
     pub fn set_property_order(&self, ordered_property_names: &[&str]) -> Result<()> {
         let __ordered_property_names = crate::marshal::list_from_strs(ordered_property_names)?;
@@ -5105,8 +5485,13 @@ impl PropertyObjectClassBuilder {
 
 impl PropertyObjectClassInternal {
     /// Clones the property object class.
-    /// @param\[out\] cloned The cloned property object class.
-    /// @param typeManager The type manager to use for the cloned property object class. if type manager is not provided, cloned class will store a type manager from the original class.
+    ///
+    /// # Parameters
+    /// - `type_manager`: The type manager to use for the cloned property object class. if type manager is not provided, cloned class will store a type manager from the original class.
+    ///
+    /// # Returns
+    /// - `cloned`: The cloned property object class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassInternal_clone()`.
     pub fn clone_object(&self) -> Result<Option<PropertyObjectClass>> {
         let mut __cloned: *mut sys::daqPropertyObjectClass = std::ptr::null_mut();
@@ -5116,8 +5501,13 @@ impl PropertyObjectClassInternal {
     }
 
     /// Clones the property object class.
-    /// @param\[out\] cloned The cloned property object class.
-    /// @param typeManager The type manager to use for the cloned property object class. if type manager is not provided, cloned class will store a type manager from the original class.
+    ///
+    /// # Parameters
+    /// - `type_manager`: The type manager to use for the cloned property object class. if type manager is not provided, cloned class will store a type manager from the original class.
+    ///
+    /// # Returns
+    /// - `cloned`: The cloned property object class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClassInternal_clone()`.
     pub fn clone_object_with(&self, type_manager: Option<&TypeManager>) -> Result<Option<PropertyObjectClass>> {
         let mut __cloned: *mut sys::daqPropertyObjectClass = std::ptr::null_mut();
@@ -5130,7 +5520,10 @@ impl PropertyObjectClassInternal {
 
 impl PropertyObjectClass {
     /// Creates a PropertyObjectClass using Builder
-    /// @param builder PropertyObjectClass Builder
+    ///
+    /// # Parameters
+    /// - `builder`: PropertyObjectClass Builder
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClass_createPropertyObjectClassFromBuilder()`.
     pub fn from_builder(builder: &PropertyObjectClassBuilder) -> Result<PropertyObjectClass> {
         let mut __obj: *mut sys::daqPropertyObjectClass = std::ptr::null_mut();
@@ -5140,7 +5533,10 @@ impl PropertyObjectClass {
     }
 
     /// Gets the name of the parent of the property class.
-    /// @param\[out\] parentName The parent class's name.
+    ///
+    /// # Returns
+    /// - `parent_name`: The parent class's name.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClass_getParentName()`.
     pub fn parent_name(&self) -> Result<String> {
         let mut __parent_name: *mut sys::daqString = std::ptr::null_mut();
@@ -5150,11 +5546,16 @@ impl PropertyObjectClass {
     }
 
     /// Gets the list of properties added to the class.
-    /// @param includeInherited If true, the returned list of properties also includes the properties of the class's ancestors.
-    /// @param\[out\] properties The list of properties.
-    /// @retval OPENDAQ_ERR_MANAGER_NOT_ASSIGNED if the parent name is set, but the Type manager is not available.
-    /// The properties are sorted in insertion order, unless a custom sorting order is specified for the class. Any properties
-    /// not listed in the custom sorting order are listed at the end of the properties list, sorted in insertion order.
+    ///
+    /// # Parameters
+    /// - `include_inherited`: If true, the returned list of properties also includes the properties of the class's ancestors.
+    ///
+    /// # Returns
+    /// - `properties`: The list of properties.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_MANAGER_NOT_ASSIGNED`: if the parent name is set, but the Type manager is not available. The properties are sorted in insertion order, unless a custom sorting order is specified for the class. Any properties not listed in the custom sorting order are listed at the end of the properties list, sorted in insertion order.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClass_getProperties()`.
     pub fn properties(&self, include_inherited: bool) -> Result<Vec<Property>> {
         let mut __properties: *mut sys::daqList = std::ptr::null_mut();
@@ -5164,10 +5565,17 @@ impl PropertyObjectClass {
     }
 
     /// Gets the class's property with the given name.
-    /// @param propertyName The property's name.
-    /// @param\[out\] property The property.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the Property with name `propertyName` is not added to the class.
-    /// @retval OPENDAQ_ERR_MANAGER_NOT_ASSIGNED if the parent name is set, but the Type manager is not available.
+    ///
+    /// # Parameters
+    /// - `property_name`: The property's name.
+    ///
+    /// # Returns
+    /// - `property`: The property.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the Property with name `propertyName` is not added to the class.
+    /// - `OPENDAQ_ERR_MANAGER_NOT_ASSIGNED`: if the parent name is set, but the Type manager is not available.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClass_getProperty()`.
     pub fn property(&self, property_name: &str) -> Result<Option<Property>> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5178,9 +5586,16 @@ impl PropertyObjectClass {
     }
 
     /// Checks if the property is registered.
-    /// @param propertyName The property's name.
-    /// @param\[out\] hasProperty True if the property is registered, false otherwise.
-    /// @retval OPENDAQ_ERR_MANAGER_NOT_ASSIGNED if the parent name is set, but the Type manager is not available.
+    ///
+    /// # Parameters
+    /// - `property_name`: The property's name.
+    ///
+    /// # Returns
+    /// - `has_property`: True if the property is registered, false otherwise.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_MANAGER_NOT_ASSIGNED`: if the parent name is set, but the Type manager is not available.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectClass_hasProperty()`.
     pub fn has_property(&self, property_name: &str) -> Result<bool> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5248,6 +5663,7 @@ impl PropertyObjectInternal {
     }
 
     /// Gets a lock guard that locks the object's mutex.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectInternal_getLockGuard()`.
     pub fn lock_guard(&self) -> Result<Option<LockGuard>> {
         let mut __lock_guard: *mut sys::daqLockGuard = std::ptr::null_mut();
@@ -5257,6 +5673,7 @@ impl PropertyObjectInternal {
     }
 
     /// Gets the locking strategy of the object. The locking strategy must be set before the object gets and owner is added to a parent folder.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectInternal_getLockingStrategy()`.
     pub fn locking_strategy(&self) -> Result<LockingStrategy> {
         let mut __strategy: u32 = 0;
@@ -5266,6 +5683,7 @@ impl PropertyObjectInternal {
     }
 
     /// Gets the object's mutex. Returns the mutex of the closest `OwnLock` strategy ancestor if using the `InheritLock` strategy.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectInternal_getMutex()`.
     pub fn mutex(&self) -> Result<Option<Mutex>> {
         let mut __mutex: *mut sys::daqMutex = std::ptr::null_mut();
@@ -5309,6 +5727,7 @@ impl PropertyObjectInternal {
     }
 
     /// Gets a lock guard that locks the object's mutex. The mutex is wrapped to be recursive, allowing for multiple locks to be instantiated on the same thread. Fails if a non-recursive lock was already created on this thread.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectInternal_getRecursiveLockGuard()`.
     pub fn recursive_lock_guard(&self) -> Result<Option<LockGuard>> {
         let mut __lock_guard: *mut sys::daqLockGuard = std::ptr::null_mut();
@@ -5342,6 +5761,7 @@ impl PropertyObjectInternal {
     }
 
     /// Sets the locking strategy of the object. The locking strategy must be set before the object gets and owner is added to a parent folder.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectInternal_setLockingStrategy()`.
     pub fn set_locking_strategy(&self, strategy: LockingStrategy) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObjectInternal_setLockingStrategy)(self.as_raw() as *mut _, strategy as u32) };
@@ -5379,7 +5799,10 @@ impl PropertyObjectInternal {
 
 impl PropertyObjectProtected {
     /// Clears a property value. Does not fail if the property is read-only.
-    /// @param propertyName The name of the Property of which value the function should be cleared.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property of which value the function should be cleared.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectProtected_clearProtectedPropertyValue()`.
     pub fn clear_protected_property_value(&self, property_name: &str) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5390,6 +5813,7 @@ impl PropertyObjectProtected {
 
     /// Clears values of all properties contained in the Property object, including nested child properties.
     /// This function behaves similarly to `IPropertyObject::clearPropertyValues()`, but also clears read-only properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectProtected_clearProtectedPropertyValues()`.
     pub fn clear_protected_property_values(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObjectProtected_clearProtectedPropertyValues)(self.as_raw() as *mut _) };
@@ -5398,8 +5822,11 @@ impl PropertyObjectProtected {
     }
 
     /// Sets a Selection property value by the selection item value. Does not fail if the property is read-only.
-    /// @param propertyName The name of the Property.
-    /// @param value The selection value to set (must be one of the Property's selection values).
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property.
+    /// - `value`: The selection value to set (must be one of the Property's selection values).
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectProtected_setProtectedPropertySelectionValue()`.
     pub fn set_protected_property_selection_value(&self, property_name: &str, value: impl Into<Value>) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5410,8 +5837,11 @@ impl PropertyObjectProtected {
     }
 
     /// Sets a property value. Does not fail if the property is read-only.
-    /// @param propertyName The name of the Property of which value the function should set.
-    /// @param value The property value to set.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property of which value the function should set.
+    /// - `value`: The property value to set.
+    ///
     /// Calls the openDAQ C function `daqPropertyObjectProtected_setProtectedPropertyValue()`.
     pub fn set_protected_property_value(&self, property_name: &str, value: impl Into<Value>) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5425,12 +5855,15 @@ impl PropertyObjectProtected {
 
 impl PropertyObject {
     /// Adds the property to the Property object.
-    /// @param property The property to be added.
-    /// @retval OPENDAQ_ERR_INVALIDVALUE if the property has no name.
-    /// @retval OPENDAQ_ERR_ALREADYEXISTS if a property with the same name is already part of the Property object.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// The Property is frozen once added to the Property object, making it immutable. The same Property cannot
-    /// be added to multiple different Property objects.
+    ///
+    /// # Parameters
+    /// - `property`: The property to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_INVALIDVALUE`: if the property has no name.
+    /// - `OPENDAQ_ERR_ALREADYEXISTS`: if a property with the same name is already part of the Property object.
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen. The Property is frozen once added to the Property object, making it immutable. The same Property cannot be added to multiple different Property objects.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_addProperty()`.
     pub fn add_property(&self, property: &Property) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObject_addProperty)(self.as_raw() as *mut _, property.as_raw() as *mut _) };
@@ -5444,6 +5877,7 @@ impl PropertyObject {
     /// is called, the property values set between the `beginUpdate` and `endUpdate` method calls are
     /// applied. It triggers the ˙OnPropertyWriteEvent` for each property value set, and the `OnEndUpdate` event.
     /// `beginUpdate` is called recursively for each child property object.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_beginUpdate()`.
     pub fn begin_update(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObject_beginUpdate)(self.as_raw() as *mut _) };
@@ -5452,13 +5886,14 @@ impl PropertyObject {
     }
 
     /// Clears the Property value from the Property object
-    /// @param propertyName The name of the Property of which value should be cleared.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a Property with given `propertyName` is not part of the Property object.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// When a Property value is set, the value is written in the internal dictionary of Property values.
-    /// This function will remove said value from the dictionary. If the tries to obtain the Property value of
-    /// a property that does not have a set Property value, then the default value is returned.
-    /// Importantly, clearing the value of an Object-type property will call `clear` on all the child object's properties.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property of which value should be cleared.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a Property with given `propertyName` is not part of the Property object.
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen. When a Property value is set, the value is written in the internal dictionary of Property values. This function will remove said value from the dictionary. If the tries to obtain the Property value of a property that does not have a set Property value, then the default value is returned. Importantly, clearing the value of an Object-type property will call `clear` on all the child object's properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_clearPropertyValue()`.
     pub fn clear_property_value(&self, property_name: &str) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5471,6 +5906,7 @@ impl PropertyObject {
     /// This function clears the values by internally invoking `clearPropertyValue(...)` for all properties returned by
     /// `getAllProperties()`; for object-type properties it therefore clears their child properties as well.
     /// Read-only properties and frozen objects are skipped.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_clearPropertyValues()`.
     pub fn clear_property_values(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObject_clearPropertyValues)(self.as_raw() as *mut _) };
@@ -5479,6 +5915,7 @@ impl PropertyObject {
     }
 
     /// Creates a empty Property object with no class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_createPropertyObject()`.
     pub fn new() -> Result<PropertyObject> {
         let mut __obj: *mut sys::daqPropertyObject = std::ptr::null_mut();
@@ -5488,8 +5925,11 @@ impl PropertyObject {
     }
 
     /// Creates a Property object that inherits the properties of a class added to the Type manager with the specified name.
-    /// @param manager The Type manager manager.
-    /// @param className The name of the class from which the Property object inherits its properties.
+    ///
+    /// # Parameters
+    /// - `manager`: The Type manager manager.
+    /// - `class_name`: The name of the class from which the Property object inherits its properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_createPropertyObjectWithClassAndManager()`.
     pub fn with_class_and_manager(manager: &TypeManager, class_name: &str) -> Result<PropertyObject> {
         let __class_name = crate::marshal::make_string(class_name)?;
@@ -5505,6 +5945,7 @@ impl PropertyObject {
     /// is called, the property values set between the `beginUpdate` and `endUpdate` method calls are
     /// applied. It triggers the ˙OnPropertyWriteEvent` for each property value set, and the `OnEndUpdate` event.
     /// `endUpdate` is called recursively for each child property object.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_endUpdate()`.
     pub fn end_update(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqPropertyObject_endUpdate)(self.as_raw() as *mut _) };
@@ -5513,12 +5954,14 @@ impl PropertyObject {
     }
 
     /// Retrieves a list of properties from the Property object that match the given property filter.
-    /// @param propertyFilter A filter used to select relevant properties. Can include a recursive wrapper to search thru nested property objects.
-    /// @param componentFilter An optional filter to determine which components' properties are included in the search. A recursive wrapper can be used to enable tree-traversal search.
-    /// @param\[out\] properties The list containing the matching properties.
-    /// If the propertyFilter is nullptr, only the visible properties directly associated with the current object are retrieved.
-    /// When searching for properties within a component, if no componentFilter is provided, only the current component is searched.
-    /// If a componentFilter is provided but the current component does not match it, the result will be an empty list.
+    ///
+    /// # Parameters
+    /// - `property_filter`: A filter used to select relevant properties. Can include a recursive wrapper to search thru nested property objects.
+    /// - `component_filter`: An optional filter to determine which components' properties are included in the search. A recursive wrapper can be used to enable tree-traversal search.
+    ///
+    /// # Returns
+    /// - `properties`: The list containing the matching properties. If the propertyFilter is nullptr, only the visible properties directly associated with the current object are retrieved. When searching for properties within a component, if no componentFilter is provided, only the current component is searched. If a componentFilter is provided but the current component does not match it, the result will be an empty list.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_findProperties()`.
     pub fn find_properties(&self, property_filter: &SearchFilter) -> Result<Vec<Property>> {
         let mut __properties: *mut sys::daqList = std::ptr::null_mut();
@@ -5528,12 +5971,14 @@ impl PropertyObject {
     }
 
     /// Retrieves a list of properties from the Property object that match the given property filter.
-    /// @param propertyFilter A filter used to select relevant properties. Can include a recursive wrapper to search thru nested property objects.
-    /// @param componentFilter An optional filter to determine which components' properties are included in the search. A recursive wrapper can be used to enable tree-traversal search.
-    /// @param\[out\] properties The list containing the matching properties.
-    /// If the propertyFilter is nullptr, only the visible properties directly associated with the current object are retrieved.
-    /// When searching for properties within a component, if no componentFilter is provided, only the current component is searched.
-    /// If a componentFilter is provided but the current component does not match it, the result will be an empty list.
+    ///
+    /// # Parameters
+    /// - `property_filter`: A filter used to select relevant properties. Can include a recursive wrapper to search thru nested property objects.
+    /// - `component_filter`: An optional filter to determine which components' properties are included in the search. A recursive wrapper can be used to enable tree-traversal search.
+    ///
+    /// # Returns
+    /// - `properties`: The list containing the matching properties. If the propertyFilter is nullptr, only the visible properties directly associated with the current object are retrieved. When searching for properties within a component, if no componentFilter is provided, only the current component is searched. If a componentFilter is provided but the current component does not match it, the result will be an empty list.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_findProperties()`.
     pub fn find_properties_with(&self, property_filter: &SearchFilter, component_filter: Option<&SearchFilter>) -> Result<Vec<Property>> {
         let mut __properties: *mut sys::daqList = std::ptr::null_mut();
@@ -5543,9 +5988,10 @@ impl PropertyObject {
     }
 
     /// Returns a list of all properties contained in the Property object.
-    /// @param\[out\] properties The List of properties.
-    /// Properties are retrieved regardless of their visibility. They are sorted in insertion order unless a custom order is specified.
-    /// This function returns both the properties added to the Property object, as well as those of its class.
+    ///
+    /// # Returns
+    /// - `properties`: The List of properties. Properties are retrieved regardless of their visibility. They are sorted in insertion order unless a custom order is specified. This function returns both the properties added to the Property object, as well as those of its class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getAllProperties()`.
     pub fn all_properties(&self) -> Result<Vec<Property>> {
         let mut __properties: *mut sys::daqList = std::ptr::null_mut();
@@ -5555,9 +6001,10 @@ impl PropertyObject {
     }
 
     /// Gets the name of the class the Property object was constructed with.
-    /// @param\[out\] className The class's name. Contains an empty string if the class name is not configured.
-    /// A Property object inherits all properties of the Property object class of the same name. Such Property objects
-    /// have access to the Type manager from which they can retrieve its class type and its properties.
+    ///
+    /// # Returns
+    /// - `class_name`: The class's name. Contains an empty string if the class name is not configured. A Property object inherits all properties of the Property object class of the same name. Such Property objects have access to the Type manager from which they can retrieve its class type and its properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getClassName()`.
     pub fn class_name(&self) -> Result<String> {
         let mut __class_name: *mut sys::daqString = std::ptr::null_mut();
@@ -5567,12 +6014,10 @@ impl PropertyObject {
     }
 
     /// Gets the Event that is triggered whenever any Property value is read.The event is triggered after the specific Property event.
-    /// @param\[out\] event The read Event.
-    /// A handler can be added to the event containing a callback function which is invoked whenever the event is triggered.
-    /// The callback function requires two parameters - a Property object, as well as a "Property value event args" object.
-    /// The callback will be invoked with the Property object holding the read value as the first argument. The second argument
-    /// holds an event args object that contains the read Property value, event type (Read), and a method of overriding the read value.
-    /// If the read value is overridden, the overridden value is read instead.
+    ///
+    /// # Returns
+    /// - `event`: The read Event. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a Property object, as well as a "Property value event args" object. The callback will be invoked with the Property object holding the read value as the first argument. The second argument holds an event args object that contains the read Property value, event type (Read), and a method of overriding the read value. If the read value is overridden, the overridden value is read instead.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getOnAnyPropertyValueRead()`.
     pub fn on_any_property_value_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -5582,12 +6027,10 @@ impl PropertyObject {
     }
 
     /// Gets the Event that is triggered whenever any Property value is written. The event is triggered after the specific Property event.
-    /// @param\[out\] event The write Event.
-    /// A handler can be added to the event containing a callback function which is invoked whenever the event is triggered.
-    /// The callback function requires two parameters - a Property object, as well as a "Property value event args" object.
-    /// The callback will be invoked with the Property object holding the written-to property as the first argument The second argument
-    /// holds an event args object that contains the written value, event type (Update), and a method of overriding the written value.
-    /// If the written value is overridden, the overridden value is stored in the Property object instead.
+    ///
+    /// # Returns
+    /// - `event`: The write Event. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a Property object, as well as a "Property value event args" object. The callback will be invoked with the Property object holding the written-to property as the first argument The second argument holds an event args object that contains the written value, event type (Update), and a method of overriding the written value. If the written value is overridden, the overridden value is stored in the Property object instead.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getOnAnyPropertyValueWrite()`.
     pub fn on_any_property_value_write(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -5597,11 +6040,10 @@ impl PropertyObject {
     }
 
     /// Gets the Event that is triggered whenever the batch configuration is applied.
-    /// @param\[out\] event The Event.
-    /// A handler can be added to the event containing a callback function which is invoked whenever the event is triggered.
-    /// The callback function requires one parameter - a "End update value event args" object.
-    /// The callback will be invoked with the batch configuration is applied, i.e. from the `endUpdate` method. The first argument
-    /// holds an event args object that contains a list of properties updated.
+    ///
+    /// # Returns
+    /// - `event`: The Event. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires one parameter - a "End update value event args" object. The callback will be invoked with the batch configuration is applied, i.e. from the `endUpdate` method. The first argument holds an event args object that contains a list of properties updated.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getOnEndUpdate()`.
     pub fn on_end_update(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -5611,14 +6053,16 @@ impl PropertyObject {
     }
 
     /// Gets the Event that is triggered whenever a Property value of a Property named `propertyName` is read.
-    /// @param propertyName The name of the property.
-    /// @param\[out\] event The read Event.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the Property object does not contain a Property named `propertyName`.
-    /// A handler can be added to the event containing a callback function which is invoked whenever the event is triggered.
-    /// The callback function requires two parameters - a Property object, as well as a "Property value event args" object.
-    /// The callback will be invoked with the Property object holding the read value as the first argument. The second argument
-    /// holds an event args object that contains the read Property value, event type (Read), and a method of overriding the read value.
-    /// If the read value is overridden, the overridden value is read instead.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the property.
+    ///
+    /// # Returns
+    /// - `event`: The read Event.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the Property object does not contain a Property named `propertyName`. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a Property object, as well as a "Property value event args" object. The callback will be invoked with the Property object holding the read value as the first argument. The second argument holds an event args object that contains the read Property value, event type (Read), and a method of overriding the read value. If the read value is overridden, the overridden value is read instead.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getOnPropertyValueRead()`.
     pub fn on_property_value_read(&self, property_name: &str) -> Result<Option<Event>> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5629,14 +6073,16 @@ impl PropertyObject {
     }
 
     /// Gets the Event that is triggered whenever a Property value is written to the Property named `propertyName`.
-    /// @param propertyName The name of the property.
-    /// @param\[out\] event The write Event.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the Property object does not contain a Property named `propertyName`.
-    /// A handler can be added to the event containing a callback function which is invoked whenever the event is triggered.
-    /// The callback function requires two parameters - a Property object, as well as a "Property value event args" object.
-    /// The callback will be invoked with the Property object holding the written-to property as the first argument The second argument
-    /// holds an event args object that contains the written value, event type (Update), and a method of overriding the written value.
-    /// If the written value is overridden, the overridden value is stored in the Property object instead.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the property.
+    ///
+    /// # Returns
+    /// - `event`: The write Event.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the Property object does not contain a Property named `propertyName`. A handler can be added to the event containing a callback function which is invoked whenever the event is triggered. The callback function requires two parameters - a Property object, as well as a "Property value event args" object. The callback will be invoked with the Property object holding the written-to property as the first argument The second argument holds an event args object that contains the written value, event type (Update), and a method of overriding the written value. If the written value is overridden, the overridden value is stored in the Property object instead.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getOnPropertyValueWrite()`.
     pub fn on_property_value_write(&self, property_name: &str) -> Result<Option<Event>> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5647,7 +6093,10 @@ impl PropertyObject {
     }
 
     /// Gets the permission manager of property object.
-    /// @param\[out\] permissionManager The permission manager of property object.
+    ///
+    /// # Returns
+    /// - `permission_manager`: The permission manager of property object.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getPermissionManager()`.
     pub fn permission_manager(&self) -> Result<Option<PermissionManager>> {
         let mut __permission_manager: *mut sys::daqPermissionManager = std::ptr::null_mut();
@@ -5657,18 +6106,16 @@ impl PropertyObject {
     }
 
     /// Gets the Property with the given `propertyName`.
-    /// @param propertyName The name of the property.
-    /// @param\[out\] property The retrieved Property.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the Property object does not contain the requested Property.
-    /// The property is obtained from either the Property object class of the Property object, or the
-    /// object's local list of properties. The Property held by the object/class is not returned directly,
-    /// but is instead cloned, and bound to the Property object. This allows for evaluation of Property metadata
-    /// that depends on other properties of the Property object.
-    /// For example, a Property's visibility might depend on the value of another Property. To make evaluation
-    /// of the visibility parameter possible, the Property must be able to access its owning Property object.
-    /// Likewise, Reference properties always point at another Property of a Property object. Again, for this to
-    /// be possible, the Property must be able to access its owning Property object, to be able to retrieve its
-    /// referenced Property.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the property.
+    ///
+    /// # Returns
+    /// - `property`: The retrieved Property.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the Property object does not contain the requested Property. The property is obtained from either the Property object class of the Property object, or the object's local list of properties. The Property held by the object/class is not returned directly, but is instead cloned, and bound to the Property object. This allows for evaluation of Property metadata that depends on other properties of the Property object. For example, a Property's visibility might depend on the value of another Property. To make evaluation of the visibility parameter possible, the Property must be able to access its owning Property object. Likewise, Reference properties always point at another Property of a Property object. Again, for this to be possible, the Property must be able to access its owning Property object, to be able to retrieve its referenced Property.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getProperty()`.
     pub fn property(&self, property_name: &str) -> Result<Option<Property>> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5679,15 +6126,18 @@ impl PropertyObject {
     }
 
     /// Gets the selected value of the Property, if the Property is a Selection property.
-    /// @param propertyName The name of the Property.
-    /// @param\[out\] value The selected value.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a Property with given `propertyName` is not part of the Property object.
-    /// @retval OPENDAQ_ERR_INVALIDPROPERTY if the Property either has no Selection values, or the Selection values are not a list or dictionary.
-    /// @retval OPENDAQ_ERR_INVALIDTYPE if the retrieved value does not match the Property's item type.
-    /// This function serves as a shortcut to obtaining the Property value of a Property, and using it to retrieve the currently
-    /// selected value from the Selection values of the Property. For example, if the Selection values contain the following list
-    /// "\["banana", "apple", "pear"\]", and the corresponding Property value is set to 1, retrieving the Property selection value
-    /// will return the string "apple".
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property.
+    ///
+    /// # Returns
+    /// - `value`: The selected value.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a Property with given `propertyName` is not part of the Property object.
+    /// - `OPENDAQ_ERR_INVALIDPROPERTY`: if the Property either has no Selection values, or the Selection values are not a list or dictionary.
+    /// - `OPENDAQ_ERR_INVALIDTYPE`: if the retrieved value does not match the Property's item type. This function serves as a shortcut to obtaining the Property value of a Property, and using it to retrieve the currently selected value from the Selection values of the Property. For example, if the Selection values contain the following list "\["banana", "apple", "pear"\]", and the corresponding Property value is set to 1, retrieving the Property selection value will return the string "apple".
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getPropertySelectionValue()`.
     pub fn property_selection_value(&self, property_name: &str) -> Result<Value> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5698,25 +6148,18 @@ impl PropertyObject {
     }
 
     /// Gets the value of the Property with the given name.
-    /// @param propertyName The name of the Property.
-    /// @param\[out\] value The returned Property value.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a property with given `propertyName` is not part of the Property object.
-    /// @retval OPENDAQ_ERR_INVALIDPARAMETER if attempting to get a value at an index of a non-list Property.
-    /// @retval OPENDAQ_ERR_OUTOFRANGE if attempting to get a value of a list Property at an out-of-bounds index.
-    /// The value is retrieved from a local dictionary of Property values where they are stored when set. If a value is not
-    /// present under the `propertyName` key, the default value of the corresponding Property is returned. If said property
-    /// is not part of the Property object, an error occurs.
-    /// @subsection value_get_child_property_objects Child Property objects
-    /// The Property value getter allows for direct retrieval of values of child Property objects. To get the Property value of a
-    /// child Property object, the `propertyName` parameter should be of the format: "childName.propertyName". This pattern can
-    /// also be used to access nested properties - for example "childName1.childName2.childName3.propertyName".
-    /// @subsection value_get_list_properties List properties
-    /// If the requested Property is a list-type object, an item of the list at a selected index can be retrieved instead of the list
-    /// itself. To do so, add a \[index\] suffix to the `propertyName` parameter. For example "ListProperty\[1\]" retrieves the 2nd item
-    /// stored in the list Property value of the Property named "ListProperty".
-    /// @subsection value_get_selection_properties Selection properties
-    /// If the requested Property has the Selection values fields configured, the Property value getter returns an index/key of the
-    /// selected item in the Selection values list/dictionary.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property.
+    ///
+    /// # Returns
+    /// - `value`: The returned Property value.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a property with given `propertyName` is not part of the Property object.
+    /// - `OPENDAQ_ERR_INVALIDPARAMETER`: if attempting to get a value at an index of a non-list Property.
+    /// - `OPENDAQ_ERR_OUTOFRANGE`: if attempting to get a value of a list Property at an out-of-bounds index. The value is retrieved from a local dictionary of Property values where they are stored when set. If a value is not present under the `propertyName` key, the default value of the corresponding Property is returned. If said property is not part of the Property object, an error occurs. @subsection value_get_child_property_objects Child Property objects The Property value getter allows for direct retrieval of values of child Property objects. To get the Property value of a child Property object, the `propertyName` parameter should be of the format: "childName.propertyName". This pattern can also be used to access nested properties - for example "childName1.childName2.childName3.propertyName". @subsection value_get_list_properties List properties If the requested Property is a list-type object, an item of the list at a selected index can be retrieved instead of the list itself. To do so, add a \[index\] suffix to the `propertyName` parameter. For example "ListProperty\[1\]" retrieves the 2nd item stored in the list Property value of the Property named "ListProperty". @subsection value_get_selection_properties Selection properties If the requested Property has the Selection values fields configured, the Property value getter returns an index/key of the selected item in the Selection values list/dictionary.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getPropertyValue()`.
     pub fn property_value(&self, property_name: &str) -> Result<Value> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5727,12 +6170,10 @@ impl PropertyObject {
     }
 
     /// Returns the state of batch configuration.
-    /// @param\[out\] updating True if the object is performing batch update of its properties.
-    /// Batched configuration is used to apply several settings at once. To begin batch configuration, call `beginUpdate`.
-    /// When the `setPropertyValue` is called on the object, the changes are not immediately applied. When `endUpdate`
-    /// is called, the property values set between the `beginUpdate` and `endUpdate` method calls are
-    /// applied. This method returns True if `beginUpdate` method has been called on the object` and `endUpdate` has not
-    /// been called yet.
+    ///
+    /// # Returns
+    /// - `updating`: True if the object is performing batch update of its properties. Batched configuration is used to apply several settings at once. To begin batch configuration, call `beginUpdate`. When the `setPropertyValue` is called on the object, the changes are not immediately applied. When `endUpdate` is called, the property values set between the `beginUpdate` and `endUpdate` method calls are applied. This method returns True if `beginUpdate` method has been called on the object` and `endUpdate` has not been called yet.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getUpdating()`.
     pub fn updating(&self) -> Result<bool> {
         let mut __updating: u8 = 0;
@@ -5742,10 +6183,10 @@ impl PropertyObject {
     }
 
     /// Returns a list of visible properties contained in the Property object.
-    /// @param\[out\] properties The List of properties.
-    /// A Property is visible if both the Visible parameter is set to `true`, and IsReferenced is `false`. The properties
-    /// are sorted in insertion order unless a custom order is specified.
-    /// This function returns both the properties added to the Property object, as well as those of its class.
+    ///
+    /// # Returns
+    /// - `properties`: The List of properties. A Property is visible if both the Visible parameter is set to `true`, and IsReferenced is `false`. The properties are sorted in insertion order unless a custom order is specified. This function returns both the properties added to the Property object, as well as those of its class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_getVisibleProperties()`.
     pub fn visible_properties(&self) -> Result<Vec<Property>> {
         let mut __properties: *mut sys::daqList = std::ptr::null_mut();
@@ -5755,8 +6196,13 @@ impl PropertyObject {
     }
 
     /// Checks if the Property object contains a property named `propertyName`.
-    /// @param propertyName The name of the property.
-    /// @param\[out\] hasProperty True if the Property object contains the Property; false otherwise.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the property.
+    ///
+    /// # Returns
+    /// - `has_property`: True if the Property object contains the Property; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_hasProperty()`.
     pub fn has_property(&self, property_name: &str) -> Result<bool> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5767,10 +6213,14 @@ impl PropertyObject {
     }
 
     /// Removes the Property named `propertyName` from the Property object.
-    /// @param propertyName The name of the Property to be removed.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the Property object does not contain a Property named `propertyName`, or the Property is part of the Property object's Property object class.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// A property can only be removed from a Property object, if it was added to the object, and not inherited from its class.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property to be removed.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the Property object does not contain a Property named `propertyName`, or the Property is part of the Property object's Property object class.
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen. A property can only be removed from a Property object, if it was added to the object, and not inherited from its class.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_removeProperty()`.
     pub fn remove_property(&self, property_name: &str) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5780,11 +6230,13 @@ impl PropertyObject {
     }
 
     /// Sets a custom order of properties as defined in the list of property names.
-    /// @param orderedPropertyNames A list of names of properties. The order of the list is applied to the object's properties.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// The list should contain names of properties available in the object. When retrieving the Property object's properties, they will
-    /// be sorted in the order in which the names appear in the provided list. Any properties not in the custom order are
-    /// kept in insertion order at the end of the Property object's list of properties.
+    ///
+    /// # Parameters
+    /// - `ordered_property_names`: A list of names of properties. The order of the list is applied to the object's properties.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen. The list should contain names of properties available in the object. When retrieving the Property object's properties, they will be sorted in the order in which the names appear in the provided list. Any properties not in the custom order are kept in insertion order at the end of the Property object's list of properties.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_setPropertyOrder()`.
     pub fn set_property_order(&self, ordered_property_names: &[&str]) -> Result<()> {
         let __ordered_property_names = crate::marshal::list_from_strs(ordered_property_names)?;
@@ -5794,14 +6246,17 @@ impl PropertyObject {
     }
 
     /// Sets the value of a Selection property by the selection item value (e.g. string, float, or list/dict value).
-    /// @param propertyName The name of the Property.
-    /// @param value The selection value to set (must be one of the Property's selection values). Cannot be null.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a Property with given `propertyName` is not part of the Property object, or the value is not in the selection.
-    /// @retval OPENDAQ_ERR_INVALIDPROPERTY if the Property has no Selection values.
-    /// @retval OPENDAQ_ERR_ACCESSDENIED if the property is Read-only.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// Works for all Selection properties (list or dictionary): the value is the actual selection item (e.g. a string from the list,
-    /// or the value part of a key-value pair in the dictionary). Use setPropertyValue when setting by index/key.
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property.
+    /// - `value`: The selection value to set (must be one of the Property's selection values). Cannot be null.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a Property with given `propertyName` is not part of the Property object, or the value is not in the selection.
+    /// - `OPENDAQ_ERR_INVALIDPROPERTY`: if the Property has no Selection values.
+    /// - `OPENDAQ_ERR_ACCESSDENIED`: if the property is Read-only.
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen. Works for all Selection properties (list or dictionary): the value is the actual selection item (e.g. a string from the list, or the value part of a key-value pair in the dictionary). Use setPropertyValue when setting by index/key.
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_setPropertySelectionValue()`.
     pub fn set_property_selection_value(&self, property_name: &str, value: impl Into<Value>) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5812,40 +6267,21 @@ impl PropertyObject {
     }
 
     /// Sets the value of the Property with the given name.
-    /// @param propertyName The name of the Property.
-    /// @param value The Property value to be set. Cannot be null.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a property with given `propertyName` is not part of the Property object.
-    /// @retval OPENDAQ_ERR_ACCESSDENIED if the property is Read-only.
-    /// @retval OPENDAQ_ERR_CONVERSIONFAILED if the `value` cannot be converted to the Value type of the Property.
-    /// @retval OPENDAQ_ERR_INVALIDTYPE if the `value` is a list/dictionary/object with invalid keys/items/fields.
-    /// @retval OPENDAQ_ERR_VALIDATE_FAILED if the Validator fails to validate the `value`.
-    /// @retval OPENDAQ_ERR_COERCION_FAILED if the Coercer fails to coerce the `value`.
-    /// @retval OPENDAQ_ERR_FROZEN if the Property object is frozen.
-    /// @retval OPENDAQ_ERR_IGNORED if the `value` is the same as the default, or the previously written value.
-    /// Stores the provided `value` into an internal dictionary of property name and value pairs. This property value can
-    /// later be retrieved through the corresponding getter method when invoked with the same `propertyName`. The provided
-    /// `value` must adhere to the restrictions of the corresponding Property (that bears the name `propertyName`). If such
-    /// a Property is part of the Property object, the setter call will fail. Some restrictions include:
-    /// - The core type of the value must match that of the Property Value type.
-    /// - If the Property is a numeric type, the value must be equal or greater than the Min value, and equal or smaller
-    /// than the Max value.
-    /// - If the Property is Read-only, the setter will fail.
-    /// - The value will be validated by the Property validator causing the setter method to fail if validation is unsuccessful.
-    /// - The value will be coerced to fit the coercion expression of the Property coercer before being written into the local
-    /// dictionary of property values.
-    /// Setting the value of a Property will override either its default value or the value that was set beforehand.
-    /// @subsection patterns Behaviour patterns of note
-    /// - When setting the value of a Property with the Selection values field configured (a Selection property), the `value`
-    /// must be an integer type, and acts as an index/key into the list/dictionary of Selection values.
-    /// - If the Property is a Reference property (the Referenced property field is configured), the `value` is actually written
-    /// under the key of the referenced Property, not the one specified through the `propertyName` argument.
-    /// - When setting a list or dictionary type property, the list items and dictionary keys and items must be homogeneous, and
-    /// of the same type as specified by the item and key type of the Property.
-    /// - Setting a Property value will invoke the corresponding `onPropertyValueWrite` event.
-    /// @subsection value_set_child_property_objects Child Property objects
-    /// The Property value setter allows for direct configuration of any child Property objects. To set the Property value of a
-    /// child Property object, the `propertyName` parameter should be of the format: "childName.propertyName". This pattern
-    /// can also be used to access nested properties - for example "childName1.childName2.childName3.propertyName".
+    ///
+    /// # Parameters
+    /// - `property_name`: The name of the Property.
+    /// - `value`: The Property value to be set. Cannot be null.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a property with given `propertyName` is not part of the Property object.
+    /// - `OPENDAQ_ERR_ACCESSDENIED`: if the property is Read-only.
+    /// - `OPENDAQ_ERR_CONVERSIONFAILED`: if the `value` cannot be converted to the Value type of the Property.
+    /// - `OPENDAQ_ERR_INVALIDTYPE`: if the `value` is a list/dictionary/object with invalid keys/items/fields.
+    /// - `OPENDAQ_ERR_VALIDATE_FAILED`: if the Validator fails to validate the `value`.
+    /// - `OPENDAQ_ERR_COERCION_FAILED`: if the Coercer fails to coerce the `value`.
+    /// - `OPENDAQ_ERR_FROZEN`: if the Property object is frozen.
+    /// - `OPENDAQ_ERR_IGNORED`: if the `value` is the same as the default, or the previously written value. Stores the provided `value` into an internal dictionary of property name and value pairs. This property value can later be retrieved through the corresponding getter method when invoked with the same `propertyName`. The provided `value` must adhere to the restrictions of the corresponding Property (that bears the name `propertyName`). If such a Property is part of the Property object, the setter call will fail. Some restrictions include: - The core type of the value must match that of the Property Value type. - If the Property is a numeric type, the value must be equal or greater than the Min value, and equal or smaller than the Max value. - If the Property is Read-only, the setter will fail. - The value will be validated by the Property validator causing the setter method to fail if validation is unsuccessful. - The value will be coerced to fit the coercion expression of the Property coercer before being written into the local dictionary of property values. Setting the value of a Property will override either its default value or the value that was set beforehand. @subsection patterns Behaviour patterns of note - When setting the value of a Property with the Selection values field configured (a Selection property), the `value` must be an integer type, and acts as an index/key into the list/dictionary of Selection values. - If the Property is a Reference property (the Referenced property field is configured), the `value` is actually written under the key of the referenced Property, not the one specified through the `propertyName` argument. - When setting a list or dictionary type property, the list items and dictionary keys and items must be homogeneous, and of the same type as specified by the item and key type of the Property. - Setting a Property value will invoke the corresponding `onPropertyValueWrite` event. @subsection value_set_child_property_objects Child Property objects The Property value setter allows for direct configuration of any child Property objects. To set the Property value of a child Property object, the `propertyName` parameter should be of the format: "childName.propertyName". This pattern can also be used to access nested properties - for example "childName1.childName2.childName3.propertyName".
+    ///
     /// Calls the openDAQ C function `daqPropertyObject_setPropertyValue()`.
     pub fn set_property_value(&self, property_name: &str, value: impl Into<Value>) -> Result<()> {
         let __property_name = crate::marshal::make_string(property_name)?;
@@ -5920,10 +6356,12 @@ impl PropertyValueEventArgs {
 
 impl Property {
     /// Creates a boolean Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The boolean default value. Can be an EvalValue.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctBool`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The boolean default value. Can be an EvalValue.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctBool`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
     /// Calls the openDAQ C function `daqProperty_createBoolProperty()`.
     pub fn bool(name: &str, default_value: bool, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -5936,14 +6374,12 @@ impl Property {
     }
 
     /// Creates a dictionary Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The dictionary default value.
-    /// @param visible If true, the Property is visible.  Can be an EvalValue.
-    /// The Property Value type is `ctDict`. The visible parameter can be an EvalValue. The dictionary passed as
-    /// default value must have homogeneous key and value lists.
-    /// The Property's Item type field will be set according to defaultValue dictionary Item type. The same goes for
-    /// the Key type.
-    /// TODO: defaultValue can be an EvalValue once dictionaries are supported.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The dictionary default value.
+    /// - `visible`: If true, the Property is visible.  Can be an EvalValue. The Property Value type is `ctDict`. The visible parameter can be an EvalValue. The dictionary passed as default value must have homogeneous key and value lists. The Property's Item type field will be set according to defaultValue dictionary Item type. The same goes for the Key type. TODO: defaultValue can be an EvalValue once dictionaries are supported.
+    ///
     /// Calls the openDAQ C function `daqProperty_createDictProperty()`.
     pub fn dict(name: &str, default_value: impl Into<Value>, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -5956,10 +6392,12 @@ impl Property {
     }
 
     /// Creates an Enumeration Property object with a default value and its visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The default structure value.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctEnumeration`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The default structure value.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctEnumeration`.
+    ///
     /// Calls the openDAQ C function `daqProperty_createEnumerationProperty()`.
     pub fn enumeration(name: &str, default_value: &Enumeration, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -5971,10 +6409,12 @@ impl Property {
     }
 
     /// Creates a floating point value Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The float default value. Can be an EvalValue.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctFloat`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The float default value. Can be an EvalValue.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctFloat`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
     /// Calls the openDAQ C function `daqProperty_createFloatProperty()`.
     pub fn float(name: &str, default_value: f64, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -5987,11 +6427,12 @@ impl Property {
     }
 
     /// Creates a function- or procedure-type Property object. Requires the a CallableInfo object to specify the argument type/count and function return type.
-    /// @param name The name of the Property.
-    /// @param callableInfo Information about the callable argument type/count and return type.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctFunction` or `ctProc`, depending on if `callableInfo` contains information
-    /// on the return type or not. Note that the visible parameter can be an EvalValue.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `callable_info`: Information about the callable argument type/count and return type.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctFunction` or `ctProc`, depending on if `callableInfo` contains information on the return type or not. Note that the visible parameter can be an EvalValue.
+    ///
     /// Calls the openDAQ C function `daqProperty_createFunctionProperty()`.
     pub fn function(name: &str, callable_info: &CallableInfo, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6003,10 +6444,12 @@ impl Property {
     }
 
     /// Creates an integer Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The integer default value. Can be an EvalValue.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctInt`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The integer default value. Can be an EvalValue.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctInt`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
     /// Calls the openDAQ C function `daqProperty_createIntProperty()`.
     pub fn int(name: &str, default_value: i64, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6019,12 +6462,12 @@ impl Property {
     }
 
     /// Creates a list Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The list default value. Can be an EvalValue.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctList`. Note that the defaultValue and visible parameters can be EvalValues.
-    /// The list passed as `defaultValue` must be homogeneous.
-    /// The Property's Item type field will be set according to defaultValue list type.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The list default value. Can be an EvalValue.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctList`. Note that the defaultValue and visible parameters can be EvalValues. The list passed as `defaultValue` must be homogeneous. The Property's Item type field will be set according to defaultValue list type.
+    ///
     /// Calls the openDAQ C function `daqProperty_createListProperty()`.
     pub fn list(name: &str, default_value: impl Into<Value>, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6037,12 +6480,11 @@ impl Property {
     }
 
     /// Creates an object-type Property object with a default value and optional Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The Property object default value.
-    /// The Property Value type is `ctObject`. Object properties cannot be have any metadata other than
-    /// their name, description, and default value configured. The PropertyObject default value can only
-    /// be a base PropertyObject type (not a descendant type).
-    /// If the defaultValue is not specified, it will automatically be configured to an empty Property Object.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The Property object default value. The Property Value type is `ctObject`. Object properties cannot be have any metadata other than their name, description, and default value configured. The PropertyObject default value can only be a base PropertyObject type (not a descendant type). If the defaultValue is not specified, it will automatically be configured to an empty Property Object.
+    ///
     /// Calls the openDAQ C function `daqProperty_createObjectProperty()`.
     pub fn object(name: &str, default_value: &PropertyObject) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6053,11 +6495,12 @@ impl Property {
     }
 
     /// Creates a ratio Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The ratio default value.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctRatio`. Note that the visible parameter can be an EvalValue.
-    /// TODO: defaultValue can be an EvalValue once ratios are supported.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The ratio default value.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctRatio`. Note that the visible parameter can be an EvalValue. TODO: defaultValue can be an EvalValue once ratios are supported.
+    ///
     /// Calls the openDAQ C function `daqProperty_createRatioProperty()`.
     pub fn ratio(name: &str, default_value: Ratio, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6070,8 +6513,11 @@ impl Property {
     }
 
     /// Creates a Reference Property object that points at a property specified in the `referencedProperty` parameter.
-    /// @param name The name of the Property.
-    /// @param referencedPropertyEval The evaluation expression that evaluates to another property.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `referenced_property_eval`: The evaluation expression that evaluates to another property.
+    ///
     /// Calls the openDAQ C function `daqProperty_createReferenceProperty()`.
     pub fn reference(name: &str, referenced_property_eval: &EvalValue) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6082,11 +6528,13 @@ impl Property {
     }
 
     /// Creates a Selection Property object with a list of selection values. The default value is an integer index into the default selected value.
-    /// @param name The name of the Property.
-    /// @param selectionValues The list of selectable values.
-    /// @param defaultValue The default index into the list of selection values.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctInt`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `selection_values`: The list of selectable values.
+    /// - `default_value`: The default index into the list of selection values.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctInt`.
+    ///
     /// Calls the openDAQ C function `daqProperty_createSelectionProperty()`.
     pub fn selection(name: &str, selection_values: impl Into<Value>, default_value: i64, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6100,11 +6548,13 @@ impl Property {
     }
 
     /// Creates a Selection Property object with a dictionary of selection values. The default value is an integer key into the provided dictionary.
-    /// @param name The name of the Property.
-    /// @param selectionValues The dictionary of selectable values. The key type must be `ctInt`.
-    /// @param defaultValue The default key into the list of selection values.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctInt`. The key type of the Selection values dictionary must be `ctInt`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `selection_values`: The dictionary of selectable values. The key type must be `ctInt`.
+    /// - `default_value`: The default key into the list of selection values.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctInt`. The key type of the Selection values dictionary must be `ctInt`.
+    ///
     /// Calls the openDAQ C function `daqProperty_createSparseSelectionProperty()`.
     pub fn sparse_selection(name: &str, selection_values: impl Into<Value>, default_value: i64, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6118,10 +6568,12 @@ impl Property {
     }
 
     /// Creates a string Property object with a default value and Visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The integer default value. Can be an EvalValue.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctString`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The integer default value. Can be an EvalValue.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctString`. Note that the defaultValue and visible parameters can be EvalValues.
+    ///
     /// Calls the openDAQ C function `daqProperty_createStringProperty()`.
     pub fn string(name: &str, default_value: &str, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6134,10 +6586,12 @@ impl Property {
     }
 
     /// Creates a Struct Property object with a default value and its visible state.
-    /// @param name The name of the Property.
-    /// @param defaultValue The default structure value.
-    /// @param visible If true, the Property is visible. Can be an EvalValue.
-    /// The Property Value type is `ctStruct`.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the Property.
+    /// - `default_value`: The default structure value.
+    /// - `visible`: If true, the Property is visible. Can be an EvalValue. The Property Value type is `ctStruct`.
+    ///
     /// Calls the openDAQ C function `daqProperty_createStructProperty()`.
     pub fn struct_(name: &str, default_value: &Struct, visible: bool) -> Result<Property> {
         let __name = crate::marshal::make_string(name)?;
@@ -6149,7 +6603,10 @@ impl Property {
     }
 
     /// Gets the Callable information objects of the Property that specifies the argument and return types of the callable object stored as the Property value.
-    /// @param\[out\] callable The Callable info object.
+    ///
+    /// # Returns
+    /// - `callable`: The Callable info object.
+    ///
     /// Calls the openDAQ C function `daqProperty_getCallableInfo()`.
     pub fn callable_info(&self) -> Result<Option<CallableInfo>> {
         let mut __callable: *mut sys::daqCallableInfo = std::ptr::null_mut();
@@ -6159,8 +6616,10 @@ impl Property {
     }
 
     /// Gets the coercer of the Property.
-    /// @param\[out\] coercer The coercer.
-    /// Used to coerce a value written to the corresponding Property value to the constraints specified by the coercer.
+    ///
+    /// # Returns
+    /// - `coercer`: The coercer. Used to coerce a value written to the corresponding Property value to the constraints specified by the coercer.
+    ///
     /// Calls the openDAQ C function `daqProperty_getCoercer()`.
     pub fn coercer(&self) -> Result<Option<Coercer>> {
         let mut __coercer: *mut sys::daqCoercer = std::ptr::null_mut();
@@ -6170,7 +6629,10 @@ impl Property {
     }
 
     /// Gets the Default value of the Property. The Default value must always be configured for a Property to be in a valid state. Exceptions are Function/Procedure and Reference properties.
-    /// @param\[out\] value The Default value of the Property.
+    ///
+    /// # Returns
+    /// - `value`: The Default value of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getDefaultValue()`.
     pub fn default_value(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -6180,7 +6642,10 @@ impl Property {
     }
 
     /// Gets the short string Description of the Property.
-    /// @param\[out\] description The Description of the Property.
+    ///
+    /// # Returns
+    /// - `description`: The Description of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getDescription()`.
     pub fn description(&self) -> Result<String> {
         let mut __description: *mut sys::daqString = std::ptr::null_mut();
@@ -6190,7 +6655,10 @@ impl Property {
     }
 
     /// Used to determine whether the Property is referenced by another property.
-    /// @param\[out\] isReferenced True if the Property is referenced by another property; false otherwise.
+    ///
+    /// # Returns
+    /// - `is_referenced`: True if the Property is referenced by another property; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqProperty_getIsReferenced()`.
     pub fn is_referenced(&self) -> Result<bool> {
         let mut __is_referenced: u8 = 0;
@@ -6200,7 +6668,10 @@ impl Property {
     }
 
     /// Gets the Item type of the Property. Configured only if the Value type is `ctDict` or `ctList`. If so, the item types of the list/dictionary must match the Property's Item type.
-    /// @param\[out\] type The Item type of list/dictionary properties.
+    ///
+    /// # Returns
+    /// - `type`: The Item type of list/dictionary properties.
+    ///
     /// Calls the openDAQ C function `daqProperty_getItemType()`.
     pub fn item_type(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -6210,7 +6681,10 @@ impl Property {
     }
 
     /// Gets the Key type of the Property. Configured only if the Value type is `ctDict`. If so, the key type of the dictionary Property values must match the Property's Key type.
-    /// @param\[out\] type The Key type of dictionary properties.
+    ///
+    /// # Returns
+    /// - `type`: The Key type of dictionary properties.
+    ///
     /// Calls the openDAQ C function `daqProperty_getKeyType()`.
     pub fn key_type(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -6220,7 +6694,10 @@ impl Property {
     }
 
     /// Gets the Maximum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param\[out\] max The Maximum value of the Property.
+    ///
+    /// # Returns
+    /// - `max`: The Maximum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getMaxValue()`.
     pub fn max_value(&self) -> Result<Option<f64>> {
         let mut __max: *mut sys::daqNumber = std::ptr::null_mut();
@@ -6230,7 +6707,10 @@ impl Property {
     }
 
     /// Gets the Minimum value of the Property. Available only if the Value type is `ctInt` or `ctFloat`.
-    /// @param\[out\] min The Minimum value of the Property.
+    ///
+    /// # Returns
+    /// - `min`: The Minimum value of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getMinValue()`.
     pub fn min_value(&self) -> Result<Option<f64>> {
         let mut __min: *mut sys::daqNumber = std::ptr::null_mut();
@@ -6240,7 +6720,10 @@ impl Property {
     }
 
     /// Gets the Name of the Property. The names of Properties in a Property object must be unique. The name is used as the key to the corresponding Property value when getting/setting the value.
-    /// @param\[out\] name The Name of the Property.
+    ///
+    /// # Returns
+    /// - `name`: The Name of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -6250,9 +6733,10 @@ impl Property {
     }
 
     /// Gets the event object that is triggered when the corresponding Property value is read.
-    /// @param\[out\] event The On-read event.
-    /// The event arguments contain a reference to the property object, as well as a function allowing for the read
-    /// value to be overridden.
+    ///
+    /// # Returns
+    /// - `event`: The On-read event. The event arguments contain a reference to the property object, as well as a function allowing for the read value to be overridden.
+    ///
     /// Calls the openDAQ C function `daqProperty_getOnPropertyValueRead()`.
     pub fn on_property_value_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -6262,9 +6746,10 @@ impl Property {
     }
 
     /// Gets the event object that is triggered when a value is written to the corresponding Property value.
-    /// @param\[out\] event The On-write event.
-    /// The event arguments contain a reference to the property object, as well as a function allowing for the written
-    /// value to be overridden.
+    ///
+    /// # Returns
+    /// - `event`: The On-write event. The event arguments contain a reference to the property object, as well as a function allowing for the written value to be overridden.
+    ///
     /// Calls the openDAQ C function `daqProperty_getOnPropertyValueWrite()`.
     pub fn on_property_value_write(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -6274,9 +6759,10 @@ impl Property {
     }
 
     /// Gets the event triggered when a user retrieves the selection values field. Allows for overriding the returned value.
-    /// @param\[out\] event The `onRead` event triggered when suggested values are read.
-    /// There should at any point be a single listener that overrides the returned value. Any listeners are expected
-    /// to always configure the returned value via the Property metadata read arguments object.
+    ///
+    /// # Returns
+    /// - `event`: The `onRead` event triggered when suggested values are read. There should at any point be a single listener that overrides the returned value. Any listeners are expected to always configure the returned value via the Property metadata read arguments object.
+    ///
     /// Calls the openDAQ C function `daqProperty_getOnSelectionValuesRead()`.
     pub fn on_selection_values_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -6286,9 +6772,10 @@ impl Property {
     }
 
     /// Gets the event triggered when a user retrieves the suggested values field. Allows for overriding the returned value.
-    /// @param\[out\] event The `onRead` event triggered when suggested values are read.
-    /// There should at any point be a single listener that overrides the returned value. Any listeners are expected
-    /// to always configure the returned value via the Property metadata read arguments object.
+    ///
+    /// # Returns
+    /// - `event`: The `onRead` event triggered when suggested values are read. There should at any point be a single listener that overrides the returned value. Any listeners are expected to always configure the returned value via the Property metadata read arguments object.
+    ///
     /// Calls the openDAQ C function `daqProperty_getOnSuggestedValuesRead()`.
     pub fn on_suggested_values_read(&self) -> Result<Option<Event>> {
         let mut __event: *mut sys::daqEvent = std::ptr::null_mut();
@@ -6298,8 +6785,10 @@ impl Property {
     }
 
     /// Gets the type of the Property.
-    /// @param\[out\] type The type of the Property.
-    /// The type of the Property is a combination of the CoreType and the additional property types.
+    ///
+    /// # Returns
+    /// - `type`: The type of the Property. The type of the Property is a combination of the CoreType and the additional property types.
+    ///
     /// Calls the openDAQ C function `daqProperty_getPropertyType()`.
     pub fn property_type(&self) -> Result<PropertyType> {
         let mut __type_: u32 = 0;
@@ -6309,8 +6798,10 @@ impl Property {
     }
 
     /// Used to determine whether the Property is a read-only property or not.
-    /// @param\[out\] readOnly True if the Property is a read-only property; false otherwise.
-    /// Read-only Property values can still be modified by using the `PropertyObjectProtected` interface methods.
+    ///
+    /// # Returns
+    /// - `read_only`: True if the Property is a read-only property; false otherwise. Read-only Property values can still be modified by using the `PropertyObjectProtected` interface methods.
+    ///
     /// Calls the openDAQ C function `daqProperty_getReadOnly()`.
     pub fn read_only(&self) -> Result<bool> {
         let mut __read_only: u8 = 0;
@@ -6320,8 +6811,10 @@ impl Property {
     }
 
     /// Gets the referenced property. If set, all getters except for the `Name`, `Referenced property`, and `Is referenced` getters will return the value of the `Referenced property`.
-    /// @param\[out\] property The referenced property.
-    /// If the Property is not bound to a Property object this call will not be able to return the Referenced property.
+    ///
+    /// # Returns
+    /// - `property`: The referenced property. If the Property is not bound to a Property object this call will not be able to return the Referenced property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getReferencedProperty()`.
     pub fn referenced_property(&self) -> Result<Option<Property>> {
         let mut __property: *mut sys::daqProperty = std::ptr::null_mut();
@@ -6331,7 +6824,10 @@ impl Property {
     }
 
     /// Gets the list or dictionary of selection values. If the list/dictionary is not empty, the property is a Selection property, and must have the Value type `ctInt`.
-    /// @param\[out\] values The list/dictionary of possible selection values.
+    ///
+    /// # Returns
+    /// - `values`: The list/dictionary of possible selection values.
+    ///
     /// Calls the openDAQ C function `daqProperty_getSelectionValues()`.
     pub fn selection_values(&self) -> Result<Value> {
         let mut __values: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -6341,7 +6837,10 @@ impl Property {
     }
 
     /// Gets the Struct type object of the Property, if the Property is a Struct property.
-    /// @param\[out\] structType The Struct type of the Struct Property.
+    ///
+    /// # Returns
+    /// - `struct_type`: The Struct type of the Struct Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getStructType()`.
     pub fn struct_type(&self) -> Result<Option<StructType>> {
         let mut __struct_type: *mut sys::daqStructType = std::ptr::null_mut();
@@ -6351,8 +6850,10 @@ impl Property {
     }
 
     /// Gets the list of Suggested values. Contains values that are the optimal settings for the corresponding Property value. These values, however, are not enforced when setting a new Property value.
-    /// @param\[out\] values The Suggested values of the Property.
-    /// Only numerical and string-type properties can have suggested values.
+    ///
+    /// # Returns
+    /// - `values`: The Suggested values of the Property. Only numerical and string-type properties can have suggested values.
+    ///
     /// Calls the openDAQ C function `daqProperty_getSuggestedValues()`.
     pub fn suggested_values(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -6362,7 +6863,10 @@ impl Property {
     }
 
     /// Gets the Unit of the Property.
-    /// @param\[out\] unit The Unit of the Property.
+    ///
+    /// # Returns
+    /// - `unit`: The Unit of the Property.
+    ///
     /// Calls the openDAQ C function `daqProperty_getUnit()`.
     pub fn unit(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -6372,8 +6876,10 @@ impl Property {
     }
 
     /// Gets the validator of the Property.
-    /// @param\[out\] validator The validator.
-    /// Used to validate whether a value written to the corresponding Property value is valid or not.
+    ///
+    /// # Returns
+    /// - `validator`: The validator. Used to validate whether a value written to the corresponding Property value is valid or not.
+    ///
     /// Calls the openDAQ C function `daqProperty_getValidator()`.
     pub fn validator(&self) -> Result<Option<Validator>> {
         let mut __validator: *mut sys::daqValidator = std::ptr::null_mut();
@@ -6383,10 +6889,13 @@ impl Property {
     }
 
     /// Gets the value of the Property. Available only if the Property is bound to a Property object.
-    /// @param value The Property value.
-    /// @return OPENDAQ_ERR_NO_OWNER if the Property is not bound to a Property object.
-    /// The call is equivalent to calling `getPropertyValue` on the Property object and all the limitations
-    /// and implications of that call still apply.
+    ///
+    /// # Parameters
+    /// - `value`: The Property value.
+    ///
+    /// # Returns
+    /// OPENDAQ_ERR_NO_OWNER if the Property is not bound to a Property object. The call is equivalent to calling `getPropertyValue` on the Property object and all the limitations and implications of that call still apply.
+    ///
     /// Calls the openDAQ C function `daqProperty_getValue()`.
     pub fn value(&self) -> Result<Value> {
         let mut __value: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -6396,7 +6905,10 @@ impl Property {
     }
 
     /// Gets the Value type of the Property. Values written to the corresponding Property value must be of the same type.
-    /// @param\[out\] type The value type.
+    ///
+    /// # Returns
+    /// - `type`: The value type.
+    ///
     /// Calls the openDAQ C function `daqProperty_getValueType()`.
     pub fn value_type(&self) -> Result<CoreType> {
         let mut __type_: u32 = 0;
@@ -6406,7 +6918,10 @@ impl Property {
     }
 
     /// Used to determine whether the property is visible or not.
-    /// @param\[out\] visible True if the Property is visible; false otherwise.
+    ///
+    /// # Returns
+    /// - `visible`: True if the Property is visible; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqProperty_getVisible()`.
     pub fn visible(&self) -> Result<bool> {
         let mut __visible: u8 = 0;
@@ -6416,10 +6931,13 @@ impl Property {
     }
 
     /// Sets the value of the Property. Available only if the Property is bound to a Property object.
-    /// @param value The Property value.
-    /// @return OPENDAQ_ERR_NO_OWNER if the Property is not bound to a Property object.
-    /// The call is equivalent to calling `getPropertyValue` on the Property object and all the limitations
-    /// and implications of that call still apply.
+    ///
+    /// # Parameters
+    /// - `value`: The Property value.
+    ///
+    /// # Returns
+    /// OPENDAQ_ERR_NO_OWNER if the Property is not bound to a Property object. The call is equivalent to calling `getPropertyValue` on the Property object and all the limitations and implications of that call still apply.
+    ///
     /// Calls the openDAQ C function `daqProperty_setValue()`.
     pub fn set_value(&self, value: impl Into<Value>) -> Result<()> {
         let __value = crate::value::to_daq(&value.into())?;
@@ -6440,7 +6958,10 @@ impl RatioObject {
     }
 
     /// Gets denominator part.
-    /// @param\[out\] denominator Denominator value.
+    ///
+    /// # Returns
+    /// - `denominator`: Denominator value.
+    ///
     /// Calls the openDAQ C function `daqRatio_getDenominator()`.
     pub fn denominator(&self) -> Result<i64> {
         let mut __denominator: i64 = Default::default();
@@ -6450,7 +6971,10 @@ impl RatioObject {
     }
 
     /// Gets numerator part.
-    /// @param\[out\] numerator Numerator value.
+    ///
+    /// # Returns
+    /// - `numerator`: Numerator value.
+    ///
     /// Calls the openDAQ C function `daqRatio_getNumerator()`.
     pub fn numerator(&self) -> Result<i64> {
         let mut __numerator: i64 = Default::default();
@@ -6460,9 +6984,10 @@ impl RatioObject {
     }
 
     /// Simplifies rational number if possible and returns the simplified ratio as a new object.
-    /// @param\[out\] simplifiedRatio the simplified ratio.
-    /// Call this method to reduce stored rational number to the lowest terms possible.
-    /// Example: 10/100 is reduced to 1/10.
+    ///
+    /// # Returns
+    /// - `simplified_ratio`: the simplified ratio. Call this method to reduce stored rational number to the lowest terms possible. Example: 10/100 is reduced to 1/10.
+    ///
     /// Calls the openDAQ C function `daqRatio_simplify()`.
     pub fn simplify(&self) -> Result<Option<Ratio>> {
         let mut __simplified_ratio: *mut sys::daqRatio = std::ptr::null_mut();
@@ -6475,8 +7000,13 @@ impl RatioObject {
 
 impl SearchFilter {
     /// Defines whether or not the object should be included in the search results
-    /// @param obj The object being evaluated.
-    /// @param\[out\] accepts True of the object is to be included in the results; false otherwise.
+    ///
+    /// # Parameters
+    /// - `obj`: The object being evaluated.
+    ///
+    /// # Returns
+    /// - `accepts`: True of the object is to be included in the results; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_acceptsObject()`.
     pub fn accepts_object(&self, obj: impl Into<Value>) -> Result<bool> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -6487,8 +7017,11 @@ impl SearchFilter {
     }
 
     /// Creates a "conjunction" search filter that combines 2 filters, accepting an object only if both filters accept it. "Visit children" returns `true` only if both filters do so.
-    /// @param left The first argument of the conjunction operation.
-    /// @param right The second argument of the conjunction operation.
+    ///
+    /// # Parameters
+    /// - `left`: The first argument of the conjunction operation.
+    /// - `right`: The second argument of the conjunction operation.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createAndSearchFilter()`.
     pub fn and(left: &SearchFilter, right: &SearchFilter) -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6498,6 +7031,7 @@ impl SearchFilter {
     }
 
     /// Creates a search filter that accepts all objects. "Visit children" always returns `true`.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createAnySearchFilter()`.
     pub fn any() -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6507,8 +7041,11 @@ impl SearchFilter {
     }
 
     /// Creates a custom search filter with a user-defined "accepts object" and "visit children" function.
-    /// @param acceptsFunction The function to be called when "accepts object" is called. Should return `true` or `false`.
-    /// @param visitFunction The function to be called when "visit children" is called. Should return `true` or `false`.
+    ///
+    /// # Parameters
+    /// - `accepts_function`: The function to be called when "accepts object" is called. Should return `true` or `false`.
+    /// - `visit_function`: The function to be called when "visit children" is called. Should return `true` or `false`.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createCustomSearchFilter()`.
     pub fn custom(accepts_function: &FunctionObject, visit_function: &FunctionObject) -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6544,7 +7081,10 @@ impl SearchFilter {
     }
 
     /// Creates a search filter that negates the "accepts object" result of the filter provided as construction argument. Does not negate the "visit children" result.
-    /// @param filter The filter of which results should be negated.
+    ///
+    /// # Parameters
+    /// - `filter`: The filter of which results should be negated.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createNotSearchFilter()`.
     pub fn not(filter: &SearchFilter) -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6554,8 +7094,11 @@ impl SearchFilter {
     }
 
     /// Creates a "disjunction" search filter that combines 2 filters, accepting an object if any of the two filters accepts it. "Visit children" returns `true` if any of the two filters accepts does so.
-    /// @param left The first argument of the disjunction operation.
-    /// @param right The second argument of the disjunction operation.
+    ///
+    /// # Parameters
+    /// - `left`: The first argument of the disjunction operation.
+    /// - `right`: The second argument of the disjunction operation.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createOrSearchFilter()`.
     pub fn or(left: &SearchFilter, right: &SearchFilter) -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6565,7 +7108,10 @@ impl SearchFilter {
     }
 
     /// Creates a search filter that indicates that the search method should recursively search through the object's child elements. This filter constructor should always be the final filter wrapper, and should not be used as a constructor argument for another filter.
-    /// @param filter The filter to be wrapped with a "recursive" flag.
+    ///
+    /// # Parameters
+    /// - `filter`: The filter to be wrapped with a "recursive" flag.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_createRecursiveSearchFilter()`.
     pub fn recursive(filter: &SearchFilter) -> Result<SearchFilter> {
         let mut __obj: *mut sys::daqSearchFilter = std::ptr::null_mut();
@@ -6592,8 +7138,13 @@ impl SearchFilter {
     }
 
     /// Defines whether or not the children of said object should be traversed during a recursive search.
-    /// @param obj The object being evaluated.
-    /// @param\[out\] visit True of the object's children should be traversed; false otherwise.
+    ///
+    /// # Parameters
+    /// - `obj`: The object being evaluated.
+    ///
+    /// # Returns
+    /// - `visit`: True of the object's children should be traversed; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqSearchFilter_visitChildren()`.
     pub fn visit_children(&self, obj: impl Into<Value>) -> Result<bool> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -6625,10 +7176,11 @@ impl StringObject {
     }
 
     /// Gets a string value stored in the object.
-    /// @param\[out\] value Stored string value.
-    /// @return OPENDAQ_SUCCESS if succeeded, error code otherwise.
-    /// Call this method to extract the string value that is stored in the object. Method extracts the
-    /// value as a pointer to 8-bit char type.
+    ///
+    /// # Returns
+    /// OPENDAQ_SUCCESS if succeeded, error code otherwise. Call this method to extract the string value that is stored in the object. Method extracts the value as a pointer to 8-bit char type.
+    /// - `value`: Stored string value.
+    ///
     /// Calls the openDAQ C function `daqString_getCharPtr()`.
     pub fn char_ptr(&self) -> Result<String> {
         let mut __value: *const c_char = std::ptr::null();
@@ -6638,10 +7190,11 @@ impl StringObject {
     }
 
     /// Gets length of string.
-    /// @param\[out\] size The size of the string.
-    /// @return OPENDAQ_SUCCESS if succeeded, error code otherwise.
-    /// Call this method to get the length of the string. Null char terminator is not included in
-    /// the size of the string.
+    ///
+    /// # Returns
+    /// OPENDAQ_SUCCESS if succeeded, error code otherwise. Call this method to get the length of the string. Null char terminator is not included in the size of the string.
+    /// - `size`: The size of the string.
+    ///
     /// Calls the openDAQ C function `daqString_getLength()`.
     pub fn length(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -6677,7 +7230,10 @@ impl StructType {
     }
 
     /// Gets the list of field default values.
-    /// @param\[out\] defaultValues The list of field default values (Base objects)
+    ///
+    /// # Returns
+    /// - `default_values`: The list of field default values (Base objects)
+    ///
     /// Calls the openDAQ C function `daqStructType_getFieldDefaultValues()`.
     pub fn field_default_values(&self) -> Result<Vec<Value>> {
         let mut __default_values: *mut sys::daqList = std::ptr::null_mut();
@@ -6687,7 +7243,10 @@ impl StructType {
     }
 
     /// Gets the list of field names.
-    /// @param\[out\] names The list of field names (String objects)
+    ///
+    /// # Returns
+    /// - `names`: The list of field names (String objects)
+    ///
     /// Calls the openDAQ C function `daqStructType_getFieldNames()`.
     pub fn field_names(&self) -> Result<Vec<String>> {
         let mut __names: *mut sys::daqList = std::ptr::null_mut();
@@ -6697,7 +7256,10 @@ impl StructType {
     }
 
     /// Gets the list of field types.
-    /// @param\[out\] types The list of field types (Type objects)
+    ///
+    /// # Returns
+    /// - `types`: The list of field types (Type objects)
+    ///
     /// Calls the openDAQ C function `daqStructType_getFieldTypes()`.
     pub fn field_types(&self) -> Result<Vec<Type>> {
         let mut __types: *mut sys::daqList = std::ptr::null_mut();
@@ -6728,8 +7290,13 @@ impl Struct {
     }
 
     /// Gets the value of a field with the given name.
-    /// @param name The name of the queried field.
-    /// @param\[out\] field The value of the field.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the queried field.
+    ///
+    /// # Returns
+    /// - `field`: The value of the field.
+    ///
     /// Calls the openDAQ C function `daqStruct_get()`.
     pub fn get(&self, name: &str) -> Result<Value> {
         let __name = crate::marshal::make_string(name)?;
@@ -6740,7 +7307,10 @@ impl Struct {
     }
 
     /// Gets the field names and values of the Struct as a Dictionary.
-    /// @param\[out\] dictionary The Dictionary object with field names as keys, and field values as its values.
+    ///
+    /// # Returns
+    /// - `dictionary`: The Dictionary object with field names as keys, and field values as its values.
+    ///
     /// Calls the openDAQ C function `daqStruct_getAsDictionary()`.
     pub fn as_dictionary(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __dictionary: *mut sys::daqDict = std::ptr::null_mut();
@@ -6750,9 +7320,10 @@ impl Struct {
     }
 
     /// Gets a list of all Struct field names.
-    /// @param\[out\] names The list of field names.
-    /// The list of names will be of equal length to the list of values. Additionally, the name of a field at any given
-    /// index corresponds to the value stored in the list of values.
+    ///
+    /// # Returns
+    /// - `names`: The list of field names. The list of names will be of equal length to the list of values. Additionally, the name of a field at any given index corresponds to the value stored in the list of values.
+    ///
     /// Calls the openDAQ C function `daqStruct_getFieldNames()`.
     pub fn field_names(&self) -> Result<Vec<String>> {
         let mut __names: *mut sys::daqList = std::ptr::null_mut();
@@ -6762,9 +7333,10 @@ impl Struct {
     }
 
     /// Gets a list of all Struct field values.
-    /// @param\[out\] values The list of field values.
-    /// The list of names will be of equal length to the list of values. Additionally, the name of a field at any given
-    /// index corresponds to the value stored in the list of values.
+    ///
+    /// # Returns
+    /// - `values`: The list of field values. The list of names will be of equal length to the list of values. Additionally, the name of a field at any given index corresponds to the value stored in the list of values.
+    ///
     /// Calls the openDAQ C function `daqStruct_getFieldValues()`.
     pub fn field_values(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -6774,7 +7346,10 @@ impl Struct {
     }
 
     /// Gets the Struct's type.
-    /// @param\[out\] type The Struct type
+    ///
+    /// # Returns
+    /// - `type`: The Struct type
+    ///
     /// Calls the openDAQ C function `daqStruct_getStructType()`.
     pub fn struct_type(&self) -> Result<Option<StructType>> {
         let mut __type_: *mut sys::daqStructType = std::ptr::null_mut();
@@ -6784,8 +7359,13 @@ impl Struct {
     }
 
     /// Checks whether a field with the given name exists in the Struct
-    /// @param name The name of the checked field.
-    /// @param\[out\] contains True if the a field with `name` exists in the Struct; false otherwise.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the checked field.
+    ///
+    /// # Returns
+    /// - `contains`: True if the a field with `name` exists in the Struct; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqStruct_hasField()`.
     pub fn has_field(&self, name: &str) -> Result<bool> {
         let __name = crate::marshal::make_string(name)?;
@@ -6799,11 +7379,14 @@ impl Struct {
 
 impl TypeManager {
     /// Adds a type to the manager.
-    /// @param type The Type to be added.
-    /// @retval OPENDAQ_ERR_ALREADYEXISTS if a type with the same name is already added.
-    /// @retval OPENDAQ_ERR_INVALIDPARAMETER if either the type name is an empty string.
-    /// The type name must be unique and. If a Property object class specifies a parent class,
-    /// then the parent class must be added before it.
+    ///
+    /// # Parameters
+    /// - `type`: The Type to be added.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_ALREADYEXISTS`: if a type with the same name is already added.
+    /// - `OPENDAQ_ERR_INVALIDPARAMETER`: if either the type name is an empty string. The type name must be unique and. If a Property object class specifies a parent class, then the parent class must be added before it.
+    ///
     /// Calls the openDAQ C function `daqTypeManager_addType()`.
     pub fn add_type(&self, type_: &Type) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqTypeManager_addType)(self.as_raw() as *mut _, type_.as_raw() as *mut _) };
@@ -6820,9 +7403,16 @@ impl TypeManager {
     }
 
     /// Gets an added Type by name.
-    /// @param typeName The Type's name.
-    /// @param\[out\] type The Type with name equal to `name`.
-    /// @retval OPENDAQ_ERR_NOTFOUND if a Type with the specified name is not added.
+    ///
+    /// # Parameters
+    /// - `type_name`: The Type's name.
+    ///
+    /// # Returns
+    /// - `type`: The Type with name equal to `name`.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if a Type with the specified name is not added.
+    ///
     /// Calls the openDAQ C function `daqTypeManager_getType()`.
     pub fn type_(&self, type_name: &str) -> Result<Option<Type>> {
         let __type_name = crate::marshal::make_string(type_name)?;
@@ -6833,7 +7423,10 @@ impl TypeManager {
     }
 
     /// Gets a list of all added Types.
-    /// @param\[out\] types The list of all added Types.
+    ///
+    /// # Returns
+    /// - `types`: The list of all added Types.
+    ///
     /// Calls the openDAQ C function `daqTypeManager_getTypes()`.
     pub fn types(&self) -> Result<Vec<String>> {
         let mut __types: *mut sys::daqList = std::ptr::null_mut();
@@ -6843,8 +7436,13 @@ impl TypeManager {
     }
 
     /// Checks if a type with the specified name is already added.
-    /// @param typeName The name of the checked type.
-    /// @param\[out\] hasType True if the type is aready added to the manager; False otherwise.
+    ///
+    /// # Parameters
+    /// - `type_name`: The name of the checked type.
+    ///
+    /// # Returns
+    /// - `has_type`: True if the type is aready added to the manager; False otherwise.
+    ///
     /// Calls the openDAQ C function `daqTypeManager_hasType()`.
     pub fn has_type(&self, type_name: &str) -> Result<bool> {
         let __type_name = crate::marshal::make_string(type_name)?;
@@ -6855,10 +7453,13 @@ impl TypeManager {
     }
 
     /// Removes the type from the manager.
-    /// @param typeName The type's name.
-    /// @retval OPENDAQ_ERR_NOTFOUND if the class is not registered.
-    /// The removed class must not be a parent of another added class. If it is, those classes must be removed
-    /// before it.
+    ///
+    /// # Parameters
+    /// - `type_name`: The type's name.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_NOTFOUND`: if the class is not registered. The removed class must not be a parent of another added class. If it is, those classes must be removed before it.
+    ///
     /// Calls the openDAQ C function `daqTypeManager_removeType()`.
     pub fn remove_type(&self, type_name: &str) -> Result<()> {
         let __type_name = crate::marshal::make_string(type_name)?;
@@ -6871,7 +7472,10 @@ impl TypeManager {
 
 impl Type {
     /// Gets the name of the Type
-    /// @param\[out\] typeName The name of the Type.
+    ///
+    /// # Returns
+    /// - `type_name`: The name of the Type.
+    ///
     /// Calls the openDAQ C function `daqType_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __type_name: *mut sys::daqString = std::ptr::null_mut();
@@ -6884,7 +7488,10 @@ impl Type {
 
 impl UnitBuilder {
     /// Builds and returns a Unit object using the currently set values of the Builder.
-    /// @param\[out\] unit The built Unit.
+    ///
+    /// # Returns
+    /// - `unit`: The built Unit.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_build()`.
     pub fn build(&self) -> Result<Option<Unit>> {
         let mut __unit: *mut sys::daqUnit = std::ptr::null_mut();
@@ -6894,6 +7501,7 @@ impl UnitBuilder {
     }
 
     /// Creates a UnitConfig with no parameters configured.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_createUnitBuilder()`.
     pub fn new() -> Result<UnitBuilder> {
         let mut __obj: *mut sys::daqUnitBuilder = std::ptr::null_mut();
@@ -6903,7 +7511,10 @@ impl UnitBuilder {
     }
 
     /// UnitConfig copy factory that creates a configurable Unit object from a possibly non-configurable Unit.
-    /// @param unitToCopy The Unit of which configuration should be copied.
+    ///
+    /// # Parameters
+    /// - `unit_to_copy`: The Unit of which configuration should be copied.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_createUnitBuilderFromExisting()`.
     pub fn from_existing(unit_to_copy: &Unit) -> Result<UnitBuilder> {
         let mut __obj: *mut sys::daqUnitBuilder = std::ptr::null_mut();
@@ -6913,8 +7524,10 @@ impl UnitBuilder {
     }
 
     /// Gets the unit ID as defined in \<a href="https://unece.org/trade/cefact/UNLOCODE-Download"\>Codes for Units of Measurement used in International Trade\</a\>.
-    /// @param\[out\] id The unit ID.
-    /// Returns -1 if the unit id is not available.
+    ///
+    /// # Returns
+    /// - `id`: The unit ID. Returns -1 if the unit id is not available.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_getId()`.
     pub fn id(&self) -> Result<i64> {
         let mut __id: i64 = Default::default();
@@ -6924,8 +7537,10 @@ impl UnitBuilder {
     }
 
     /// Gets the full name of the unit, i.e. "meters per second".
-    /// @param\[out\] name The unit's full name.
-    /// `nullptr` if not set.
+    ///
+    /// # Returns
+    /// - `name`: The unit's full name. `nullptr` if not set.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -6935,8 +7550,10 @@ impl UnitBuilder {
     }
 
     /// Gets the quantity represented by the unit, i.e. "Velocity"
-    /// @param\[out\] quantity The unit's quantity.
-    /// `nullptr` if not set.
+    ///
+    /// # Returns
+    /// - `quantity`: The unit's quantity. `nullptr` if not set.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_getQuantity()`.
     pub fn quantity(&self) -> Result<String> {
         let mut __quantity: *mut sys::daqString = std::ptr::null_mut();
@@ -6946,7 +7563,10 @@ impl UnitBuilder {
     }
 
     /// Gets the symbol of the unit, i.e. "m/s".
-    /// @param\[out\] symbol The unit's symbol.
+    ///
+    /// # Returns
+    /// - `symbol`: The unit's symbol.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_getSymbol()`.
     pub fn symbol(&self) -> Result<String> {
         let mut __symbol: *mut sys::daqString = std::ptr::null_mut();
@@ -6956,8 +7576,10 @@ impl UnitBuilder {
     }
 
     /// Sets the unit ID as defined in \<a href="https://unece.org/trade/cefact/UNLOCODE-Download"\>Codes for Units of Measurement used in International Trade\</a\>.
-    /// @param id The unit ID.
-    /// The ID should be -1 if the unit is not available.
+    ///
+    /// # Parameters
+    /// - `id`: The unit ID. The ID should be -1 if the unit is not available.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_setId()`.
     pub fn set_id(&self, id: i64) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqUnitBuilder_setId)(self.as_raw() as *mut _, id) };
@@ -6966,7 +7588,10 @@ impl UnitBuilder {
     }
 
     /// Sets the full name of the unit, i.e. "meters per second".
-    /// @param name The unit's full name.
+    ///
+    /// # Parameters
+    /// - `name`: The unit's full name.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_setName()`.
     pub fn set_name(&self, name: &str) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -6976,7 +7601,10 @@ impl UnitBuilder {
     }
 
     /// Sets the quantity represented by the unit, i.e. "Velocity"
-    /// @param quantity The unit's quantity.
+    ///
+    /// # Parameters
+    /// - `quantity`: The unit's quantity.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_setQuantity()`.
     pub fn set_quantity(&self, quantity: &str) -> Result<()> {
         let __quantity = crate::marshal::make_string(quantity)?;
@@ -6986,7 +7614,10 @@ impl UnitBuilder {
     }
 
     /// Sets the symbol of the unit, i.e. "m/s".
-    /// @param symbol The unit's symbol.
+    ///
+    /// # Parameters
+    /// - `symbol`: The unit's symbol.
+    ///
     /// Calls the openDAQ C function `daqUnitBuilder_setSymbol()`.
     pub fn set_symbol(&self, symbol: &str) -> Result<()> {
         let __symbol = crate::marshal::make_string(symbol)?;
@@ -6999,10 +7630,13 @@ impl UnitBuilder {
 
 impl Unit {
     /// Creates a Unit struct with its `id`, `symbol`, `name`, and `quantity` fields configured.
-    /// @param id The unit ID as defined in \<a href="https://unece.org/trade/cefact/UNLOCODE-Download"\>Codes for Units of Measurement used in International Trade\</a\>.
-    /// @param symbol The symbol of the unit, i.e. "m/s".
-    /// @param name The full name of the unit, i.e. "meters per second". (optional)
-    /// @param quantity The quantity represented by the unit, i.e. "Velocity". (optional)
+    ///
+    /// # Parameters
+    /// - `id`: The unit ID as defined in \<a href="https://unece.org/trade/cefact/UNLOCODE-Download"\>Codes for Units of Measurement used in International Trade\</a\>.
+    /// - `symbol`: The symbol of the unit, i.e. "m/s".
+    /// - `name`: The full name of the unit, i.e. "meters per second". (optional)
+    /// - `quantity`: The quantity represented by the unit, i.e. "Velocity". (optional)
+    ///
     /// Calls the openDAQ C function `daqUnit_createUnit()`.
     pub fn new(id: i64, symbol: &str, name: &str, quantity: &str) -> Result<Unit> {
         let __symbol = crate::marshal::make_string(symbol)?;
@@ -7015,8 +7649,10 @@ impl Unit {
     }
 
     /// Gets the unit ID as defined in \<a href="https://unece.org/trade/cefact/UNLOCODE-Download"\>Codes for Units of Measurement used in International Trade\</a\>.
-    /// @param\[out\] id The unit ID.
-    /// Returns -1 if the unit id is not available.
+    ///
+    /// # Returns
+    /// - `id`: The unit ID. Returns -1 if the unit id is not available.
+    ///
     /// Calls the openDAQ C function `daqUnit_getId()`.
     pub fn id(&self) -> Result<i64> {
         let mut __id: i64 = Default::default();
@@ -7026,8 +7662,10 @@ impl Unit {
     }
 
     /// Gets the full name of the unit, i.e. "meters per second".
-    /// @param\[out\] name The unit's full name.
-    /// `nullptr` if not set.
+    ///
+    /// # Returns
+    /// - `name`: The unit's full name. `nullptr` if not set.
+    ///
     /// Calls the openDAQ C function `daqUnit_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -7037,8 +7675,10 @@ impl Unit {
     }
 
     /// Gets the quantity represented by the unit, i.e. "Velocity"
-    /// @param\[out\] quantity The unit's quantity.
-    /// `nullptr` if not set.
+    ///
+    /// # Returns
+    /// - `quantity`: The unit's quantity. `nullptr` if not set.
+    ///
     /// Calls the openDAQ C function `daqUnit_getQuantity()`.
     pub fn quantity(&self) -> Result<String> {
         let mut __quantity: *mut sys::daqString = std::ptr::null_mut();
@@ -7048,7 +7688,10 @@ impl Unit {
     }
 
     /// Gets the symbol of the unit, i.e. "m/s".
-    /// @param\[out\] symbol The unit's symbol.
+    ///
+    /// # Returns
+    /// - `symbol`: The unit's symbol.
+    ///
     /// Calls the openDAQ C function `daqUnit_getSymbol()`.
     pub fn symbol(&self) -> Result<String> {
         let mut __symbol: *mut sys::daqString = std::ptr::null_mut();
@@ -7061,7 +7704,10 @@ impl Unit {
 
 impl UserInternal {
     /// Returns the user's password, which can either be in plain text or hashed using the Bcrypt algorithm. Hashed passwords should follow the Modular Crypt Format. For security purposes, hashed passwords are preferred.
-    /// @param passwordHash\[out\] Returns the user's password, which can either be in plain text or hashed using the Bcrypt algorithm.
+    ///
+    /// # Parameters
+    /// - `password_hash`: \[out\] Returns the user's password, which can either be in plain text or hashed using the Bcrypt algorithm.
+    ///
     /// Calls the openDAQ C function `daqUserInternal_getPasswordHash()`.
     pub fn password_hash(&self) -> Result<String> {
         let mut __password_hash: *mut sys::daqString = std::ptr::null_mut();
@@ -7071,7 +7717,10 @@ impl UserInternal {
     }
 
     /// Returns true if user is anonymous. Anonymous user is any user without defined username and passowrd.
-    /// @param anonymous\[out\] Returns true if user is anonymous.
+    ///
+    /// # Parameters
+    /// - `anonymous`: \[out\] Returns true if user is anonymous.
+    ///
     /// Calls the openDAQ C function `daqUserInternal_isAnonymous()`.
     pub fn is_anonymous(&self) -> Result<bool> {
         let mut __anonymous: u8 = 0;
@@ -7084,9 +7733,12 @@ impl UserInternal {
 
 impl User {
     /// Creates an immutable user object
-    /// @param username The username.
-    /// @param passwordHash The hashed password as a string in Modular Crypt Format.
-    /// @param groups The list of group IDs which the user belongs to.
+    ///
+    /// # Parameters
+    /// - `username`: The username.
+    /// - `password_hash`: The hashed password as a string in Modular Crypt Format.
+    /// - `groups`: The list of group IDs which the user belongs to.
+    ///
     /// Calls the openDAQ C function `daqUser_createUser()`.
     pub fn new(username: &str, password_hash: &str, groups: impl Into<Value>) -> Result<User> {
         let __username = crate::marshal::make_string(username)?;
@@ -7099,7 +7751,10 @@ impl User {
     }
 
     /// Returns a list of group IDs which the user belongs to.
-    /// @param password\[out\] groups The list of group IDs which the user belongs to.
+    ///
+    /// # Parameters
+    /// - `password`: \[out\] groups The list of group IDs which the user belongs to.
+    ///
     /// Calls the openDAQ C function `daqUser_getGroups()`.
     pub fn groups(&self) -> Result<Vec<String>> {
         let mut __groups: *mut sys::daqList = std::ptr::null_mut();
@@ -7109,7 +7764,10 @@ impl User {
     }
 
     /// Returns the username as a string.
-    /// @param username\[out\] The username.
+    ///
+    /// # Parameters
+    /// - `username`: \[out\] The username.
+    ///
     /// Calls the openDAQ C function `daqUser_getUsername()`.
     pub fn username(&self) -> Result<String> {
         let mut __username: *mut sys::daqString = std::ptr::null_mut();
@@ -7122,7 +7780,10 @@ impl User {
 
 impl Validator {
     /// Creates a Validator with the given evaluation expression.
-    /// @param eval The evaluation expression used for validation.
+    ///
+    /// # Parameters
+    /// - `eval`: The evaluation expression used for validation.
+    ///
     /// Calls the openDAQ C function `daqValidator_createValidator()`.
     pub fn new(eval: &str) -> Result<Validator> {
         let __eval = crate::marshal::make_string(eval)?;
@@ -7133,7 +7794,10 @@ impl Validator {
     }
 
     /// Gets the string expression used when creating the validator.
-    /// @param\[out\] eval The validation expression.
+    ///
+    /// # Returns
+    /// - `eval`: The validation expression.
+    ///
     /// Calls the openDAQ C function `daqValidator_getEval()`.
     pub fn eval(&self) -> Result<String> {
         let mut __eval: *mut sys::daqString = std::ptr::null_mut();
@@ -7143,10 +7807,15 @@ impl Validator {
     }
 
     /// Checks whether `value` adheres to the validity conditions of the validator.
-    /// @param propObj Optional property object parameter required if the validation depends on other properties of the Property object.
-    /// @param value The value to be checked for whether it is valid or not.
-    /// @retval OPENDAQ_ERR_VALIDATE_FAILED if `value` is invalid.
-    /// @retval OPENDAQ_SUCCESS if `value` is valid.
+    ///
+    /// # Parameters
+    /// - `prop_obj`: Optional property object parameter required if the validation depends on other properties of the Property object.
+    /// - `value`: The value to be checked for whether it is valid or not.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_VALIDATE_FAILED`: if `value` is invalid.
+    /// - `OPENDAQ_SUCCESS`: if `value` is valid.
+    ///
     /// Calls the openDAQ C function `daqValidator_validate()`.
     pub fn validate(&self, prop_obj: impl Into<Value>, value: impl Into<Value>) -> Result<()> {
         let __prop_obj = crate::value::to_daq(&prop_obj.into())?;

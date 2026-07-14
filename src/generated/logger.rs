@@ -53,7 +53,7 @@ impl crate::value::FromDaqOwned for LastMessageLoggerSinkPrivate {
     }
 }
 
-/// Logs messages produced by a specific part of openDAC SDK. The messages are written into the @ref ILoggerSink "Logger Sinks" associated with the Logger Component object.
+/// Logs messages produced by a specific part of openDAC SDK. The messages are written into the ILoggerSink "Logger Sinks" associated with the Logger Component object.
 /// The set of associated sinks is initialized on the Logger Component object creation and cannot be
 /// changed after.
 /// Logger Component allows to set up a threshold log severity level, so the messages with lower level
@@ -189,7 +189,10 @@ impl crate::value::FromDaqOwned for LoggerThreadPool {
 
 impl LastMessageLoggerSinkPrivate {
     /// Get the last log message
-    /// @param\[out\] lastMessage The last log message
+    ///
+    /// # Returns
+    /// - `last_message`: The last log message
+    ///
     /// Calls the openDAQ C function `daqLastMessageLoggerSinkPrivate_getLastMessage()`.
     pub fn last_message(&self) -> Result<String> {
         let mut __last_message: *mut sys::daqString = std::ptr::null_mut();
@@ -199,8 +202,13 @@ impl LastMessageLoggerSinkPrivate {
     }
 
     /// Wait for receiving a new log message
-    /// @param timeoutMs The timeout in milliseconds until which wait for a new log message. If timeout set as 0 ms waiting will be skipped.
-    /// @param\[out\] success The success will return true if there was a new unread log message before waiting or sink got a new logger message before timeout. False if timeout was reached.
+    ///
+    /// # Parameters
+    /// - `timeout_ms`: The timeout in milliseconds until which wait for a new log message. If timeout set as 0 ms waiting will be skipped.
+    ///
+    /// # Returns
+    /// - `success`: The success will return true if there was a new unread log message before waiting or sink got a new logger message before timeout. False if timeout was reached.
+    ///
     /// Calls the openDAQ C function `daqLastMessageLoggerSinkPrivate_waitForMessage()`.
     pub fn wait_for_message(&self, timeout_ms: usize) -> Result<bool> {
         let mut __success: u8 = 0;
@@ -223,6 +231,7 @@ impl LoggerComponent {
     }
 
     /// Triggers writing out the messages stored in temporary buffers.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_flush()`.
     pub fn flush(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLoggerComponent_flush)(self.as_raw() as *mut _) };
@@ -231,7 +240,10 @@ impl LoggerComponent {
     }
 
     /// Sets the minimum severity level of messages to be automatically written to the associated sinks bypassing the temporary buffers.
-    /// @param level The severity level of messages.
+    ///
+    /// # Parameters
+    /// - `level`: The severity level of messages.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_flushOnLevel()`.
     pub fn flush_on_level(&self, level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLoggerComponent_flushOnLevel)(self.as_raw() as *mut _, level as u32) };
@@ -240,7 +252,10 @@ impl LoggerComponent {
     }
 
     /// Gets the minimal severity level of messages to be logged by the component.
-    /// @param\[out\] level The log severity level of the component.
+    ///
+    /// # Returns
+    /// - `level`: The log severity level of the component.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_getLevel()`.
     pub fn level(&self) -> Result<LogLevel> {
         let mut __level: u32 = 0;
@@ -250,7 +265,10 @@ impl LoggerComponent {
     }
 
     /// Gets the name of the component.
-    /// @param\[out\] name The name of the component.
+    ///
+    /// # Returns
+    /// - `name`: The name of the component.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_getName()`.
     pub fn name(&self) -> Result<String> {
         let mut __name: *mut sys::daqString = std::ptr::null_mut();
@@ -260,7 +278,10 @@ impl LoggerComponent {
     }
 
     /// Sets the minimal severity level of messages to be logged by the component.
-    /// @param level The log severity level of the component.
+    ///
+    /// # Parameters
+    /// - `level`: The log severity level of the component.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_setLevel()`.
     pub fn set_level(&self, level: LogLevel) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqLoggerComponent_setLevel)(self.as_raw() as *mut _, level as u32) };
@@ -269,7 +290,10 @@ impl LoggerComponent {
     }
 
     /// Sets the custom formatter pattern for the component.
-    /// @param pattern The format pattern string.
+    ///
+    /// # Parameters
+    /// - `pattern`: The format pattern string.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_setPattern()`.
     pub fn set_pattern(&self, pattern: &str) -> Result<()> {
         let __pattern = crate::marshal::make_string(pattern)?;
@@ -279,8 +303,13 @@ impl LoggerComponent {
     }
 
     /// Checks whether the messages with given log severity level will be logged or not.
-    /// @param level The severity level of messages.
-    /// @param\[out\] willLog True if the messages with @p level will be logged within the component; false otherwise.
+    ///
+    /// # Parameters
+    /// - `level`: The severity level of messages.
+    ///
+    /// # Returns
+    /// - `will_log`: True if the messages with `level` will be logged within the component; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqLoggerComponent_shouldLog()`.
     pub fn should_log(&self, level: LogLevel) -> Result<bool> {
         let mut __will_log: u8 = 0;

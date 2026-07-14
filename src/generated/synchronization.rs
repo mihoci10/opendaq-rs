@@ -13,13 +13,11 @@ use std::ffi::c_char;
 /// Interface representing a Synchronization Component in a Test & Measurement system. A SynchronizationComponent ensures synchronization among measurement devices in the system. It can act as a sync source and/or as a sync output, with each component having one sync input and 0 to n sync outputs.
 /// SynchronizationComponents are configured via interfaces, which can include PTP, IRIQ, GPS,
 /// and CLK sync interfaces, among others.
-/// @note Every SynchronizationComponent has at least one interface. Only one interface can be set
-/// as an input, while others can be used as sync outputs to synchronize other devices.
-/// The configuration of these interfaces and the reading of their status is defined in Part 4.
-/// @note Depending on the setup, some interfaces may be switched off, and some interfaces may
-/// act as sync sources or outputs.
-/// @note A CLK interface can be used to let a device run in Fre-Run mode, where the device
-/// syncs internally to an internal quartz.
+///
+/// # Notes
+/// Every SynchronizationComponent has at least one interface. Only one interface can be set as an input, while others can be used as sync outputs to synchronize other devices. The configuration of these interfaces and the reading of their status is defined in Part 4.
+/// Depending on the setup, some interfaces may be switched off, and some interfaces may act as sync sources or outputs.
+/// A CLK interface can be used to let a device run in Fre-Run mode, where the device syncs internally to an internal quartz.
 /// Wrapper over the openDAQ `daqSyncComponentPrivate` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -65,7 +63,10 @@ impl crate::value::FromDaqOwned for SyncComponentPrivate {
 
 impl SyncComponentPrivate {
     /// Adds an interface to the synchronization component.
-    /// @param interface The interface to be added.
+    ///
+    /// # Parameters
+    /// - `interface`: The interface to be added.
+    ///
     /// Calls the openDAQ C function `daqSyncComponentPrivate_addInterface()`.
     pub fn add_interface(&self, sync_interface: &PropertyObject) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSyncComponentPrivate_addInterface)(self.as_raw() as *mut _, sync_interface.as_raw() as *mut _) };
@@ -74,7 +75,10 @@ impl SyncComponentPrivate {
     }
 
     /// Removes an interface from the synchronization component.
-    /// @param interfaceName The name of the interface to be removed.
+    ///
+    /// # Parameters
+    /// - `interface_name`: The name of the interface to be removed.
+    ///
     /// Calls the openDAQ C function `daqSyncComponentPrivate_removeInterface()`.
     pub fn remove_interface(&self, sync_interface_name: &str) -> Result<()> {
         let __sync_interface_name = crate::marshal::make_string(sync_interface_name)?;
@@ -84,7 +88,10 @@ impl SyncComponentPrivate {
     }
 
     /// Sets the synchronization lock status.
-    /// @param synchronizationLocked True if synchronization is locked; false otherwise.
+    ///
+    /// # Parameters
+    /// - `synchronization_locked`: True if synchronization is locked; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqSyncComponentPrivate_setSyncLocked()`.
     pub fn set_sync_locked(&self, synchronization_locked: bool) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqSyncComponentPrivate_setSyncLocked)(self.as_raw() as *mut _, u8::from(synchronization_locked)) };

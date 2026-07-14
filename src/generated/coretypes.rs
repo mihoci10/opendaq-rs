@@ -153,12 +153,12 @@ impl crate::value::FromDaqOwned for Comparable {
 /// other containers which accept `IBaseObject` and derived interfaces.
 /// Complex numbers have two components: real and imaginary. Both of them are of Float type.
 /// Available factories:
-/// @code
+/// ```text
 /// // Creates a new ComplexNumber object. Throws exception if not successful.
 /// IComplexNumber* ComplexNumber_Create(ComplexFloat64* value)
 /// // Creates a new ComplexNumber object. Returns error code if not successful.
 /// ErrCode createComplexNumber(IComplexNumber** obj, ComplexFloat64 value)
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqComplexNumber` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -206,18 +206,18 @@ impl crate::value::FromDaqOwned for ComplexNumberObject {
 /// An object which implements `IIntObject` will typically also implement IConvertible,
 /// which allows conversion to other types.
 /// Example:
-/// @code
+/// ```text
 /// IIntObject* intObj = ...;
 /// IConvertible* conv;
-/// auto errCode = intObj.queryInterface(IConvertible::Id, reinterpret_cast\<void**\>(&conv));
+/// auto errCode = intObj.queryInterface(IConvertible::Id, reinterpret_cast<void**>(&conv));
 /// if (OPENDAQ_FAILED(errCode))
 /// return;
 /// Float val;
-/// errCode = conv-\>toFloat(&val);
+/// errCode = conv->toFloat(&val);
 /// if (OPENDAQ_FAILED(errCode))
 /// return;
 /// // print val
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqConvertible` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -701,15 +701,15 @@ impl crate::value::FromDaqOwned for Iterable {
 /// Call moveNext function in a loop until it returns OPENDAQ_NO_MORE_ITEMS. Iteration
 /// cannot be restarted. In this case a new iterator must be created.
 /// Example:
-/// @code
+/// ```text
 /// IIterator* it = ...;
-/// while (it-\>moveNext() != OPENDAQ_NO_MORE_ITEMS)
+/// while (it->moveNext() != OPENDAQ_NO_MORE_ITEMS)
 /// {
 /// IBaseObject* obj;
-/// it-\>getCurrent(&obj);
+/// it->getCurrent(&obj);
 /// // do something with obj
 /// }
-/// @endcode
+/// ```
 /// Wrapper over the openDAQ `daqIterator` interface.
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -1246,7 +1246,10 @@ impl BinaryData {
     }
 
     /// Gets the size of the buffer.
-    /// @param\[out\] size The buffer's size.
+    ///
+    /// # Returns
+    /// - `size`: The buffer's size.
+    ///
     /// Calls the openDAQ C function `daqBinaryData_getSize()`.
     pub fn size(&self) -> Result<usize> {
         let mut __size: usize = Default::default();
@@ -1259,7 +1262,10 @@ impl BinaryData {
 
 impl Cloneable {
     /// Clones the object.
-    /// @param\[out\] cloned The cloned object.
+    ///
+    /// # Returns
+    /// - `cloned`: The cloned object.
+    ///
     /// Calls the openDAQ C function `daqCloneable_clone()`.
     pub fn clone_object(&self) -> Result<Value> {
         let mut __cloned: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -1272,13 +1278,15 @@ impl Cloneable {
 
 impl Comparable {
     /// Compares the object to another object.
-    /// @param obj Object for comparison.
-    /// @retval OPENDAQ_LOWER The object's value is lower than the value of the compared object.
-    /// @retval OPENDAQ_HIGHER The object's value is higher than the value of the compared object.
-    /// @retval OPENDAQ_EQUAL The object's value is equal to the value of the compared object.
-    /// Compares the current instance with another object of the same type and returns an integer that
-    /// indicates whether the current instance precedes, follows, or occurs in the same position in the
-    /// sort order as the other object.
+    ///
+    /// # Parameters
+    /// - `obj`: Object for comparison.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_LOWER`: The object's value is lower than the value of the compared object.
+    /// - `OPENDAQ_HIGHER`: The object's value is higher than the value of the compared object.
+    /// - `OPENDAQ_EQUAL`: The object's value is equal to the value of the compared object. Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+    ///
     /// Calls the openDAQ C function `daqComparable_compareTo()`.
     pub fn compare_to(&self, obj: impl Into<Value>) -> Result<()> {
         let __obj = crate::value::to_daq(&obj.into())?;
@@ -1299,7 +1307,10 @@ impl ComplexNumberObject {
     }
 
     /// Gets the imaginary part of the complex number value.
-    /// @param\[out\] imaginary The imaginary part of the complex value.
+    ///
+    /// # Returns
+    /// - `imaginary`: The imaginary part of the complex value.
+    ///
     /// Calls the openDAQ C function `daqComplexNumber_getImaginary()`.
     pub fn imaginary(&self) -> Result<f64> {
         let mut __imaginary: f64 = Default::default();
@@ -1309,7 +1320,10 @@ impl ComplexNumberObject {
     }
 
     /// Gets the real part of the complex number value.
-    /// @param\[out\] real The real part of the complex value.
+    ///
+    /// # Returns
+    /// - `real`: The real part of the complex value.
+    ///
     /// Calls the openDAQ C function `daqComplexNumber_getReal()`.
     pub fn real(&self) -> Result<f64> {
         let mut __real: f64 = Default::default();
@@ -1322,8 +1336,13 @@ impl ComplexNumberObject {
 
 impl Convertible {
     /// Converts the object to Bool type.
-    /// @param\[out\] val Bool value
-    /// @retval OPENDAQ_ERR_CONVERSIONFAILED Conversion has failed
+    ///
+    /// # Returns
+    /// - `val`: Bool value
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_CONVERSIONFAILED`: Conversion has failed
+    ///
     /// Calls the openDAQ C function `daqConvertible_toBool()`.
     pub fn to_bool(&self) -> Result<bool> {
         let mut __val: u8 = 0;
@@ -1333,8 +1352,13 @@ impl Convertible {
     }
 
     /// Converts the object to Float type.
-    /// @param\[out\] val Float value.
-    /// @retval OPENDAQ_ERR_CONVERSIONFAILED Conversion has failed
+    ///
+    /// # Returns
+    /// - `val`: Float value.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_CONVERSIONFAILED`: Conversion has failed
+    ///
     /// Calls the openDAQ C function `daqConvertible_toFloat()`.
     pub fn to_float(&self) -> Result<f64> {
         let mut __val: f64 = Default::default();
@@ -1344,8 +1368,13 @@ impl Convertible {
     }
 
     /// Converts the object to Int type.
-    /// @param\[out\] val Int value.
-    /// @retval OPENDAQ_ERR_CONVERSIONFAILED Conversion has failed
+    ///
+    /// # Returns
+    /// - `val`: Int value.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_ERR_CONVERSIONFAILED`: Conversion has failed
+    ///
     /// Calls the openDAQ C function `daqConvertible_toInt()`.
     pub fn to_int(&self) -> Result<i64> {
         let mut __val: i64 = Default::default();
@@ -1388,7 +1417,10 @@ impl Deserializer {
 
 impl DictElementType {
     /// Returns the interface id of the expected key type.
-    /// @param\[out\] id The interface id of the expected key type otherwise returns the id of `IUnknown`.
+    ///
+    /// # Returns
+    /// - `id`: The interface id of the expected key type otherwise returns the id of `IUnknown`.
+    ///
     /// Calls the openDAQ C function `daqDictElementType_getKeyInterfaceId()`.
     pub fn key_interface_id(&self) -> Result<crate::IntfID> {
         let mut __id = crate::IntfID { Data1: 0, Data2: 0, Data3: 0, Data4: 0 };
@@ -1398,7 +1430,10 @@ impl DictElementType {
     }
 
     /// Returns the interface id of the expected value type.
-    /// @param\[out\] id The interface id of the expected value type otherwise returns the id of `IUnknown`.
+    ///
+    /// # Returns
+    /// - `id`: The interface id of the expected value type otherwise returns the id of `IUnknown`.
+    ///
     /// Calls the openDAQ C function `daqDictElementType_getValueInterfaceId()`.
     pub fn value_interface_id(&self) -> Result<crate::IntfID> {
         let mut __id = crate::IntfID { Data1: 0, Data2: 0, Data3: 0, Data4: 0 };
@@ -1431,7 +1466,10 @@ impl EnumerationType {
     }
 
     /// Gets the enumerator names and values as a Dictionary.
-    /// @param\[out\] dictionary The Dictionary object with enumerator names as keys, and enumerator values as its values.
+    ///
+    /// # Returns
+    /// - `dictionary`: The Dictionary object with enumerator names as keys, and enumerator values as its values.
+    ///
     /// Calls the openDAQ C function `daqEnumerationType_getAsDictionary()`.
     pub fn as_dictionary(&self) -> Result<std::collections::HashMap<String, i64>> {
         let mut __dictionary: *mut sys::daqDict = std::ptr::null_mut();
@@ -1441,7 +1479,10 @@ impl EnumerationType {
     }
 
     /// Gets the number of enumerators within the Enumeration Type.
-    /// @param\[out\] count The number of enumerators within the Enumeration Type.
+    ///
+    /// # Returns
+    /// - `count`: The number of enumerators within the Enumeration Type.
+    ///
     /// Calls the openDAQ C function `daqEnumerationType_getCount()`.
     pub fn count(&self) -> Result<usize> {
         let mut __count: usize = Default::default();
@@ -1451,8 +1492,13 @@ impl EnumerationType {
     }
 
     /// Gets the value of enumerator with the specified name.
-    /// @param name The name of the enumerator (String object).
-    /// @param\[out\] value The integer value of the enumerator with the specified name.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the enumerator (String object).
+    ///
+    /// # Returns
+    /// - `value`: The integer value of the enumerator with the specified name.
+    ///
     /// Calls the openDAQ C function `daqEnumerationType_getEnumeratorIntValue()`.
     pub fn enumerator_int_value(&self, name: &str) -> Result<i64> {
         let __name = crate::marshal::make_string(name)?;
@@ -1463,7 +1509,10 @@ impl EnumerationType {
     }
 
     /// Gets the list of enumerator names.
-    /// @param\[out\] names The list of enumerator names (String objects)
+    ///
+    /// # Returns
+    /// - `names`: The list of enumerator names (String objects)
+    ///
     /// Calls the openDAQ C function `daqEnumerationType_getEnumeratorNames()`.
     pub fn enumerator_names(&self) -> Result<Vec<String>> {
         let mut __names: *mut sys::daqList = std::ptr::null_mut();
@@ -1589,6 +1638,7 @@ impl EventHandler {
 
 impl Freezable {
     /// Makes the object frozen/immutable. It should return OPENDAQ_IGNORED value if the object is already frozen.
+    ///
     /// Calls the openDAQ C function `daqFreezable_freeze()`.
     pub fn freeze(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqFreezable_freeze)(self.as_raw() as *mut _) };
@@ -1597,7 +1647,10 @@ impl Freezable {
     }
 
     /// Checks if the objects is frozen/immutable.
-    /// @param\[out\] isFrozen The object's frozen/immutable state.
+    ///
+    /// # Returns
+    /// - `is_frozen`: The object's frozen/immutable state.
+    ///
     /// Calls the openDAQ C function `daqFreezable_isFrozen()`.
     pub fn is_frozen(&self) -> Result<bool> {
         let mut __is_frozen: u8 = 0;
@@ -1621,7 +1674,10 @@ impl Inspectable {
 
 impl Iterable {
     /// Creates and returns the object's end iterator.
-    /// @param\[out\] iterator The object's end iterator.
+    ///
+    /// # Returns
+    /// - `iterator`: The object's end iterator.
+    ///
     /// Calls the openDAQ C function `daqIterable_createEndIterator()`.
     pub fn create_end_iterator(&self) -> Result<Option<ObjectIterator>> {
         let mut __iterator: *mut sys::daqIterator = std::ptr::null_mut();
@@ -1631,7 +1687,10 @@ impl Iterable {
     }
 
     /// Creates and returns the object's start iterator.
-    /// @param\[out\] iterator The object's start iterator.
+    ///
+    /// # Returns
+    /// - `iterator`: The object's start iterator.
+    ///
     /// Calls the openDAQ C function `daqIterable_createStartIterator()`.
     pub fn create_start_iterator(&self) -> Result<Option<ObjectIterator>> {
         let mut __iterator: *mut sys::daqIterator = std::ptr::null_mut();
@@ -1644,8 +1703,13 @@ impl Iterable {
 
 impl ObjectIterator {
     /// Gets the object at current iterator position.
-    /// @param\[out\] obj Object at current iterator position.
-    /// @retval OPENDAQ_NO_MORE_ITEMS Iterator is over the last item position.
+    ///
+    /// # Returns
+    /// - `obj`: Object at current iterator position.
+    ///
+    /// # Errors
+    /// - `OPENDAQ_NO_MORE_ITEMS`: Iterator is over the last item position.
+    ///
     /// Calls the openDAQ C function `daqIterator_getCurrent()`.
     pub fn current(&self) -> Result<Value> {
         let mut __obj: *mut sys::daqBaseObject = std::ptr::null_mut();
@@ -1655,6 +1719,7 @@ impl ObjectIterator {
     }
 
     /// Moves iterator to next position.
+    ///
     /// Calls the openDAQ C function `daqIterator_moveNext()`.
     pub fn move_next(&self) -> Result<()> {
         let __code = unsafe { (crate::sys::api().daqIterator_moveNext)(self.as_raw() as *mut _) };
@@ -1666,7 +1731,10 @@ impl ObjectIterator {
 
 impl ListElementType {
     /// Returns the interface id of the expected list element type.
-    /// @param\[out\] id The interface id of the expected element type otherwise returns the id of `IUnknown`.
+    ///
+    /// # Returns
+    /// - `id`: The interface id of the expected element type otherwise returns the id of `IUnknown`.
+    ///
     /// Calls the openDAQ C function `daqListElementType_getElementInterfaceId()`.
     pub fn element_interface_id(&self) -> Result<crate::IntfID> {
         let mut __id = crate::IntfID { Data1: 0, Data2: 0, Data3: 0, Data4: 0 };
@@ -2065,7 +2133,10 @@ impl SimpleType {
 
 impl StructBuilder {
     /// Builds and returns a Struct object using the currently set values of the Builder.
-    /// @param\[out\] struct_ The built Struct.
+    ///
+    /// # Returns
+    /// - `struct`: The built Struct.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_build()`.
     pub fn build(&self) -> Result<Option<Struct>> {
         let mut __struct_: *mut sys::daqStruct = std::ptr::null_mut();
@@ -2092,8 +2163,13 @@ impl StructBuilder {
     }
 
     /// Gets the value of a field with the given name.
-    /// @param name The name of the queried field.
-    /// @param\[out\] field The value of the field.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the queried field.
+    ///
+    /// # Returns
+    /// - `field`: The value of the field.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_get()`.
     pub fn get(&self, name: &str) -> Result<Value> {
         let __name = crate::marshal::make_string(name)?;
@@ -2104,7 +2180,10 @@ impl StructBuilder {
     }
 
     /// Gets the field names and values of the Struct as a Dictionary.
-    /// @param\[out\] dictionary The Dictionary object with field names as keys, and field values as its values.
+    ///
+    /// # Returns
+    /// - `dictionary`: The Dictionary object with field names as keys, and field values as its values.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_getAsDictionary()`.
     pub fn as_dictionary(&self) -> Result<std::collections::HashMap<String, Value>> {
         let mut __dictionary: *mut sys::daqDict = std::ptr::null_mut();
@@ -2114,9 +2193,10 @@ impl StructBuilder {
     }
 
     /// Gets a list of all Struct field names.
-    /// @param\[out\] names The list of field names.
-    /// The list of names will be of equal length to the list of values. Additionally, the name of a field at any given
-    /// index corresponds to the value stored in the list of values.
+    ///
+    /// # Returns
+    /// - `names`: The list of field names. The list of names will be of equal length to the list of values. Additionally, the name of a field at any given index corresponds to the value stored in the list of values.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_getFieldNames()`.
     pub fn field_names(&self) -> Result<Vec<String>> {
         let mut __names: *mut sys::daqList = std::ptr::null_mut();
@@ -2126,9 +2206,10 @@ impl StructBuilder {
     }
 
     /// Gets a list of all Struct field values.
-    /// @param\[out\] values The list of field values.
-    /// The list of names will be of equal length to the list of values. Additionally, the name of a field at any given
-    /// index corresponds to the value stored in the list of values.
+    ///
+    /// # Returns
+    /// - `values`: The list of field values. The list of names will be of equal length to the list of values. Additionally, the name of a field at any given index corresponds to the value stored in the list of values.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_getFieldValues()`.
     pub fn field_values(&self) -> Result<Vec<Value>> {
         let mut __values: *mut sys::daqList = std::ptr::null_mut();
@@ -2138,7 +2219,10 @@ impl StructBuilder {
     }
 
     /// Gets the Struct's type.
-    /// @param\[out\] type The Struct type
+    ///
+    /// # Returns
+    /// - `type`: The Struct type
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_getStructType()`.
     pub fn struct_type(&self) -> Result<Option<StructType>> {
         let mut __type_: *mut sys::daqStructType = std::ptr::null_mut();
@@ -2148,8 +2232,13 @@ impl StructBuilder {
     }
 
     /// Checks whether a field with the given name exists in the Struct
-    /// @param name The name of the checked field.
-    /// @param\[out\] contains True if the a field with `name` exists in the Struct; false otherwise.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the checked field.
+    ///
+    /// # Returns
+    /// - `contains`: True if the a field with `name` exists in the Struct; false otherwise.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_hasField()`.
     pub fn has_field(&self, name: &str) -> Result<bool> {
         let __name = crate::marshal::make_string(name)?;
@@ -2160,8 +2249,11 @@ impl StructBuilder {
     }
 
     /// Sets the value of a field with the given name.
-    /// @param name The name of the queried field.
-    /// @param field The value of the field.
+    ///
+    /// # Parameters
+    /// - `name`: The name of the queried field.
+    /// - `field`: The value of the field.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_set()`.
     pub fn set(&self, name: &str, field: impl Into<Value>) -> Result<()> {
         let __name = crate::marshal::make_string(name)?;
@@ -2172,9 +2264,10 @@ impl StructBuilder {
     }
 
     /// Gets a list of all Struct field values.
-    /// @param\[out\] values The list of field values.
-    /// The list of names will be of equal length to the list of values. Additionally, the name of a field at any given
-    /// index corresponds to the value stored in the list of values.
+    ///
+    /// # Returns
+    /// - `values`: The list of field values. The list of names will be of equal length to the list of values. Additionally, the name of a field at any given index corresponds to the value stored in the list of values.
+    ///
     /// Calls the openDAQ C function `daqStructBuilder_setFieldValues()`.
     pub fn set_field_values(&self, values: impl Into<Value>) -> Result<()> {
         let __values = crate::value::to_daq(&values.into())?;
@@ -2239,7 +2332,10 @@ impl VersionInfo {
     }
 
     /// The major version incremented at breaking changes.
-    /// @param\[out\] major The major version component.
+    ///
+    /// # Returns
+    /// - `major`: The major version component.
+    ///
     /// Calls the openDAQ C function `daqVersionInfo_getMajor()`.
     pub fn major(&self) -> Result<usize> {
         let mut __major: usize = Default::default();
@@ -2249,7 +2345,10 @@ impl VersionInfo {
     }
 
     /// The minor version incremented at new features with full backwards compatibility.
-    /// @param\[out\] minor The minor version component.
+    ///
+    /// # Returns
+    /// - `minor`: The minor version component.
+    ///
     /// Calls the openDAQ C function `daqVersionInfo_getMinor()`.
     pub fn minor(&self) -> Result<usize> {
         let mut __minor: usize = Default::default();
@@ -2259,7 +2358,10 @@ impl VersionInfo {
     }
 
     /// The patch version incremented when only bug-fixes are added.
-    /// @param\[out\] patch The patch version component.
+    ///
+    /// # Returns
+    /// - `patch`: The patch version component.
+    ///
     /// Calls the openDAQ C function `daqVersionInfo_getPatch()`.
     pub fn patch(&self) -> Result<usize> {
         let mut __patch: usize = Default::default();
